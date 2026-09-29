@@ -1,6 +1,6 @@
 # Better Digital: série „Stejný úkol. Dva světy.“
 
-Krátká videa pro Instagram Reels: vlevo ruční práce, vpravo totéž s automatizací. Každou středu v 9:00 vychází nový díl na [@betterdigital.cz](https://www.instagram.com/betterdigital.cz/).
+Krátká videa pro Instagram Reels a TikTok: nahoře ruční práce, dole totéž s automatizací. Každou středu v 9:00 vychází nový díl na Instagramu [@betterdigital.cz](https://www.instagram.com/betterdigital.cz/) a TikToku [@betterdigital](https://www.tiktok.com/@betterdigital).
 
 - `plan.json` obsahuje harmonogram a stav dílů.
 - `episodes/` obsahuje jednotlivé díly (animace, zvuk, finální video, popisek).

@@ -4,7 +4,7 @@ Návod pro automatické běhy (naplánované úlohy Clauda), které sérii vyrá
 
 ## Přehled
 
-- Leadgen Reels pro **Better Digital**. Vychází **každou středu v 9:00 (Europe/Prague)** na Instagramu **@betterdigital.cz** přes **Metricool** (brand `blogId` **7151077**). TikTok zatím není připojený, neplánuj na něj.
+- Leadgen Reels pro **Better Digital**. Vychází **každou středu v 9:00 (Europe/Prague)** na Instagramu **@betterdigital.cz** a na TikToku **@betterdigital**. Obojí jde jedním postem přes **Metricool** (brand `blogId` **7151077**).
 - **Zdroj pravdy je `plan.json`**: pořadí dílů, termíny, stavy a ID postů v Metricoolu.
 - Každý díl je ve složce `episodes/<slug>/`:
   - `reel.html` obsahuje animaci a vykresluje se po snímcích,
@@ -37,7 +37,7 @@ Po každé změně udělej commit a push s krátkou zprávou.
 ## Úloha B: Kontrola (úterý 20:00)
 
 1. Naklonuj repo a najdi díl, jehož `publishAt` připadá na **zítřek**.
-2. Ověř přes `getScheduledPosts` (brandId `7151077`, rozsah od zítřka 00:00 do 23:59, timezone `Europe/Prague`), že post existuje, má video a čas 9:00.
+2. Ověř přes `getScheduledPosts` (brandId `7151077`, rozsah od zítřka 00:00 do 23:59, timezone `Europe/Prague`), že post existuje, má video a čas 9:00 a že v `providers` je **instagram i tiktok**.
 3. Když post chybí nebo nesedí, proveď úlohu A pro tento díl hned. Do zprávy Petrovi napiš, že se to dělalo na poslední chvíli.
 4. Pošli Petrovi finální `video.mp4` souborem a k němu zprávu:
    - **„Zítra v 9:00 vyjde díl N: <téma>.“**
@@ -127,16 +127,23 @@ Použij `createScheduledPost` s `blogId: "7151077"`, `date: "<publishAt>"` a `in
   "media": ["https://raw.githubusercontent.com/<repo>/main/episodes/<slug>/video.mp4"],
   "videoCoverMilliseconds": <post.json coverMs>,
   "mediaAltText": [],
-  "providers": [{"network": "instagram"}],
+  "providers": [{"network": "instagram"}, {"network": "tiktok"}],
   "publicationDate": {"dateTime": "<YYYY-MM-DDT09:00:00>", "timezone": "Europe/Prague"},
   "shortener": false,
   "smartLinkData": {"ids": []},
   "text": "<post.json text>",
-  "instagramData": {"type": "REEL", "showReelOnFeed": true, "collaborators": [], "isAiGenerated": false}
+  "instagramData": {"type": "REEL", "showReelOnFeed": true, "collaborators": [], "isAiGenerated": false},
+  "tiktokData": {"disableComment": false, "disableDuet": false, "disableStitch": false, "privacyOption": "PUBLIC_TO_EVERYONE",
+                 "commercialContentThirdParty": false, "commercialContentOwnBrand": true,
+                 "title": "<post.json text>", "autoAddMusic": false, "photoCoverIndex": 0, "isAigc": false}
 }
 ```
 
-Po naplánování ověř post přes `getScheduledPosts` a do `plan.json` ulož `id`, `uuid` a `plannerUrl`.
+K TikToku:
+- `tiktokData.title` je povinný a v TikToku funguje jako popisek videa. Dej do něj stejný text jako do `text`.
+- `commercialContentOwnBrand: true` je povinné označení propagace vlastní firmy. Nevypínej ho.
+
+Po naplánování ověř post přes `getScheduledPosts` a do `plan.json` ulož `id`, `uuid` a `plannerUrl`. Pozor: `updateScheduledPost` mění `id`, `uuid` zůstává stejné.
 
 ## Co nedělat
 

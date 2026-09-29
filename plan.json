@@ -13,9 +13,11 @@
   "metricool": {
     "blogId": "7151077",
     "networks": [
-      "instagram"
+      "instagram",
+      "tiktok"
     ],
-    "instagramAccount": "betterdigital.cz"
+    "instagramAccount": "betterdigital.cz",
+    "tiktokAccount": "betterdigital"
   },
   "repo": "ProfPeta/betterdigital-reels",
   "episodes": [
@@ -28,7 +30,7 @@
       "status": "scheduled",
       "teaserNext": "Díl 2: faktury",
       "metricool": {
-        "id": "384333857",
+        "id": "384554753",
         "uuid": "805871377357950080",
         "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=805871377357950080"
       }
@@ -42,7 +44,7 @@
       "status": "scheduled",
       "teaserNext": "Díl 3: reporty",
       "metricool": {
-        "id": "384334362",
+        "id": "384554907",
         "uuid": "-1009374487604345789",
         "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-1009374487604345789"
       }
