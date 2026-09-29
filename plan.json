@@ -25,9 +25,13 @@
       "title": "Cenová nabídka",
       "keyword": "NABÍDKA",
       "publishAt": "2026-09-30T09:00:00+02:00",
-      "status": "ready",
+      "status": "scheduled",
       "teaserNext": "Díl 2: faktury",
-      "metricool": null
+      "metricool": {
+        "id": "384333857",
+        "uuid": "805871377357950080",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=805871377357950080"
+      }
     },
     {
       "n": 2,
@@ -35,9 +39,13 @@
       "title": "Přijaté faktury",
       "keyword": "FAKTURY",
       "publishAt": "2026-10-07T09:00:00+02:00",
-      "status": "ready",
+      "status": "scheduled",
       "teaserNext": "Díl 3: reporty",
-      "metricool": null
+      "metricool": {
+        "id": "384334362",
+        "uuid": "-1009374487604345789",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-1009374487604345789"
+      }
     },
     {
       "n": 3,
