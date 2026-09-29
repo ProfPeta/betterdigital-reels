@@ -27,9 +27,9 @@ Po každé změně udělej commit a push s krátkou zprávou.
 
 ## Úloha A: Výroba (pondělí dopoledne)
 
-1. Naklonuj repo a načti `plan.json`. Najdi nejbližší díl, jehož `publishAt` je v budoucnosti.
+1. Naklonuj repo a načti `plan.json`. Projdi budoucí díly podle `publishAt` a vezmi **první, který ještě není `scheduled`**. Díky tomu výroba běží s předstihem, obvykle na díl za 9 dní. Za jeden běh dotáhni jen jeden díl.
 2. Je-li ve stavu `planned`, vyrob ho podle části *Výroba nového dílu*. Pak nastav `ready`, commit a push.
-3. Je-li ve stavu `ready` a `metricool` je `null`, naplánuj ho podle části *Plánování v Metricoolu*. Ulož `id`, `uuid` a `plannerUrl`, nastav `scheduled`, commit a push.
+3. Je-li ve stavu `ready` a `metricool` je `null`, ověř, že raw URL videa vrací HTTP 200 (repo musí být veřejné). Pak ho naplánuj podle části *Plánování v Metricoolu*. Ulož `id`, `uuid` a `plannerUrl`, nastav `scheduled`, commit a push.
 4. Díly, jejichž `publishAt` už minul, přepni na `published`.
 5. Udržuj v plánu aspoň 2 budoucí díly. Chybějící doplň z `topics.md`: `publishAt` o 7 dní později, `status: planned` a `teaserNext` podle následujícího tématu.
 6. Když cokoli selže, pošli Petrovi krátkou zprávu, co selhalo a co je potřeba. Nikdy nic nepublikuj „natvrdo“ a nemaž posty.
