@@ -1,0 +1,53 @@
+{
+  "series": "Stejný úkol. Dva světy.",
+  "publish": {
+    "weekday": "Wednesday",
+    "time": "09:00",
+    "timezone": "Europe/Prague"
+  },
+  "review": {
+    "weekday": "Tuesday",
+    "time": "20:00",
+    "timezone": "Europe/Prague"
+  },
+  "metricool": {
+    "blogId": "7151077",
+    "networks": [
+      "instagram"
+    ],
+    "instagramAccount": "betterdigital.cz"
+  },
+  "repo": "ProfPeta/betterdigital-reels",
+  "episodes": [
+    {
+      "n": 1,
+      "slug": "dil-01-nabidka",
+      "title": "Cenová nabídka",
+      "keyword": "NABÍDKA",
+      "publishAt": "2026-09-30T09:00:00+02:00",
+      "status": "ready",
+      "teaserNext": "Díl 2: faktury",
+      "metricool": null
+    },
+    {
+      "n": 2,
+      "slug": "dil-02-faktury",
+      "title": "Přijaté faktury",
+      "keyword": "FAKTURY",
+      "publishAt": "2026-10-07T09:00:00+02:00",
+      "status": "ready",
+      "teaserNext": "Díl 3: reporty",
+      "metricool": null
+    },
+    {
+      "n": 3,
+      "slug": "dil-03-reporty",
+      "title": "Reporty",
+      "keyword": "REPORTY",
+      "publishAt": "2026-10-14T09:00:00+02:00",
+      "status": "planned",
+      "teaserNext": "Díl 4: onboarding klienta",
+      "metricool": null
+    }
+  ]
+}

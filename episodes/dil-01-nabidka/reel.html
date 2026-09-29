@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF,U+2191,U+2193}
+:root{--y:#FFD400;--k:#0B0B0B;--g:#8C8C8C}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#fff}
+body{font-family:IT,sans-serif;-webkit-font-smoothing:antialiased;color:var(--k)}
+#stage{position:absolute;inset:0;overflow:hidden}
+.scene{position:absolute;inset:0;display:none;overflow:hidden}
+.inner{position:absolute;inset:0;transform-origin:50% 45%}
+.w{background:#fff;color:var(--k)}.b{background:var(--k);color:#fff}.y{background:var(--y);color:var(--k)}
+.abs{position:absolute}
+.mono{font-family:JB,monospace;letter-spacing:.14em;text-transform:uppercase;font-size:13px}
+.panel{position:absolute;border-radius:16px;overflow:hidden}
+.pa{background:#E9E9E9}
+.pb{background:#fff;border:2px solid var(--k)}
+.chip{position:absolute;left:14px;top:13px;font-family:JB,monospace;font-size:13px;letter-spacing:.12em;padding:5px 9px 4px;text-transform:uppercase;line-height:1.2}
+.pa .chip{background:var(--k);color:#fff}.pb .chip{background:var(--y);color:var(--k)}
+.timer{position:absolute;top:7px;font-family:JB,monospace;font-size:28px;letter-spacing:.01em;color:var(--k);font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px}
+.stg{position:absolute;left:12px;top:50px;width:428px;height:200px;overflow:hidden}
+.cap{position:absolute;left:14px;top:258px;font-size:17px;font-weight:650;letter-spacing:-.01em;white-space:nowrap}
+.cap .n{font-family:JB,monospace;font-size:13px;color:var(--g);margin-right:8px;letter-spacing:.05em}
+/* windows */
+.win{position:absolute;background:#fff;border:1px solid #cdcdcd;border-radius:8px;box-shadow:0 8px 22px rgba(0,0,0,.16);overflow:hidden}
+.tb{height:24px;background:#f2f2f2;border-bottom:1px solid #e1e1e1;display:flex;align-items:center;gap:5px;padding:0 8px;font-size:12px;color:#666;white-space:nowrap}
+.tb i{width:8px;height:8px;border-radius:50%;background:#cfcfcf;display:inline-block;flex:none}
+.tb span{margin-left:6px;font-weight:600}
+.wb{position:relative;padding:8px 10px;font-size:13px;color:#222;overflow:hidden}
+.caret{display:inline-block;width:1.5px;height:1.05em;background:#111;vertical-align:-2px;margin-left:1px}
+.mrow{display:flex;height:22px;align-items:center;gap:8px;padding:0 6px;font-size:12.5px;white-space:nowrap;border-bottom:1px solid #f0f0f0}
+.mrow b{width:104px;flex:none;font-weight:700;overflow:hidden}
+.mrow span{color:#777;overflow:hidden}
+.mrow.sel{background:var(--k);color:#fff}.mrow.sel span{color:#ddd}
+.grid{display:grid;grid-template-columns:44px 126px 38px 56px;font-size:12px;border-left:1px solid #ddd;border-top:1px solid #ddd}
+.grid div{height:18px;line-height:17px;padding:0 4px;border-right:1px solid #ddd;border-bottom:1px solid #ddd;white-space:nowrap;overflow:hidden}
+.grid .hd{background:#f3f3f3;font-weight:700;color:#555}
+.fld{height:20px;line-height:20px;white-space:nowrap}
+.fld em{font-style:normal;color:#888;display:inline-block;width:62px}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl td{border-bottom:1px solid #e6e6e6;height:20px;padding:0 4px;white-space:nowrap}
+.tbl td.r{text-align:right}
+.tbl tr.h td{font-weight:700;color:#555;background:#f5f5f5}
+.wavy{text-decoration:underline wavy #E0301E;text-decoration-thickness:1.5px;text-underline-offset:3px}
+.key{position:absolute;width:36px;height:22px;border-radius:4px;background:#eee;border:1px solid #d6d6d6}
+.key.on{background:#bbb}
+/* auto side */
+.card{position:absolute;background:#fff;border:1.5px solid var(--k);border-radius:10px;overflow:hidden}
+.card .ct{height:26px;display:flex;align-items:center;gap:6px;padding:0 9px;font-size:12.5px;font-weight:700;border-bottom:1.5px solid var(--k);white-space:nowrap}
+.card .cb{padding:7px 9px;font-size:12.5px;line-height:19px}
+.mk{background:linear-gradient(var(--y),var(--y)) no-repeat 0 60%;background-size:0% 80%;padding:0 1px}
+.qrow{display:flex;justify-content:space-between;height:21px;align-items:center;font-size:12.5px;border-bottom:1px solid #eee;opacity:0}
+.qtot{display:flex;justify-content:space-between;margin-top:6px;font-size:13px;font-weight:800;opacity:0}
+.btn{position:absolute;left:10px;right:10px;bottom:10px;height:28px;border-radius:14px;background:var(--k);color:#fff;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;opacity:0}
+.btn.ok{background:var(--y);color:var(--k)}
+.dotf{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--y);border:1.5px solid var(--k);opacity:0}
+.ripple{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;border:2px solid var(--k);opacity:0}
+.cur{position:absolute;width:18px;height:22px;z-index:20}
+.hl{position:relative;z-index:0;white-space:nowrap}
+.hl i{position:absolute;left:-3px;right:-3px;bottom:6%;height:38%;background:var(--y);z-index:-1;transform-origin:0 50%}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:40}
+</style></head><body>
+<div id="stage"></div><div id="flash"></div>
+<script src="../../engine/cta.js"></script>
+<script>
+const W=innerWidth,H=innerHeight;
+const stage=document.getElementById('stage');
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3), e5=x=>1-Math.pow(1-clamp(x),5);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c1=1.8,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const el=(tag,cls,html,parent)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;if(parent)parent.appendChild(e);return e};
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function rise(e,lt,t0,d=.4){if(lt<t0){e.style.opacity=0;return}const q=eo((lt-t0)/d);e.style.opacity=q;e.style.filter=q<1?`blur(${(1-q)*5}px)`:'none';e.style.transform=`translateY(${(1-q)*12}px)`}
+function slam(e,lt,t0,d=.18){if(lt<t0){e.style.opacity=0;return}const p=e5((lt-t0)/d);e.style.opacity=1;e.style.transform=`scale(${1+.35*(1-p)})`}
+function typed(e,full,t,t0,t1,caret=true){const p=clamp((t-t0)/(t1-t0));const n=Math.round(full.length*p);
+  const on=caret&&t>=t0&&t<t1+.12;e.innerHTML=esc(full.slice(0,n))+(on?'<b class="caret"></b>':'')}
+function interp(keys,t){if(t<=keys[0][0])return keys[0][1];for(let i=1;i<keys.length;i++)if(t<=keys[i][0]){const[a,va]=keys[i-1],[b,vb]=keys[i];return va+(vb-va)*(t-a)/(b-a)}return keys[keys.length-1][1]}
+const mmss=s=>{s=Math.floor(s);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const CHECK=(c='currentColor',s=14)=>`<svg width="${s}" height="${s}" viewBox="0 0 16 16" style="flex:none"><path d="M3 8.5l3.2 3.2L13 5" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ARROW='<svg width="18" height="22" viewBox="0 0 18 22"><path d="M1.5 1.5v16.2l4.3-4 3 6.6 3-1.3-3-6.5h6z" fill="#0B0B0B" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+
+function cursorIn(parent){const c=el('div','cur',ARROW,parent);const rp=[0,1].map(()=>el('div','ripple',null,parent));return{c,rp}}
+function moveCursor(cu,keys,clicks,t,vis){ // keys [t,x,y] ; clicks [t]
+  let x,y;if(t<=keys[0][0]){x=keys[0][1];y=keys[0][2]}else if(t>=keys[keys.length-1][0]){const k=keys[keys.length-1];x=k[1];y=k[2]}
+  else for(let i=1;i<keys.length;i++)if(t<=keys[i][0]){const[a,xa,ya]=keys[i-1],[b,xb,yb]=keys[i];const q=eio((t-a)/(b-a));x=xa+(xb-xa)*q;y=ya+(yb-ya)*q;break}
+  let press=0;for(const c of clicks)if(t>=c&&t<c+.12)press=1;
+  cu.c.style.left=x+'px';cu.c.style.top=y+'px';cu.c.style.opacity=vis;cu.c.style.transform=`scale(${press?.85:1})`;cu.c.style.transformOrigin='2px 2px';
+  let k=0;cu.rp.forEach(r=>r.style.opacity=0);
+  for(const c of clicks){if(t>=c&&t<c+.35&&k<2){const r=cu.rp[k++];const p=(t-c)/.35;r.style.left=(x+2)+'px';r.style.top=(y+2)+'px';r.style.opacity=.55*(1-p)*vis;r.style.transform=`scale(${.4+p*1.3})`}}}
+
+const FLASH=[[17.6,.3]],SHAKE=[[17.6,1],[20.22,.5]];
+const flashAt=t=>{let v=0;for(const[a,i]of FLASH)if(t>=a)v=Math.max(v,i*Math.exp(-(t-a)/.05));return v};
+function shakeAt(t){let x=0,y=0;for(const[a,i]of SHAKE)if(t>=a&&t<a+.5){const k=i*Math.exp(-(t-a)/.08)*6;x+=Math.sin(t*171+a)*k;y+=Math.cos(t*213+a)*k}return[x,y]}
+
+const S=[];
+function scene(start,end,bg,build,update,push=.02){S.push({start,end,bg,build,update,push})}
+
+/* ================= SPLIT SCREEN ================= */
+const MKEYS=[[.25,0],[2.3,270],[4.3,660],[6.3,1140],[8.1,1440],[10.1,1980],[11.9,2280],[14.0,2820]];
+const AKEYS=[[.25,0],[.9,4],[2.2,14],[3.7,29],[4.45,40]];
+const DONE_M=14.0,DONE_A=4.45,SAVED=5.2;
+const STEPS=[[.25,'1/7','Hledám poptávku v e-mailech'],[2.3,'2/7','Přepisuju údaje klienta'],[4.3,'3/7','Dohledávám ceny v ceníku'],[6.3,'4/7','Počítám součty a DPH'],
+  [8.1,'5/7','Vypisuju položky do nabídky'],[10.1,'6/7','Kontroluju překlepy a čísla'],[11.9,'7/7','PDF, e-mail, odeslat']];
+const ASTEPS=[[.25,'Poptávka dorazila'],[.9,'AI čte poptávku a vytahuje údaje'],[2.2,'Skládá nabídku z ceníku'],[3.7,'Čeká na tvoje schválení'],[4.45,'Odesláno klientovi']];
+
+scene(0,14.8,'w',inner=>{
+  const top=el('div','abs mono',null,inner);top.textContent='Díl 1 · Cenová nabídka';Object.assign(top.style,{left:'24px',top:'66px',color:'var(--g)'});
+  const hd=el('div','abs',null,inner);hd.innerHTML='Stejný úkol. <span class="hl"><i></i>Dva světy.</span>';Object.assign(hd.style,{left:'22px',top:'86px',fontSize:'34px',fontWeight:820,letterSpacing:'-.035em'});
+  const mkPanel=(cls,y,label)=>{const p=el('div','panel '+cls,null,inner);Object.assign(p.style,{left:'20px',top:y+'px',width:'452px',height:'294px'});
+    const ch=el('div','chip',label,p);const tm=el('div','timer','<span>00:00</span>',p);const sg=el('div','stg',null,p);const cap=el('div','cap',null,p);return{p,ch,tm,tv:tm.firstChild,sg,cap}};
+  const A=mkPanel('pa',142,'Ručně'),B=mkPanel('pb',448,'S automatizací');
+  /* ---------- manual windows ---------- */
+  const WW=350,WH=168;const wins=[];
+  const mkWin=(i,title)=>{const d=el('div','win',null,A.sg);Object.assign(d.style,{left:(4+i*12)+'px',top:(2+i*5)+'px',width:WW+'px',height:WH+'px',opacity:0});
+    const tb=el('div','tb',`<i></i><i></i><i></i><span>${title}</span>`,d);const b=el('div','wb',null,d);b.style.height=(WH-24)+'px';wins.push(d);return b};
+  // W1 mail
+  const b1=mkWin(0,'Pošta — Doručené (143)');const list=el('div',null,null,b1);list.style.margin='-8px -10px';
+  const MAIL=[['Newsletter','Akce týdne: −20 %'],['Dodavatel s.r.o.','Faktura 2026/118'],['Petra K.','Re: schůzka ve čtvrtek'],['Účetní','Chybí 2 doklady'],['Webinář','Pozvánka: AI v praxi'],['Novák s.r.o.','Poptávka: 3 položky'],['Systém','Záloha dokončena'],['Pavel M.','Fwd: fotky z akce'],['Dodavatel s.r.o.','Upomínka'],['Petra K.','Re: Re: schůzka']];
+  const mrows=MAIL.map(([a,s])=>el('div','mrow',`<b>${a}</b><span>${s}</span>`,list));
+  // W2 template
+  const b2=mkWin(1,'Nabídka_šablona.docx');el('div',null,'<b style="font-size:13px;letter-spacing:.02em">CENOVÁ NABÍDKA</b>',b2).style.marginBottom='4px';
+  const F2=[['Klient:','Novák s.r.o.'],['IČO:','27182818'],['Kontakt:','Jan Novák, 603 123 456'],['Datum:','28. 9. 2026']].map(([k,v])=>{const f=el('div','fld',`<em>${k}</em><span></span>`,b2);return{s:f.querySelector('span'),v}});
+  // W3 price list
+  const b3=mkWin(2,'Ceník_2026_FINAL_v3.xlsx');const sb=el('div',null,'<span style="color:#888">Hledat: </span><span></span>',b3);
+  Object.assign(sb.style,{height:'20px',lineHeight:'18px',border:'1px solid #ccc',borderRadius:'4px',padding:'0 6px',width:'150px',marginBottom:'6px',fontSize:'12px'});const sbt=sb.lastChild;
+  const gr=el('div','grid',null,b3);const G=[['Kód','Položka','Jedn.','Cena'],['A-101','Dodávka zařízení','ks','8 900'],['A-102','Dodávka zař. PRO','ks','11 400'],['M-201','Montáž','h','650'],['M-202','Montáž víkend','h','890'],['D-300','Doprava paušál','1×','700'],['D-301','Doprava km','km','14']];
+  const cells=G.map((r,i)=>r.map(v=>el('div',i==0?'hd':'',v,gr)));const hcell=el('div','abs',null,b3);Object.assign(hcell.style,{border:'2px solid #0B0B0B',pointerEvents:'none',opacity:0});
+  // W4 calculator
+  const b4=mkWin(3,'Kalkulačka');const disp=el('div',null,null,b4);Object.assign(disp.style,{height:'34px',background:'#1d1d1d',color:'#fff',borderRadius:'5px',fontFamily:'JB,monospace',fontSize:'16px',textAlign:'right',padding:'7px 10px',whiteSpace:'nowrap'});
+  const keys=[];for(let r=0;r<3;r++)for(let c=0;c<6;c++){const k=el('div','key',null,b4);Object.assign(k.style,{left:(10+c*41)+'px',top:(50+r*27)+'px'});keys.push(k)}
+  // W5 table
+  const b5=mkWin(4,'Nabídka_Novák.docx');const T5=el('table','tbl','<tr class="h"><td>Položka</td><td>Množ.</td><td class="r">Cena</td></tr>',b5);
+  const R5=[['Dodávka zařízení','1 ks','8 900'],['Motnáž','6 h','3 900'],['Doprava','1×','700']].map(r=>{const tr=el('tr',null,'<td></td><td></td><td class="r"></td>',T5);return{tds:[...tr.children],r}});
+  const tot5=el('div',null,'',b5);Object.assign(tot5.style,{marginTop:'8px',fontWeight:800,fontSize:'13px'});
+  // W6 proofreading
+  const b6=mkWin(5,'Nabídka_Novák_FINAL.docx');const T6=el('table','tbl','<tr class="h"><td>Položka</td><td>Množ.</td><td class="r">Cena</td></tr><tr><td>Dodávka zařízení</td><td>1 ks</td><td class="r">8 900</td></tr><tr><td><span class="wv"></span></td><td>6 h</td><td class="r">3 900</td></tr><tr><td>Doprava</td><td>1×</td><td class="r">700</td></tr>',b6);
+  const wv=T6.querySelector('.wv');const chk6=el('div',null,CHECK('#0B0B0B',13)+'<span>Součty sedí</span>',b6);Object.assign(chk6.style,{marginTop:'8px',display:'flex',alignItems:'center',gap:'5px',fontWeight:700,opacity:0});
+  // W7 email
+  const b7=mkWin(6,'Nová zpráva');const F7=[['Komu:','jan.novak@novak.cz'],['Předmět:','Cenová nabídka']].map(([k,v])=>{const f=el('div','fld',`<em>${k}</em><span></span>`,b7);return{s:f.querySelector('span'),v}});
+  const att=el('div',null,'<b style="background:#E0301E;color:#fff;font-size:9.5px;padding:1px 4px;border-radius:2px">PDF</b> Nabidka_Novak_FINAL2.pdf',b7);Object.assign(att.style,{fontSize:'12px',margin:'3px 0 4px',opacity:0,display:'flex',gap:'6px',alignItems:'center'});
+  const exp=el('div',null,null,b7);Object.assign(exp.style,{height:'4px',background:'#ddd',borderRadius:'2px',width:'150px',overflow:'hidden',margin:'3px 0 4px'});const expb=el('div',null,null,exp);Object.assign(expb.style,{height:'100%',background:'#0B0B0B',width:0});
+  const body7=el('div',null,null,b7);body7.style.fontSize='12.5px';
+  const send=el('div',null,'Odeslat',b7);Object.assign(send.style,{position:'absolute',left:'10px',bottom:'8px',background:'#0B0B0B',color:'#fff',fontSize:'12px',fontWeight:700,padding:'4px 14px',borderRadius:'4px'});
+  const doneA=el('div','abs',null,A.sg);Object.assign(doneA.style,{inset:0,background:'rgba(233,233,233,.86)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',fontSize:'24px',fontWeight:800,letterSpacing:'-.02em',opacity:0,zIndex:15});
+  doneA.innerHTML=CHECK('#0B0B0B',26)+'<span>Odesláno. Konečně.</span>';
+  const curA=cursorIn(A.sg);
+  /* ---------- auto side ---------- */
+  const em=el('div','card',null,B.sg);Object.assign(em.style,{left:0,top:0,width:'198px',height:'196px',opacity:0});
+  el('div','ct','<i style="width:8px;height:8px;border-radius:50%;background:var(--y);border:1.5px solid #0B0B0B;display:inline-block"></i>Poptávka · Novák s.r.o.',em);
+  const ecb=el('div','cb',null,em);ecb.innerHTML='Dobrý den,<br>poptáváme <span class="mk">dodávku zařízení</span><br>vč. <span class="mk">montáže (cca 6 h)</span><br>a <span class="mk">dopravy</span>. Termín do 15. 10.<br><br>Jan Novák, <span class="mk">Novák s.r.o.</span>';
+  const mks=[...ecb.querySelectorAll('.mk')];
+  const qc=el('div','card',null,B.sg);Object.assign(qc.style,{left:'210px',top:0,width:'218px',height:'196px',opacity:0});
+  el('div','ct','Nabídka 2026/041',qc);const qb=el('div','cb',null,qc);qb.style.paddingTop='4px';
+  const QR=[['Dodávka zařízení','8 900'],['Montáž 6 h','3 900'],['Doprava','700']].map(([a,p])=>el('div','qrow',`<span>${a}</span><b style="font-weight:600">${p}</b>`,qb));
+  const qt=el('div','qtot','<span>Celkem s DPH</span><span class="qv">0 Kč</span>',qb);const qv=qt.querySelector('.qv');
+  const btn=el('div','btn','Zkontrolovat a odeslat',qc);
+  const curB=cursorIn(B.sg);
+  const flows=[0,1,2].map(()=>el('div','dotf',null,B.sg));
+  const sv=el('div','abs',null,B.sg);Object.assign(sv.style,{inset:0,background:'rgba(255,255,255,.975)',display:'flex',flexDirection:'column',justifyContent:'center',paddingLeft:'8px',opacity:0,zIndex:15});
+  const svl=el('div','mono',null,sv);svl.textContent='Ušetřený čas';svl.style.color='var(--g)';
+  const svn=el('div',null,'<span class="hl"><i style="transform:scaleX(1)"></i><span class="v">00:00</span></span>',sv);Object.assign(svn.style,{fontFamily:'JB,monospace',fontSize:'60px',letterSpacing:'-.02em',lineHeight:1.15,marginTop:'2px'});
+  const svv=svn.querySelector('.v');const svt=el('div',null,'…a ruční verze pořád jede ↑',sv);Object.assign(svt.style,{fontSize:'17px',fontWeight:650,marginTop:'4px'});
+  return{hd,hl:hd.querySelector('.hl i'),A,B,wins,mrows,list,F2,sbt,cells,hcell,disp,keys,R5,tot5,wv,chk6,F7,att,expb,body7,send,doneA,curA,em,mks,qc,QR,qt,qv,btn,curB,flows,sv,svv,svt}},
+(c,t)=>{
+  c.hl.style.transform=`scaleX(${eo((t-.1)/.35)})`;
+  /* timers */
+  const ms=interp(MKEYS,t),as=interp(AKEYS,t);
+  c.A.tv.textContent=mmss(ms);c.B.tm.innerHTML=`<span>${mmss(as)}</span>`+(t>=DONE_A?CHECK('#0B0B0B',22):'');
+  c.A.tm.style.left=(c.A.ch.offsetWidth+26)+'px';c.B.tm.style.left=(c.B.ch.offsetWidth+26)+'px';
+  /* captions */
+  let si=0;STEPS.forEach((s,i)=>{if(t>=s[0])si=i});const s=STEPS[si];
+  const capA=t>=DONE_M?`<span class="n">7/7</span>Odesláno po 47 minutách`:`<span class="n">${s[1]}</span>${s[2]}`;if(c.A.cap.innerHTML!==capA)c.A.cap.innerHTML=capA;rise(c.A.cap,t,t>=DONE_M?DONE_M:s[0],.25);
+  let ai=0;ASTEPS.forEach((s,i)=>{if(t>=s[0])ai=i});const capB=t>=SAVED?'Nabídka odešla. Čas běží dál.':ASTEPS[ai][1];if(c.B.cap.innerHTML!==capB)c.B.cap.innerHTML=capB;rise(c.B.cap,t,t>=SAVED?SAVED:ASTEPS[ai][0],.25);
+  /* manual windows stacking */
+  c.wins.forEach((w,i)=>{const t0=STEPS[i][0];const p=eo((t-t0)/.18);w.style.opacity=t<t0?0:1;w.style.transform=`translateY(${(1-p)*8}px) scale(${.95+.05*p})`;
+    const newer=STEPS.filter((s,j)=>j>i&&t>=s[0]).length;w.style.filter=newer?`brightness(${.97-.02*newer})`:'none';w.style.zIndex=i});
+  // W1
+  const off=interp([[.25,0],[.6,0],[1.1,-66],[1.25,-66],[1.45,-44]],t);c.list.style.transform=`translateY(${off}px)`;c.mrows[5].className='mrow'+(t>=1.9?' sel':'');
+  // W2
+  c.F2.forEach((f,i)=>typed(f.s,f.v,t,2.45+i*.45,2.8+i*.45));
+  // W3
+  typed(c.sbt,'montáž',t,4.4,4.75);
+  const HOPS=[[4.9,1,1],[5.2,3,1],[5.5,3,3],[5.8,5,1],[6.05,5,3]];let hop=null;HOPS.forEach(h=>{if(t>=h[0])hop=h});
+  if(hop){const cell=c.cells[hop[1]][hop[2]];c.hcell.style.opacity=1;c.hcell.style.left=(cell.offsetLeft+10-1)+'px';c.hcell.style.top=(cell.offsetTop+cell.parentElement.offsetTop-1)+'px';c.hcell.style.width=(cell.offsetWidth+2)+'px';c.hcell.style.height=(cell.offsetHeight+2)+'px'}else c.hcell.style.opacity=0;
+  // W4
+  const CALC=[[6.4,'8 900 +'],[6.6,'8 900 + 3 900'],[6.8,'8 900 + 3 900 +'],[7.0,'8 900 + 3 900 + 700'],[7.25,'= 13 500'],[7.5,'13 500 × 1,21'],[7.8,'= 16 335']];
+  let ct='0';CALC.forEach(k=>{if(t>=k[0])ct=k[1]});c.disp.textContent=ct;
+  const kp=Math.floor((t-6.35)/.11);c.keys.forEach((k,i)=>k.className='key'+(t>6.35&&t<8&&((kp*7)%18)==i?' on':''));
+  // W5
+  c.R5.forEach((r,i)=>{const t0=8.25+i*.55;typed(r.tds[0],r.r[0],t,t0,t0+.25);typed(r.tds[1],r.r[1],t,t0+.28,t0+.36,false);typed(r.tds[2],r.r[2],t,t0+.38,t0+.5)});
+  typed(c.tot5,'Celkem s DPH: 16 335 Kč',t,9.85,10.08);
+  // W6
+  let word='Motnáž';if(t>=11.0&&t<11.3)word='Motnáž'.slice(0,Math.max(2,6-Math.round((t-11)/.3*4)));else if(t>=11.3)word='Mo'+'ntáž'.slice(0,Math.round(clamp((t-11.3)/.25)*4));
+  c.wv.textContent=word;c.wv.className=(t>=10.25&&t<11.0)?'wavy':'';if(t>=10.95&&t<11.0){c.wv.style.background='#0B0B0B';c.wv.style.color='#fff'}else{c.wv.style.background='none';c.wv.style.color=''}
+  c.chk6.style.opacity=eo((t-11.65)/.15);
+  // W7
+  c.F7.forEach((f,i)=>typed(f.s,f.v,t,12.0+i*.5,12.4+i*.5));c.expb.style.width=(150*eo((t-12.95)/.35))+'px';c.att.style.opacity=t>=13.3?1:0;
+  typed(c.body7,'Dobrý den, v příloze posílám nabídku…',t,13.3,13.65);c.send.style.background=(t>=13.95&&t<14.05)?'#555':'#0B0B0B';
+  const dq=eo((t-DONE_M)/.25);c.doneA.style.opacity=t>=DONE_M?dq:0;c.doneA.firstElementChild&&(c.doneA.style.transform=`scale(${1+.04*(1-dq)})`);
+  // cursor A
+  moveCursor(c.curA,[[.25,300,170],[.6,210,75],[1.45,210,78],[1.8,150,105],[2.1,150,108],[2.5,320,150],[4.2,322,150],[4.35,190,52],[4.8,190,54],[4.9,105,94],[5.2,105,148],[5.5,265,148],[5.8,110,184],[6.05,268,184],[6.35,75,110],[6.55,158,135],[6.75,115,110],[6.95,198,158],[7.15,78,135],[7.4,160,110],[7.65,200,158],[8.1,340,178],[10.1,340,178],[10.45,118,113],[11.7,118,113],[12.0,350,160],[13.5,350,160],[13.85,118,178]],
+    [1.9,4.35,4.9,5.2,5.5,5.8,6.05,6.45,6.65,6.85,7.05,7.25,7.45,7.7,10.9,10.97,13.95],t,t<DONE_M?1:clamp(1-(t-DONE_M)/.2));
+  /* auto side */
+  const ep=eo((t-.25)/.3);c.em.style.opacity=t<.25?0:ep;c.em.style.transform=`translateX(${(1-ep)*40}px)`;
+  const MK=[.95,1.25,1.5,1.75];c.mks.forEach((m,i)=>m.style.backgroundSize=`${eo((t-MK[i])/.22)*100}% 80%`);
+  const qp=eo((t-2.2)/.25);c.qc.style.opacity=t<2.2?0:qp;c.qc.style.transform=`translateY(${(1-qp)*10}px)`;
+  const RT=[2.45,2.7,2.95];
+  c.QR.forEach((r,i)=>{const p=eo((t-RT[i])/.18);r.style.opacity=t<RT[i]?0:p;r.style.transform=`translateX(${(1-p)*-12}px)`;
+    const f=c.flows[i];const t0=RT[i]-.3;if(t>=t0&&t<RT[i]+.05){const q=eio((t-t0)/.3);const a=c.mks[i].getBoundingClientRect(),b=r.getBoundingClientRect(),o=f.parentElement.getBoundingClientRect();
+      const x0=a.left-o.left+a.width/2,y0=a.top-o.top+a.height/2,x1=b.left-o.left+14,y1=b.top-o.top+b.height/2;f.style.opacity=1;f.style.left=(x0+(x1-x0)*q-5)+'px';f.style.top=(y0+(y1-y0)*q-5-Math.sin(q*Math.PI)*18)+'px'}else f.style.opacity=0});
+  const tq=eo((t-3.0)/.12);c.qt.style.opacity=t<3?0:tq;c.qv.textContent=Math.round(16335*eio((t-3.0)/.5)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' Kč';
+  if(t<3.7)c.btn.style.opacity=0;else{const p=back((t-3.7)/.3);c.btn.style.opacity=clamp((t-3.7)/.1);c.btn.style.transform=`scale(${(t>=4.4&&t<4.48)?.95:p})`}
+  const ok=t>=4.45;const bh=ok?CHECK('#0B0B0B',14)+'Odesláno':'Zkontrolovat a odeslat';if(c.btn.innerHTML!==bh)c.btn.innerHTML=bh;c.btn.className='btn'+(ok?' ok':'');
+  moveCursor(c.curB,[[3.75,395,196],[4.3,322,172],[5.0,330,176]],[4.4],t,t<3.75?0:(t<SAVED?clamp((t-3.75)/.15):0));
+  const sp=eo((t-SAVED)/.35);c.sv.style.opacity=t<SAVED?0:sp;c.svv.textContent=mmss(Math.max(0,ms-40));
+  const svtTxt=t>=DONE_M?'Hotovo o 46 minut dřív.':'…a ruční verze pořád jede ↑';if(c.svt.textContent!==svtTxt)c.svt.textContent=svtTxt;
+});
+
+/* ================= STAT CARDS ================= */
+scene(14.8,17.6,'w',inner=>{
+  const box=el('div','abs',null,inner);Object.assign(box.style,{left:'32px',right:'32px',top:0,bottom:0,display:'flex',flexDirection:'column',justifyContent:'center',paddingBottom:'150px'});
+  const l=el('div','mono',null,box);l.textContent='20 nabídek měsíčně';l.style.color='var(--g)';l.style.opacity=0;
+  const mk=(lab,val,mt)=>{const a=el('div',null,lab,box);Object.assign(a.style,{fontSize:'22px',fontWeight:600,color:'var(--g)',marginTop:mt+'px',opacity:0});
+    const v=el('div',null,val,box);Object.assign(v.style,{fontSize:'58px',fontWeight:850,letterSpacing:'-.045em',lineHeight:1.05,opacity:0});return[a,v]};
+  const[a1,v1]=mk('Ručně','15 h 40 min',22),[a2,v2]=mk('S automatizací','<span class="hl"><i></i>13 min 20 s</span>',20);
+  const fn=el('div','mono',null,box);fn.textContent='*modelový příklad';Object.assign(fn.style,{fontSize:'11px',color:'var(--g)',marginTop:'18px',opacity:0});
+  return{l,a1,v1,a2,v2,fn,hl:v2.querySelector('i')}},
+(c,lt)=>{rise(c.l,lt,.05);rise(c.a1,lt,.2);rise(c.v1,lt,.3);rise(c.a2,lt,.95);rise(c.v2,lt,1.05);c.hl.style.transform=`scaleX(${eo((lt-1.3)/.3)})`;rise(c.fn,lt,1.5)});
+
+scene(17.6,19.8,'b',inner=>{
+  const box=el('div','abs',null,inner);Object.assign(box.style,{left:'32px',right:'32px',top:0,bottom:0,display:'flex',flexDirection:'column',justifyContent:'center',paddingBottom:'150px'});
+  const a=el('div',null,'To jsou skoro',box);Object.assign(a.style,{fontSize:'26px',fontWeight:600,color:'rgba(255,255,255,.55)',opacity:0});
+  const b=el('div',null,'2 pracovní dny.',box);Object.assign(b.style,{fontSize:'62px',fontWeight:850,letterSpacing:'-.045em',color:'var(--y)',lineHeight:1.05,opacity:0,transformOrigin:'0 50%'});
+  const d=el('div',null,'Každý měsíc.',box);Object.assign(d.style,{fontSize:'30px',fontWeight:780,letterSpacing:'-.03em',marginTop:'6px',opacity:0});
+  return{a,b,d}},
+(c,lt)=>{rise(c.a,lt,.02,.3);slam(c.b,lt,0,.22);rise(c.d,lt,.7)},.04);
+
+ctaScene(19.8,23.2,'NABÍDKA','Díl 2: faktury');
+
+/* ===== engine ===== */
+function buildAll(){for(const s of S){s.root=el('div','scene '+s.bg,null,stage);s.root.style.display='block';s.inner=el('div','inner',null,s.root);s.ctx=s.build(s.inner)||{};s.root.style.display='none'}}
+window.DURATION=23.2;window.CUTS=S.map(s=>s.start);
+window.render=function(t){
+  for(const s of S){const on=t>=s.start&&t<s.end;s.root.style.display=on?'block':'none';
+    if(on){const lt=t-s.start;s.inner.style.transform=`scale(${1+s.push*(lt/(s.end-s.start))})`;s.update(s.ctx,lt)}}
+  const[sx,sy]=shakeAt(t);stage.style.transform=`translate(${sx}px,${sy}px)`;document.getElementById('flash').style.opacity=flashAt(t)};
+Promise.all(['800 20px IT','500 20px IT','600 20px IT','20px JB'].map(f=>document.fonts.load(f,'ěščřžýáíéúů↑×0123456789'))).then(()=>document.fonts.ready).then(()=>{buildAll();window.READY=true;render(0)});
+</script></body></html>
