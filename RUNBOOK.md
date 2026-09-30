@@ -70,10 +70,12 @@ Po každé změně udělej commit a push s krátkou zprávou.
 | 17,6–19,8 s | Černá ztrátová pointa, například „To jsou skoro 2 pracovní dny. Každý měsíc.“ |
 | 19,8–23,2 s | Žlutá CTA přes `ctaScene(19.8, 23.2, 'KLÍČOVÉSLOVO', 'Díl N+1: téma')` z `engine/cta.js`. |
 
-**Bezpečné zóny** (tyto oblasti v aplikaci zakrývá UI TikToku a Reels):
-- Pod y = 750 CSS px nedávej nic důležitého.
-- Vpravo za x = 452 nedávej nic důležitého v pásmu y 430–830.
-- Panely mají `left: 20px; width: 452px`.
+**Bezpečné zóny a okraje** (telefony ořezávají okraje videa a část plochy zakrývá UI TikToku a Reels; platí pro díly i pro všechna ostatní videa v `promo/`):
+- Důležitý obsah drž v oblasti x 48–440 CSS px a y 130–740. Na výstupu 1080×1920 to odpovídá x 96–880 a y 260–1480.
+- Vpravo je v pásmu y 430–830 lišta TikToku, proto obsah končí na x = 440.
+- Šablona dílu kreslí rozvržení na původní mřížce (panely `left: 20px; width: 452px`). Konstanta `SAFE` v `render()` ho pak zmenší do bezpečné oblasti. `SAFE` nikdy neodstraňuj.
+- Pozice počítané z `getBoundingClientRect()` přepočítej na layoutové px (vyděl měřítkem jako `k` u letících teček), jinak prvky ujedou.
+- Pozadí scén (`.w`, `.b`, `.y`) zůstávají přes celou plochu.
 
 **Technika:** `render(t)` musí zůstat čistou funkcí času, protože se renderuje po snímcích. Žádný `Date.now()` ani `Math.random()` bez seedu.
 

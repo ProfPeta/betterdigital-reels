@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8">
+<!-- „Na mobilu strávíš víc času než v práci.“ – TikTok 540×960 CSS px (render 2×), 30 fps, 22,5 s.
+     Bezpečná oblast: obsah v x 48–440, y 130–740 (okraje se na telefonech ořezávají, vpravo je lišta TikToku). -->
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF}
+:root{--y:#FFD400;--k:#0B0B0B;--w:#F4F3EE;--g:#8C8C8C}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--k)}
+body{font-family:IT,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;position:relative}
+.abs{position:absolute}
+.mono{font-family:JB,monospace;letter-spacing:.12em;text-transform:uppercase}
+.y{color:var(--y)}
+#bg{inset:0;background:radial-gradient(ellipse 80% 55% at 45% 36%,#17160f 0%,#0e0e0d 55%,#0B0B0B 100%)}
+#stage{inset:0}
+canvas#g{left:0;top:0;width:540px;height:960px}
+#hook{left:48px;top:206px;width:420px}
+#hook h1{font-size:70px;font-weight:900;letter-spacing:-.05em;line-height:.98}
+#hook .n{font-size:12px;color:rgba(255,255,255,.62);margin-top:26px}
+.hl{left:48px;top:556px;width:392px;font-size:31px;font-weight:850;letter-spacing:-.035em;line-height:1.08;opacity:0}
+.lg{left:48px;width:392px;display:flex;align-items:center;gap:12px;font-size:20px;font-weight:700;letter-spacing:-.02em;opacity:0}
+.lg i{display:block;width:14px;height:14px;border-radius:3px;flex:none}
+.lg b{margin-left:auto;font-weight:850;font-variant-numeric:tabular-nums}
+#l0{top:630px;font-size:13px;font-family:JB,monospace;letter-spacing:.12em;color:rgba(255,255,255,.7);font-weight:500}
+#big{left:48px;top:614px;width:392px;opacity:0}
+#big .v{font-size:66px;font-weight:900;letter-spacing:-.055em;line-height:1}
+#big .s{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-top:8px;color:rgba(255,255,255,.9)}
+#foot{left:48px;top:724px;width:392px;font-size:10px;color:rgba(255,255,255,.55);opacity:0}
+#sign{left:48px;top:392px;width:392px;display:flex;flex-direction:column;align-items:center;text-align:center;opacity:0}
+#sign .b{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:850;letter-spacing:-.035em}
+#sign p{font-size:18px;font-weight:600;color:rgba(255,255,255,.78);margin-top:16px;letter-spacing:-.01em}
+#flash{inset:0;background:radial-gradient(circle at 45% 36%,rgba(255,248,214,.9) 0%,rgba(255,212,0,.35) 35%,rgba(255,212,0,0) 70%);opacity:0;mix-blend-mode:screen}
+</style></head><body>
+<div id="bg" class="abs"></div>
+<div id="stage" class="abs">
+  <canvas id="g" class="abs"></canvas>
+  <div id="hook" class="abs"><h1>Na mobilu<br>strávíš <span class="y">víc</span><br><span class="y">času</span> než<br>v práci.</h1><div class="n mono">*Při 4 h denně. Spočítali jsme to.</div></div>
+  <div id="h0" class="abs hl">Tohle je jeden týden tvého života.</div>
+  <div id="h1" class="abs hl">A tohle je celý tvůj život.</div>
+  <div id="h2" class="abs hl">Třetinu prospíš.</div>
+  <div id="h3" class="abs hl">Devět let v práci.</div>
+  <div id="h4" class="abs hl">Skoro 11 let na mobilu.</div>
+  <div id="h5" class="abs hl">Víc než <span class="y">v práci.</span></div>
+  <div id="h6" class="abs hl">A s rodiči?</div>
+  <div id="h7" class="abs hl">Tak co tu ještě děláš?</div>
+  <div id="l0" class="abs lg">80 let = 4 160 týdnů</div>
+  <div id="l1" class="abs lg" style="top:626px"><i style="background:#48484A"></i>Spánek<b id="v1"></b></div>
+  <div id="l2" class="abs lg" style="top:656px"><i style="background:#9A9A94"></i>Práce<b id="v2"></b></div>
+  <div id="l3" class="abs lg" style="top:686px"><i style="background:#FFD400"></i><span>Mobil</span><b id="v3" class="y"></b></div>
+  <div id="big" class="abs"><div class="v" id="bv">7 týdnů.</div><div class="s" id="bs">Tolik s nimi ještě strávíš.</div></div>
+  <div id="foot" class="abs mono"></div>
+  <div id="sign" class="abs"><div class="b" id="sb"></div><p>Rutinu nech strojům. Čas lidem.</p></div>
+</div>
+<div id="flash" class="abs"></div>
+<script>
+const W=540,H=960,FPS=30,DPR=devicePixelRatio||1;
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3),e5=x=>1-Math.pow(1-clamp(x),5),ei=x=>Math.pow(clamp(x),3);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const lerp=(a,b,p)=>a+(b-a)*p;const $=id=>document.getElementById(id);
+function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
+$('sb').innerHTML=uzel(22,'#fff')+'<span>Better Digital</span>';
+
+/* ---- life in weeks: 80 years × 52 = 4 160 cells, 64 × 65, each cell = 1 week (168 h) ----
+   sleep 8 h/day = 1/3 → 1 387 · work 40 h × 45 wk × 45 yr = 81 000 h → 482 · phone 4 h × 364 d × 65 yr = 94 640 h → 563
+   parents 10 visits × 6 h × 20 yr = 1 200 h → 7 */
+const COLS=64,ROWS=65,GX=48,GY=136,P=392/COLS,C=P*.8;
+const SLEEP=[0,1387],WORK=[1387,1869],PHONE=[1869,2432],PAR=[2432,2439];
+const FILLS=[[SLEEP,5.7,6.7,[72,72,74]],[WORK,7.7,8.5,[154,154,148]],[PHONE,9.7,11.0,[255,212,0]]];
+const WHITE=[244,243,238],FOC=32*COLS+32;          // the week we zoom out from (cell in the middle)
+const cx0=GX+(FOC%COLS)*P+C/2,cy0=GY+Math.floor(FOC/COLS)*P+C/2;
+const cv=$('g');cv.width=W*DPR;cv.height=H*DPR;const g=cv.getContext('2d');g.scale(DPR,DPR);
+
+function cellState(i,t){ // returns [r,g,b,alpha,scale]
+  let col=WHITE,a=.9,s=1;
+  for(const[[lo,hi],t0,t1,c]of FILLS){if(i<lo||i>=hi)continue;const ti=t0+(i-lo)/(hi-lo)*(t1-t0);const u=clamp((t-ti)/.14);
+    if(u>0){col=[lerp(WHITE[0],c[0],u),lerp(WHITE[1],c[1],u),lerp(WHITE[2],c[2],u)];s=1+.55*Math.sin(u*Math.PI)}}
+  // shimmer when the whole life is revealed
+  const sw=(t-4.95)*900-((i%COLS)*P+Math.floor(i/COLS)*P*.6);if(sw>0&&sw<140)a=Math.min(1,a+.1*Math.sin(sw/140*Math.PI));
+  // parents phase: everything dims, 7 cells light up
+  const dk=eo((t-12.9)/.5);
+  if(i>=PAR[0]&&i<PAR[1]){const j=i-PAR[0],u=clamp((t-(14.2+j*.09))/.18);if(u>0){col=[255,255,255];a=lerp(.9*(1-.8*dk),1,u);s=1+.8*Math.sin(u*Math.PI)}else a=.9*(1-.8*dk)}
+  else if(i>=PHONE[0]&&i<PHONE[1])a*=1-.55*dk;else a*=1-.8*dk;
+  return[col,a,s]}
+
+function drawGrid(t){g.clearRect(0,0,W,H);if(t<2.3||t>=20.9)return;
+  const fade=t<20.2?1:1-clamp((t-20.2)/.6);
+  // camera: one week fills the frame, then pull back to the whole life
+  const z=Math.exp(Math.log(32)*(1-eio((t-3.4)/1.6)));const appear=e5((t-2.3)/.3);
+  const others=clamp((t-3.35)/.35);
+  g.save();g.beginPath();g.rect(0,96,W,462);g.clip();
+  for(let i=0;i<COLS*ROWS;i++){
+    const x=GX+(i%COLS)*P,y=GY+Math.floor(i/COLS)*P;
+    const sx=cx0+(x+C/2-cx0)*z,sy=cy0+(y+C/2-cy0)*z;const half=C/2*z;
+    if(sx+half<0||sx-half>W||sy+half<96||sy-half>558)continue;
+    let[col,a,s]=cellState(i,t);
+    if(i===FOC)a*=appear;else a*=others;
+    a*=fade;if(a<.01)continue;
+    const hs=half*s*(i===FOC&&t<3.4?(.7+.3*appear):1);
+    const glow=i>=PAR[0]&&i<PAR[1]&&t>=14.2;
+    if(glow){g.shadowColor='rgba(255,255,255,.95)';g.shadowBlur=10+4*Math.sin(t*5+i)}
+    g.fillStyle=`rgba(${col[0]|0},${col[1]|0},${col[2]|0},${a})`;
+    const r=Math.min(hs*.18,6);g.beginPath();g.roundRect?g.roundRect(sx-hs,sy-hs,hs*2,hs*2,r):g.rect(sx-hs,sy-hs,hs*2,hs*2);g.fill();
+    if(glow){g.shadowBlur=0}
+  }
+  g.restore();
+  // ring + label around the 7 weeks with parents
+  const rk=eo((t-14.35)/.3)*(t<20.2?1:1-clamp((t-20.2)/.5));
+  if(rk>0){const x0=GX+(PAR[0]%COLS)*P,y0=GY+Math.floor(PAR[0]/COLS)*P,w=(PAR[1]-PAR[0]-1)*P+C;const pad=5+10*(1-rk)+1.5*Math.sin(t*5);
+    g.save();g.globalAlpha=rk;g.strokeStyle='#fff';g.lineWidth=1.6;g.shadowColor='rgba(255,255,255,.8)';g.shadowBlur=8;
+    g.beginPath();g.roundRect(x0-pad,y0-pad,w+pad*2,C+pad*2,5);g.stroke();g.shadowBlur=0;
+    g.beginPath();g.moveTo(x0+w+pad,y0+C/2);g.lineTo(x0+w+pad+26*rk,y0+C/2);g.stroke();
+    g.fillStyle='#fff';g.font='500 12px JB';g.textBaseline='middle';g.fillText('RODIČE',x0+w+pad+32,y0+C/2+.5);g.restore()}}
+
+/* ---- text timeline ---- */
+const HL=[['h0',2.35,4.1],['h1',4.25,5.5],['h2',5.65,7.5],['h3',7.65,9.5],['h4',9.65,11.2],['h5',11.4,12.75],['h6',12.95,17.0],['h7',17.2,20.2]];
+const FOOT=[[2.35,4.2,''],[4.25,5.6,''],[5.65,7.6,'*8 h denně'],[7.65,9.6,'*40 h týdně, 45 týdnů v roce, od 20 do 65 let'],[9.65,12.85,'*4 h denně, od 15 do 80 let'],[14.2,17.1,'*10 návštěv ročně po 6 h, dalších 20 let']];
+const fmt=x=>x.toFixed(1).replace('.',',');
+function show(el,t,a,b,slam=false){if(t<a||t>=b+.12){el.style.opacity=0;return}const p=clamp((t-a)/.25),q=clamp((t-b)/.12);
+  el.style.opacity=eo(p)*(1-q);el.style.transform=slam?`scale(${1+.25*(1-e5(p/.8))})`:`translateY(${(1-eo(p))*14-q*10}px)`;el.style.transformOrigin='0 50%'}
+window.render=function(t){
+  // hook: complete on frame 0
+  const hk=$('hook');const out=clamp((t-2.05)/.3);hk.style.opacity=1-out;
+  hk.style.transform=`translateY(${-ei(out)*50}px) scale(${1.05-.05*e5(t/.18)})`;hk.style.transformOrigin='0 0';hk.style.filter=out>0?`blur(${out*5}px)`:'none';
+  for(const[id,a,b]of HL)show($(id),t,a,b,id==='h5');
+  // legend
+  const legIn=(el,a,b)=>{el.style.opacity=t<a?0:eo((t-a)/.3)*(1-clamp((t-b)/.3))};
+  legIn($('l0'),4.5,5.55);
+  legIn($('l1'),5.7,12.85);legIn($('l2'),7.7,12.85);legIn($('l3'),9.7,12.85);
+  $('v1').textContent=fmt(26.7*eo((t-5.7)/1.0))+' roku';$('v2').textContent=fmt(9.3*eo((t-7.7)/.8))+' roku';$('v3').textContent=fmt(10.8*eo((t-9.7)/1.3))+' roku';
+  const pl=t>=11.4&&t<12.85?Math.exp(-(t-11.4)/.25):0;$('l3').style.transform=`scale(${1+.06*pl})`;$('l3').style.transformOrigin='0 50%';
+  // 7 weeks
+  const bg=$('big');if(t<14.25||t>=17.3)bg.style.opacity=0;else{const p=e5((t-14.25)/.3);bg.style.opacity=p*(1-clamp((t-17.1)/.2));bg.style.transform=`scale(${1+.2*(1-p)})`;bg.style.transformOrigin='0 50%'}
+  $('bs').style.opacity=eo((t-15.1)/.35);$('bv').style.color='#fff';
+  // "Zavolej jim." reuses the big block
+  if(t>=18.3&&t<20.4){const p=e5((t-18.3)/.25);bg.style.opacity=p*(1-clamp((t-20.15)/.25));bg.style.transform=`scale(${1+.3*(1-p)})`;
+    $('bv').textContent='Zavolej jim.';$('bv').style.color='#FFD400';$('bs').style.opacity=0}
+  else $('bv').textContent='7 týdnů.';
+  // footnote
+  const ft=$('foot');let txt='',fa=0;for(const[a,b,s]of FOOT)if(t>=a&&t<b+.25&&s){txt=s;fa=eo((t-a)/.3)*(1-clamp((t-b)/.25))}
+  if(ft.textContent!==txt)ft.textContent=txt;ft.style.opacity=fa;
+  // sign-off
+  const sg=$('sign');sg.style.opacity=t<20.5?0:eo((t-20.5)/.4)*(1-clamp((t-22.1)/.35));sg.style.transform=`translateY(${(1-eo((t-20.5)/.4))*10}px)`;
+  // flash + shake
+  let fl=0;for(const[a,k]of[[4.95,.18],[11.4,.3],[18.3,.16]])if(t>=a)fl=Math.max(fl,k*Math.exp(-(t-a)/.12));$('flash').style.opacity=fl;
+  let sx=0,sy=0;if(t>=11.4&&t<11.9){const k=Math.exp(-(t-11.4)/.08)*7;sx=Math.sin(t*170)*k;sy=Math.cos(t*213)*k}
+  $('stage').style.transform=`translate(${sx}px,${sy}px)`;
+  drawGrid(t)};
+window.DURATION=22.5;window.CUTS=[0,2.35,5.65,9.65,12.95,17.2,20.5];
+document.fonts.load('900 20px IT','ěščřžýáíéúůĚŠČŘŽ').then(()=>Promise.all(['850 20px IT','700 20px IT','600 20px IT','20px JB'].map(s=>document.fonts.load(s,'ěščřžýáíéúůĚŠČŘŽ'))))
+ .then(()=>document.fonts.ready).then(()=>{window.READY=true;render(0)});
+</script></body></html>

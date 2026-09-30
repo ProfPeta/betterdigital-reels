@@ -81,6 +81,9 @@ const FLASH=[[17.6,.3]],SHAKE=[[17.6,1],[20.22,.5]];
 const flashAt=t=>{let v=0;for(const[a,i]of FLASH)if(t>=a)v=Math.max(v,i*Math.exp(-(t-a)/.05));return v};
 function shakeAt(t){let x=0,y=0;for(const[a,i]of SHAKE)if(t>=a&&t<a+.5){const k=i*Math.exp(-(t-a)/.08)*6;x+=Math.sin(t*171+a)*k;y+=Math.cos(t*213+a)*k}return[x,y]}
 const S=[];function scene(start,end,bg,build,update,push=.02){S.push({start,end,bg,build,update,push})}
+/* Safe area: the layout is drawn on the 540×960 grid (panels x 20–472), SAFE maps it into x 48–440, y ≥ 130,
+   because phones crop the edges and TikTok covers the right edge. Keep it in every episode. */
+const SAFE='translate(-5.2px,16px) scale(.8673)';
 </script>
 <script src="../../engine/cta.js"></script>
 <script>
@@ -211,7 +214,8 @@ scene(0,14.8,'w',inner=>{
   c.cnt.textContent=Math.min(30,done)+'/30';c.trows.forEach((r,i)=>{r.style.opacity=i<done?1:0});
   c.tl.style.transform=`translateY(${-Math.max(0,Math.min(30,done)-5)*19}px)`;
   c.flows.forEach((f,i)=>{const t0=.85+i*.12;if(t>=t0&&t<t0+.28){const q=eio((t-t0)/.28);const a=c.irows[i].getBoundingClientRect(),o=f.parentElement.getBoundingClientRect(),b=c.tc.getBoundingClientRect();
-      const x0=a.left-o.left+30,y0=a.top-o.top+a.height/2,x1=b.left-o.left+20,y1=b.top-o.top+36+i*19;f.style.opacity=1;f.style.left=(x0+(x1-x0)*q-5)+'px';f.style.top=(y0+(y1-y0)*q-5-Math.sin(q*Math.PI)*16)+'px'}else f.style.opacity=0});
+      const k=o.width/f.parentElement.offsetWidth;   // screen px per layout px (safe-area + push scale)
+      const x0=(a.left-o.left)/k+30,y0=(a.top-o.top+a.height/2)/k,x1=(b.left-o.left)/k+20,y1=(b.top-o.top)/k+36+i*19;f.style.opacity=1;f.style.left=(x0+(x1-x0)*q-5)+'px';f.style.top=(y0+(y1-y0)*q-5-Math.sin(q*Math.PI)*16)+'px'}else f.style.opacity=0});
   c.foot.style.opacity=eo((t-2.6)/.2);
   if(t<2.8)c.btn.style.opacity=0;else{const p=back((t-2.8)/.3);c.btn.style.opacity=clamp((t-2.8)/.1);c.btn.style.transform=`scale(${(t>=3.9&&t<3.98)?.95:p})`}
   const ok=t>=DONE_A;const bh=ok?CHECK('#0B0B0B',14)+'Schváleno · odesláno účetní':'Schválit platby';if(c.btn.innerHTML!==bh)c.btn.innerHTML=bh;c.btn.className='btn'+(ok?' ok':'');
@@ -246,7 +250,7 @@ function buildAll(){for(const s of S){s.root=el('div','scene '+s.bg,null,stage);
 window.DURATION=23.2;window.CUTS=S.map(s=>s.start);
 window.render=function(t){
   for(const s of S){const on=t>=s.start&&t<s.end;s.root.style.display=on?'block':'none';
-    if(on){const lt=t-s.start;s.inner.style.transform=`scale(${1+s.push*(lt/(s.end-s.start))})`;s.update(s.ctx,lt)}}
+    if(on){const lt=t-s.start;s.inner.style.transform=`${SAFE} scale(${1+s.push*(lt/(s.end-s.start))})`;s.update(s.ctx,lt)}}
   const[sx,sy]=shakeAt(t);stage.style.transform=`translate(${sx}px,${sy}px)`;document.getElementById('flash').style.opacity=flashAt(t)};
 Promise.all(['800 20px IT','500 20px IT','600 20px IT','20px JB'].map(f=>document.fonts.load(f,'ěščřžýáíéúů↑•×0123456789'))).then(()=>document.fonts.ready).then(()=>{buildAll();window.READY=true;render(0)});
 </script></body></html>
