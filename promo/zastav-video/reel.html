@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8">
+<!-- „ZASTAV VIDEO“ – pause challenge pro TikTok. 540×960 CSS px (render 2×), 30 fps, 15 s.
+     Karty se střídají tvrdým střihem, takže každý snímek (i po pauze) je čitelný. -->
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF}
+:root{--y:#FFD400;--k:#0B0B0B;--w:#F4F3EE;--g:#8C8C8C}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--k)}
+body{font-family:IT,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;position:relative}
+.abs{position:absolute}
+.mono{font-family:JB,monospace;letter-spacing:.14em;text-transform:uppercase}
+#bg{inset:0;background:radial-gradient(ellipse 90% 60% at 30% 38%,#1c1a12 0%,#0f0f0e 55%,#0B0B0B 100%)}
+#glow{left:0;top:0;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(255,212,0,.16) 0%,rgba(255,212,0,.05) 35%,rgba(255,212,0,0) 65%);opacity:0}
+.pz{display:inline-flex;align-items:center;justify-content:center;gap:18%;background:var(--y);border-radius:22%;flex:none}
+.pz i{display:block;width:17%;height:46%;background:var(--k);border-radius:2px}
+/* hook */
+#hook{left:24px;top:232px;width:470px}
+#hook .pz{width:70px;height:70px}
+#hook h1{font-size:106px;font-weight:900;letter-spacing:-.055em;line-height:.9;margin-top:26px}
+#hook p{font-size:24px;font-weight:600;letter-spacing:-.015em;line-height:1.25;margin-top:26px;color:rgba(255,255,255,.88);max-width:430px}
+#hook p b{color:var(--y);font-weight:700}
+/* header during the roulette */
+#hdr{left:24px;top:118px;width:460px;opacity:0}
+#hdr .t{display:flex;align-items:center;gap:12px;font-size:40px;font-weight:900;letter-spacing:-.045em;line-height:1}
+#hdr .t .pz{width:34px;height:34px}
+#hdr p{font-size:18px;font-weight:600;margin-top:12px;color:rgba(255,255,255,.82);letter-spacing:-.01em}
+#hdr p b{color:var(--y);font-weight:700}
+/* card */
+#card{left:20px;top:252px;width:452px;height:428px;border-radius:24px;background:var(--w);color:var(--k);padding:26px 26px 0;opacity:0;
+  box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06),0 0 90px rgba(255,212,0,.10)}
+#card .row{display:flex;align-items:center;justify-content:space-between}
+#card .lab{font-size:13px;color:#6f6f6a}
+#card .lab.j{background:var(--k);color:var(--y);padding:5px 10px 4px;border-radius:6px;letter-spacing:.2em}
+#card .task{font-size:38px;font-weight:800;letter-spacing:-.035em;line-height:1.06;height:82px;margin-top:20px;display:flex;align-items:flex-end}
+#card .task span{display:block}
+#card .m{font-size:14px;color:#6f6f6a;margin-top:16px}
+#card .div{height:1px;background:rgba(11,11,11,.14);margin:18px 0 20px}
+#card .res{display:flex;flex-direction:column;align-items:flex-start}
+#card .num{background:var(--y);font-size:88px;font-weight:900;letter-spacing:-.055em;line-height:1;padding:6px 16px 8px 14px;border-radius:12px;white-space:nowrap}
+#card .s{font-size:24px;font-weight:750;letter-spacing:-.02em;line-height:1.1;margin-top:14px}
+#card .foot{position:absolute;left:26px;right:26px;bottom:18px;font-size:10px;color:#8a8a84;letter-spacing:.1em}
+#card.j{background:var(--y)}
+#card.j .num{background:var(--k);color:var(--y)}
+#card.j .m,#card.j .foot{color:rgba(11,11,11,.62)}
+#card.j .div{background:rgba(11,11,11,.22)}
+/* timer */
+#tm{left:20px;top:700px;width:452px;opacity:0}
+#tm .b{height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+#tm .b i{display:block;height:100%;background:var(--y);box-shadow:0 0 12px rgba(255,212,0,.8);transform-origin:0 50%}
+#tm .l{font-size:11px;color:rgba(255,255,255,.72);margin-top:11px}
+/* cta */
+#cta{left:24px;top:262px;width:470px;opacity:0}
+#cta h2{font-size:78px;font-weight:900;letter-spacing:-.055em;line-height:.93}
+#cta h2 em{font-style:normal;color:var(--y)}
+#cta .c{display:flex;align-items:center;gap:14px;margin-top:30px;font-size:27px;font-weight:700;letter-spacing:-.02em}
+#cta .c svg{width:40px;height:40px;flex:none}
+#cta .h{font-size:13px;color:var(--y);margin-top:26px}
+#brand{left:24px;top:672px;display:flex;align-items:center;gap:12px;font-size:19px;font-weight:800;letter-spacing:-.03em;opacity:0}
+#flash{inset:0;background:radial-gradient(circle at 50% 48%,#fff8d6 0%,rgba(255,212,0,.85) 30%,rgba(255,212,0,0) 70%);opacity:0;mix-blend-mode:screen}
+canvas#cf{left:0;top:0;width:540px;height:960px}
+</style></head><body>
+<div id="bg" class="abs"></div><div id="glow" class="abs"></div>
+<div id="hook" class="abs"><span class="pz"><i></i><i></i></span><h1>ZASTAV<br>VIDEO.</h1><p>Co ti padne, to už <b>nemusíš dělat ručně.</b></p></div>
+<div id="hdr" class="abs"><div class="t"><span class="pz"><i></i><i></i></span>ZASTAV VIDEO.</div><p>Co ti padne, to už <b>nemusíš dělat ručně.</b></p></div>
+<div id="card" class="abs">
+  <div class="row"><span class="lab mono" id="lab">Padlo ti</span><span id="logo"></span></div>
+  <div class="task" id="task"><span></span></div>
+  <div class="m mono" id="m"></div>
+  <div class="div"></div>
+  <div class="res"><div class="num" id="num"></div><div class="s" id="s"></div></div>
+  <div class="foot mono">*modelový přepočet: 8 h den, 240 dní, 48 týdnů</div>
+</div>
+<div id="tm" class="abs"><div class="b"><i id="tb"></i></div><div class="l mono" id="tl"></div></div>
+<div id="cta" class="abs"><h2>Co padlo<br><em>tobě?</em></h2>
+  <div class="c"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z" fill="#FFD400"/><circle cx="8.6" cy="10.8" r="1.1" fill="#0B0B0B"/><circle cx="12" cy="10.8" r="1.1" fill="#0B0B0B"/><circle cx="15.4" cy="10.8" r="1.1" fill="#0B0B0B"/></svg>Napiš to do komentářů.</div>
+  <div class="h mono">Jackpot tam je ještě 2×. Najdeš ho?</div></div>
+<div id="brand" class="abs"></div>
+<div id="flash" class="abs"></div>
+<canvas id="cf" class="abs"></canvas>
+<script>
+const W=540,H=960,FPS=30;
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3),e5=x=>1-Math.pow(1-clamp(x),5),ei=x=>Math.pow(clamp(x),3);
+const back=x=>{x=clamp(x);const c1=1.7,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const lerp=(a,b,p)=>a+(b-a)*p;
+function mul(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const $=id=>document.getElementById(id);
+
+/* Uzel logo mark (ring – line – yellow dot) */
+function uzel(h,col,dot='#FFD400'){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="${dot}"/></svg>`}
+$('brand').innerHTML=uzel(20,'#fff')+'<span>Better Digital</span>';
+
+/* ---- cards: (task, frequency = hours per year, days) · 8 h day, 240 days, 48 weeks, 12 months ---- */
+const CARDS=[
+ ['Přepisování faktur do účetnictví','2 h týdně = 96 h ročně','12 dní'],
+ ['Odpovídání na pořád stejné dotazy','30 min denně = 120 h ročně','15 dní'],
+ ['Psaní nabídek od nuly','3 h týdně = 144 h ročně','18 dní'],
+ ['Hledání v e-mailech','20 min denně = 80 h ročně','10 dní'],
+ ['Měsíční reporty v Excelu','6 h měsíčně = 72 h ročně','9 dní'],
+ ['Domlouvání schůzek přes e-mail','15 min denně = 60 h ročně','7,5 dne'],
+ ['Upomínky neplatičům','1 h týdně = 48 h ročně','6 dní'],
+ ['Zápisy z porad','2 h týdně = 96 h ročně','12 dní'],
+ ['Přepisování objednávek do systému','45 min denně = 180 h ročně','22,5 dne'],
+ ['Výkazy práce','1 h týdně = 48 h ročně','6 dní'],
+ ['Třídění poptávek','20 min denně = 80 h ročně','10 dní'],
+ ['Příspěvky na sociální sítě','3 h týdně = 144 h ročně','18 dní'],
+ ['Kopírování dat mezi tabulkami','40 min denně = 160 h ročně','20 dní'],
+ ['Hledání ve smlouvách a dokumentech','30 min denně = 120 h ročně','15 dní'],
+ ['Popisky produktů na e-shop','5 h měsíčně = 60 h ročně','7,5 dne'],
+ ['Přepisování vizitek do CRM','10 min denně = 40 h ročně','5 dní'],
+ ['Objednávky u dodavatelů','2 h týdně = 96 h ročně','12 dní'],
+ ['Onboarding nového klienta','3 h × 12 klientů = 36 h ročně','4,5 dne']].map(([t,m,n])=>({lab:'Padlo ti',t,m,n,s:'ročně. Ručně.'}));
+const SPEC={J:{lab:'Jackpot',t:'Celý pátek volno',m:'8 h týdně = 384 h ročně',n:'48 dní',s:'ročně. Pro tebe.',j:1},
+ K:{lab:'Padlo ti',t:'Ranní káva',m:'3 šálky denně',n:'0 dní',s:'Tu ti AI neuvaří.'},
+ S:{lab:'Padlo ti',t:'Tvůj šéf',m:'1 kus',n:'0 dní',s:'Toho AI nenahradí. Zatím.'}};
+
+/* ---- schedule (frames) ---- */
+const F_FAST=48,N_FAST=56,STEP=4,F_SLOW=F_FAST+N_FAST*STEP;            // 48 … 271 fast, 272 … slow
+const SLOW_D=[5,5,6,6,7,8,10,13];
+const F_JACK=F_SLOW+SLOW_D.reduce((a,b)=>a+b,0),F_CTA=F_JACK+48,F_END=450;   // 332, 380, 450
+// card order: specials at fixed slots, normal cards never repeat within 7 slots, usage kept even
+const R=mul(20260930),TOTAL=N_FAST+SLOW_D.length;
+const FIX={14:'J',27:'K',41:'J',50:'K',[N_FAST+5]:'S',[TOTAL-1]:8};
+const used=Array(CARDS.length).fill(0),SEQ=[];
+for(let i=0;i<TOTAL;i++){
+  if(FIX[i]!==undefined){SEQ.push(FIX[i]);if(typeof FIX[i]==='number')used[FIX[i]]++;continue}
+  const recent=new Set(SEQ.slice(-7).filter(x=>typeof x==='number'));
+  let cand=[...Array(CARDS.length).keys()].filter(c=>!recent.has(c)&&!(c===8&&i>TOTAL-10));
+  const mn=Math.min(...cand.map(c=>used[c]));cand=cand.filter(c=>used[c]===mn);
+  const c=cand[Math.floor(R()*cand.length)];SEQ.push(c);used[c]++}
+const FAST=SEQ.slice(0,N_FAST),SLOW_C=SEQ.slice(N_FAST);
+const SCHED=[];FAST.forEach((c,i)=>SCHED.push({f:F_FAST+i*STEP,d:STEP,c,fast:1}));
+{let f=F_SLOW;SLOW_D.forEach((d,i)=>{SCHED.push({f,d,c:SLOW_C[i],fast:0});f+=d})}
+SCHED.push({f:F_JACK,d:F_CTA-F_JACK,c:'J',land:1});
+window.SCHED=SCHED;window.DURATION=F_END/FPS;window.CUTS=[0,F_FAST/FPS,F_SLOW/FPS,F_JACK/FPS,F_CTA/FPS];
+
+/* ---- card DOM ---- */
+const card=$('card'),lab=$('lab'),task=$('task').firstChild,mEl=$('m'),num=$('num'),sEl=$('s');let shown=null;
+const LOGO=uzel(14,'#0B0B0B'),LOGO_J=uzel(14,'#0B0B0B','#0B0B0B');
+function setCard(c){if(shown===c)return;shown=c;const o=typeof c==='string'?SPEC[c]:CARDS[c];
+  lab.textContent=o.lab;lab.className='lab mono'+(o.j?' j':'');task.textContent=o.t;mEl.textContent=o.m;num.textContent=o.n;sEl.textContent=o.s;card.className='abs'+(o.j?' j':'');$('logo').innerHTML=o.j?LOGO_J:LOGO}
+
+/* ---- confetti (deterministic) ---- */
+const cf=$('cf');const DPR=devicePixelRatio||1;cf.width=W*DPR;cf.height=H*DPR;const cx=cf.getContext('2d');cx.scale(DPR,DPR);
+const RC=mul(77);const CONF=[];for(let i=0;i<90;i++){const a=-Math.PI/2+(RC()-.5)*2.6;CONF.push({a,v:260+RC()*520,w:5+RC()*8,h:9+RC()*12,rs:(RC()-.5)*18,ph:RC()*6,c:RC()<.62?'#FFD400':(RC()<.7?'#ffffff':'#0B0B0B')})}
+function drawConfetti(t){cx.clearRect(0,0,W,H);const d=t-F_JACK/FPS;if(d<0||d>2.2)return;
+  for(const p of CONF){const x=246+Math.cos(p.a)*p.v*d*.9+Math.sin(d*3+p.ph)*14,y=460+Math.sin(p.a)*p.v*d+620*d*d;if(y>H+20)continue;
+    cx.save();cx.translate(x,y);cx.rotate(p.ph+p.rs*d);cx.scale(1,Math.cos(d*9+p.ph));cx.globalAlpha=clamp(2.2-d)*.95;cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore()}}
+
+/* ---- render ---- */
+const hook=$('hook'),hdr=$('hdr'),tm=$('tm'),tb=$('tb'),tl=$('tl'),cta=$('cta'),brand=$('brand'),flash=$('flash'),glow=$('glow');
+const fmt=x=>x.toFixed(1).replace('.',',');
+window.render=function(t){
+  const f=Math.floor(t*FPS+1e-6);
+  // hook (visible from frame 0), then it hands over to the header
+  if(f<F_FAST){const p=clamp(t/.16);const out=clamp((f-37)/6);hook.style.opacity=1-out;
+    hook.style.transform=`translate(0,${-ei(out)*70}px) scale(${(1.07-.07*e5(p))*(1-.06*out)})`;hook.style.transformOrigin='0 0';hook.style.filter=out>0?`blur(${out*6}px)`:'none'}
+  else hook.style.opacity=0;
+  const inH=eo((f-43)/6);const outAll=clamp((f-F_CTA)/6);
+  hdr.style.opacity=f<F_CTA?inH:1-outAll;hdr.style.transform=`translateY(${(1-inH)*14}px)`;
+  // card
+  if(f>=F_FAST-4&&f<F_CTA+8){
+    let e=null;for(const s of SCHED)if(f>=s.f)e=s;
+    const enter=e5((f-(F_FAST-4))/6);
+    if(f<F_FAST)setCard(FAST[0]);else setCard(e.c);
+    const df=f<F_FAST?9:f-e.f;
+    let y=(1-enter)*260,sc=1;
+    if(f>=F_FAST){if(e.fast)y+=df===0?3:0;else if(!e.land)y+=(df===0?12:df===1?5:df===2?1.5:0);}
+    if(e&&e.land){const q=(f-F_JACK)/FPS;sc=1+.07*Math.exp(-q/.12)*Math.cos(q*28);}
+    if(f>=F_CTA){const q=ei((f-F_CTA)/6);y+=q*420;sc*=1-.1*q}
+    card.style.opacity=f>=F_CTA?1-clamp((f-F_CTA-2)/4):enter;card.style.transform=`translateY(${y}px) scale(${sc})`;
+  } else card.style.opacity=0;
+  // timer bar
+  if(f>=F_FAST-4&&f<F_CTA){const p=clamp((f-F_FAST)/(F_SLOW-F_FAST));tm.style.opacity=f<F_JACK?eo((f-(F_FAST-4))/6):1-clamp((f-F_JACK)/8);
+    tb.style.transform=`scaleX(${1-p})`;
+    const txt=f<F_SLOW?`Zastav, než to doběhne · ${fmt(Math.max(0,(F_SLOW-f)/FPS))} s`:'Poslední šance zastavit!';if(tl.textContent!==txt)tl.textContent=txt;
+    tl.style.color=f>=F_SLOW?'#FFD400':'rgba(255,255,255,.72)'}else tm.style.opacity=0;
+  // jackpot flash + confetti
+  const dj=(f-F_JACK)/FPS;flash.style.opacity=dj>=0?.75*Math.exp(-dj/.1):0;drawConfetti(t);
+  // cta
+  if(f>=F_CTA+6){const q=(f-F_CTA-6)/FPS;cta.style.opacity=clamp(q/.1);cta.style.transform=`scale(${1+.08*(1-e5(q/.3))})`;cta.style.transformOrigin='0 50%';
+    brand.style.opacity=eo((q-.35)/.3)*(f<F_END-6?1:clamp((F_END-f)/6));cta.style.opacity*=f<F_END-6?1:clamp((F_END-f)/6)}
+  else{cta.style.opacity=0;brand.style.opacity=0}
+  // ambient glow follows the energy
+  const en=f<F_FAST?.5:f<F_SLOW?.8+.2*Math.sin(t*11.78):f<F_JACK?.6:f<F_CTA?1:.55;
+  glow.style.opacity=en;glow.style.transform=`translate(${-450+246+Math.sin(t*.9)*40}px,${-450+470+Math.cos(t*.7)*30}px)`};
+document.fonts.load('900 20px IT','ěščřžýáíéúůĚŠČŘŽ').then(()=>Promise.all(['800 20px IT','700 20px IT','600 20px IT','20px JB'].map(s=>document.fonts.load(s,'ěščřžýáíéúůĚŠČŘŽ×'))))
+ .then(()=>document.fonts.ready).then(()=>{window.READY=true;render(0)});
+</script></body></html>

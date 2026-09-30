@@ -8,5 +8,6 @@ Krátká videa pro Instagram Reels a TikTok: nahoře ruční práce, dole toté�
 - `RUNBOOK.md` popisuje, jak se díly vyrábějí, plánují a kontrolují.
 - `topics.md` obsahuje zásobník dalších témat.
 - `promo/predstaveni/` obsahuje zdroj 45s představení firmy (9:16 a 16:9).
+- `promo/zastav-video/` obsahuje TikTok „ZASTAV VIDEO“ (pause challenge, 15 s).
 
 Videa se generují kódem (HTML animace vykreslovaná po snímcích a syntetizovaný zvuk), bez natáčení.
