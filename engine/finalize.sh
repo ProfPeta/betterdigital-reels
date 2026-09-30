@@ -13,3 +13,6 @@ assert 0 <= d.find(b'moov') < m, 'moov atom is not at the front'
 assert d[:m].count(b'elst') == 0, 'edit list present'
 print('OK', sys.argv[1], f'{len(d)/1e6:.1f} MB')
 EOF
+# A/V sync: without edit lists the video must start at pts 0 (raw.mp4 has to be encoded without B-frames).
+start=$(ffprobe -v error -select_streams v:0 -show_entries stream=start_time -of csv=p=0 "$3")
+python3 -c "import sys; s=float(sys.argv[1]); assert abs(s) < 1e-3, f'video starts at {s}s (B-frames?) -> audio out of sync'" "$start"

@@ -31,8 +31,10 @@ with sync_playwright() as p:
             pg.screenshot(path=os.path.join(out, f'{t:05.2f}.png'))
     elif mode == 'video':
         dur = pg.evaluate('DURATION')
+        # -bf 0: no B-frames, so the first video frame has pts 0. finalize.sh drops edit lists (Instagram API),
+        # and with B-frames the video would then start 2 frames late (sound 67 ms ahead of the picture).
         ff = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'image2pipe', '-framerate', str(FPS), '-c:v', 'mjpeg', '-i', '-',
-                               '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', out], stdin=subprocess.PIPE)
+                               '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-bf', '0', '-pix_fmt', 'yuv420p', out], stdin=subprocess.PIPE)
         for i in range(int(dur * FPS)):
             pg.evaluate(f'render({i / FPS})')
             ff.stdin.write(pg.screenshot(type='jpeg', quality=95))
