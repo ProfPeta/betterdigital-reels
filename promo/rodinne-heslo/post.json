@@ -3,5 +3,10 @@
   "text": "Nejlepší ochrana stojí 0 Kč a vymyslíte ji u večeře. Máte rodinné heslo? (Sem ho nepiš 😅)\n\nZdroje: McAfee (2023), Česká bankovní asociace (9/2026), FBI IC3.\n\n#podvody #umelainteligence #rodina #bezpecnost #ai",
   "firstComment": "Jak na rodinné heslo: 1) Vyberte slovo, které nejde dohledat na sítích (žádné jméno psa ani datum). 2) Nikdy ho nepište do zpráv. 3) Když po vás někdo blízký chce rychle peníze, zeptejte se na heslo, nebo mu zavolejte zpátky na číslo, které znáte.",
   "coverMs": 400,
-  "bestSlot": "pátek 10:00 (Metricool: nejsilnější okno publika na IG)"
+  "bestSlot": "pátek 10:00 (Metricool: nejsilnější okno publika na IG)",
+  "aiLabel": {
+    "tiktokData.isAigc": true,
+    "instagramData.isAiGenerated": true,
+    "why": "Hlas ve videu je syntetický (neuronové TTS) a realisticky simuluje skutečný podvod. TikTok i Instagram vyžadují u takového obsahu štítek AI."
+  }
 }
