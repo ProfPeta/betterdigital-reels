@@ -1,13 +1,13 @@
-"""„Tvoje máma nepozná tvůj hlas od AI.“ – zvuk (26 s), časy podle reel.html.
-Hlasovka je skutečná řeč z neuronového TTS (voice/voice.wav, viz voice/make_voice.py), časy slov sedí na přepis
-v reel.html. Po hlasovce se celá časová osa posouvá o SHIFT (0,8 s) – stejně jako v reel.html.
+"""„Tvoje máma nepozná tvůj hlas od AI.“ – zvuk (27,4 s), časy podle reel.html.
+Hlasovka je dětský hlas (voice/voice.wav, viz voice/make_voice.py), časy slov sedí na přepis v reel.html.
+Všechno od 7,3 s se posouvá o SHIFT (1,4 s), než hlas doběhne – stejně jako v reel.html.
 Pak glitch, napětí pod fakty, ticho, když „syn“ přestane psát, a rozřešení v dur.
 usage: python3 sfx.py out.wav"""
 import sys
 import numpy as np, wave
 from scipy.signal import fftconvolve, butter, sosfilt, lfilter
 
-SR = 48000; DUR = 26.8; N = int(DUR * SR); SHIFT = .8; HOLD = 7.3   # events from 7.3 s on are delayed by SHIFT
+SR = 48000; SHIFT = 1.4; HOLD = 7.3; DUR = 26 + SHIFT; N = int(DUR * SR)   # events from 7.3 s on are delayed by SHIFT
 rng = np.random.default_rng(909)
 hz = lambda n: 440 * 2 ** ((n - 69) / 12)
 
@@ -59,7 +59,7 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 with wave.open(os.path.join(HERE, 'voice', 'voice.wav')) as w_:
     voice = np.frombuffer(w_.readframes(w_.getnframes()), np.int16).astype(float) / 32768
-FILE0 = 2.408                                   # first word „Mami“ at 2.72 s (= V0 in reel.html)
+FILE0 = 2.66                                    # = VF v reel.html: hned po ťuknutí na Přehrát (2.62 s), první slovo ve 2.841 s
 Vb.add(voice, FILE0, 1.0, 0)
 
 # ================================================================ instruments
@@ -133,8 +133,8 @@ t = T(3.2); dr = (np.sin(2 * np.pi * hz(38) * t) + .4 * np.sin(2 * np.pi * hz(45
 put(M, Mw, lp(dr, 500), 0, .14, 0, .2)
 tick_ui(1.52, .35); whoosh(1.88, .35, .12, 3000, 500)
 # chat: message bubble, tap on play, the voice
-pop(2.42, 820, .22); tick_ui(2.62, .3); tick_ui(2.72, .15, 3200)
-pad(2.5, [50, 57, 62, 65], 6.4, .04, 1.0, .8)                     # D minor, low and soft under the voice
+pop(2.42, 820, .22); tick_ui(2.62, .3); tick_ui(FILE0, .12, 3200)
+pad(2.5, [50, 57, 62, 65], 5.6 + SHIFT, .04, 1.0, .8)              # D minor, low and soft under the voice
 for k in range(5): heartbeat(3.1 + k * .86, .35 + .05 * k)
 pop(7.42, 760, .22); pop(7.72, 760, .2)
 tt = 7.88
@@ -142,7 +142,7 @@ while tt < 8.13: key(tt, .22); tt += .035 * rng.uniform(.7, 1.3)
 tick_ui(8.1, .3)
 # GLITCH: crack, stutter of the voice, tape-stop, shock silence
 d = .025; put(X, Xw, bp(noise(d), 800, 9000) * env(d, .0003, .01), 8.2, .7, 0, .1)
-seg = voice[int(4.1 * SR):int(4.1 * SR) + int(.05 * SR)]              # a slice of „peníze“
+seg = voice[int(4.38 * SR):int(4.38 * SR) + int(.05 * SR)]            # a slice of „peníze“
 for k in range(8):
     rate = 1 - .07 * k; s = np.interp(np.arange(0, len(seg) - 1, rate), np.arange(len(seg)), seg)
     s = np.round(s * 7) / 7; put(X, Xw, s * np.hanning(len(s)), 8.22 + k * .05, .55, (-1) ** k * .4, .1)
@@ -193,9 +193,9 @@ ML = M.L + fftconvolve(Mw.L, IRL)[:N]; MR = M.R + fftconvolve(Mw.R, IRR)[:N]
 XL = X.L + fftconvolve(Xw.L, IRL)[:N]; XR = X.R + fftconvolve(Xw.R, IRR)[:N]
 VL = Vb.L + fftconvolve(Vb.L, IRL)[:N] * .08; VR = Vb.R + fftconvolve(Vb.R, IRR)[:N] * .08
 tt_ = np.arange(N) / SR
-duck = 1 - .55 * np.clip((tt_ - 2.45) / .1, 0, 1) * np.clip((8.2 - tt_) / .1, 0, 1)   # music ducks under the voice
+duck = 1 - .55 * np.clip((tt_ - 2.45) / .1, 0, 1) * np.clip((HOLD + SHIFT + .1 - tt_) / .1, 0, 1)   # music ducks under the voice
 L_ = ML * duck + XL + VL; R_ = MR * duck + XR + VR
-silence = 1 - np.clip((tt_ - 20.8) / .05, 0, 1) * np.clip((21.25 - tt_) / .05, 0, 1) * .85  # the dramatic pause
+silence = 1 - np.clip((tt_ - 20.0 - SHIFT) / .05, 0, 1) * np.clip((20.45 + SHIFT - tt_) / .05, 0, 1) * .85  # the dramatic pause (20.0–20.45 in t)
 L_ *= silence; R_ *= silence
 fade = np.clip((DUR - tt_) / .45, 0, 1) * np.clip(tt_ / .003, 0, 1); L_ *= fade; R_ *= fade
 pk = max(np.abs(L_).max(), np.abs(R_).max()); L_, R_ = np.tanh(L_ / pk * 2.5), np.tanh(R_ / pk * 2.5)
@@ -204,4 +204,4 @@ out = sys.argv[1] if len(sys.argv) > 1 else 'heslo.wav'
 with wave.open(out, 'wb') as f:
     f.setnchannels(2); f.setsampwidth(2); f.setframerate(SR); f.writeframes((np.stack([L_, R_], 1) * 32767).astype(np.int16).tobytes())
 m = (L_ + R_) / 2
-print(' '.join(f'{s}:{20*np.log10(np.sqrt(np.mean(m[s*SR:(s+1)*SR]**2))+1e-9):.0f}' for s in range(26)))
+print(' '.join(f'{s}:{20*np.log10(np.sqrt(np.mean(m[s*SR:(s+1)*SR]**2))+1e-9):.0f}' for s in range(int(DUR))))
