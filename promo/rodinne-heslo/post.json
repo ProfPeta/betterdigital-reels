@@ -1,6 +1,6 @@
 {
   "platform": "tiktok+instagram",
-  "text": "Nejlepší ochrana stojí 0 Kč a vymyslíte ji u večeře. Máte rodinné heslo? (Sem ho nepiš 😅)\n\nZdroje: McAfee (2023), Česká bankovní asociace (9/2026), FBI IC3.\n\n#podvody #umelainteligence #rodina #bezpecnost #ai",
+  "text": "Nejlepší ochrana stojí 0 Kč a vymyslíte ji u večeře. Máte doma rodinné heslo? (Sem ho nepiš 😅)\n\nZdroje: McAfee (2023), Česká bankovní asociace (9/2026), FBI IC3.\n\n#podvody #umelainteligence #rodina #bezpecnost #ai",
   "firstComment": "Jak na rodinné heslo: 1) Vyberte slovo, které nejde dohledat na sítích (žádné jméno psa ani datum). 2) Nikdy ho nepište do zpráv. 3) Když po vás někdo blízký chce rychle peníze, zeptejte se na heslo, nebo mu zavolejte zpátky na číslo, které znáte.",
   "coverMs": 400,
   "bestSlot": "pátek 10:00 (Metricool: nejsilnější okno publika na IG)",
@@ -8,5 +8,17 @@
     "tiktokData.isAigc": true,
     "instagramData.isAiGenerated": true,
     "why": "Hlas ve videu je vygenerovaný AI (ElevenLabs) a realisticky simuluje skutečný podvod. TikTok i Instagram vyžadují u takového obsahu štítek AI."
+  },
+  "scheduled": {
+    "metricoolId": 386596752,
+    "uuid": "-157507184072244688",
+    "when": "2026-10-02T14:00:00 Europe/Prague",
+    "networks": [
+      "instagram (Reel, i ve feedu)",
+      "tiktok"
+    ],
+    "media": "https://raw.githubusercontent.com/ProfPeta/betterdigital-reels/8ea1d17b92191ba3cec3af9efab4a71e3ba2321c/promo/rodinne-heslo/video.mp4",
+    "settings": "obálka 0,4 s; štítek AI (IG isAiGenerated, TikTok isAigc); TikTok veřejné, vlastní značka (jako Díl 2); první komentář = návod na heslo",
+    "note": "Naplánováno na Petrův pokyn mimo plán seriálu."
   }
 }
