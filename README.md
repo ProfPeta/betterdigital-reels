@@ -10,5 +10,6 @@ Krátká videa pro Instagram Reels a TikTok: nahoře ruční práce, dole toté�
 - `promo/predstaveni/` obsahuje zdroj 45s představení firmy (9:16 a 16:9).
 - `promo/zastav-video/` obsahuje TikTok „ZASTAV VIDEO“ (pause challenge, 15 s).
 - `promo/mobil-vs-prace/` obsahuje TikTok „Na mobilu strávíš víc času než v práci.“ (22,5 s).
+- `promo/rodinne-heslo/` obsahuje TikTok/Reels „Tvoje máma nepozná tvůj hlas od AI.“ (26 s).
 
 Videa se generují kódem (HTML animace vykreslovaná po snímcích a syntetizovaný zvuk), bez natáčení.

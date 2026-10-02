@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8">
+<!-- „Tvoje máma nepozná tvůj hlas od AI.“ – varianta B (bez natáčení). TikTok/Reels 540×960 CSS px (render 2×), 30 fps, 26 s.
+     Bezpečná oblast: důležitý obsah v x 48–440, y 130–740. Konec plynule navazuje na první snímek (smyčka). -->
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF}
+:root{--y:#FFD400;--k:#0B0B0B;--g:#8C8C8C}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden;background:#000}
+body{font-family:IT,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;position:relative}
+.abs{position:absolute}
+.mono{font-family:JB,monospace;letter-spacing:.12em;text-transform:uppercase}
+.y{color:var(--y)}
+.layer{position:absolute;inset:0}
+/* ---------- lock screen ---------- */
+#lock{background:radial-gradient(ellipse 120% 70% at 50% 18%,#232a44 0%,#151a2b 45%,#0c0e16 100%)}
+#lock .glow{position:absolute;left:-120px;top:520px;width:780px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(255,160,70,.22),rgba(255,120,40,0) 65%)}
+#lock .moon{position:absolute;left:330px;top:96px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 40% 38%,rgba(255,244,220,.20),rgba(255,244,220,0) 68%)}
+#date{left:48px;width:392px;top:262px;text-align:center;font-size:17px;font-weight:600;color:rgba(255,255,255,.82);letter-spacing:.01em}
+#clock{left:48px;width:392px;top:282px;text-align:center;font-size:108px;font-weight:300;letter-spacing:-.035em;line-height:1;color:rgba(255,255,255,.93);font-variant-numeric:tabular-nums}
+#notif{left:48px;width:392px;top:452px;border-radius:22px;padding:14px 16px 15px;background:rgba(58,60,74,.58);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 10px 40px rgba(0,0,0,.35);display:flex;gap:12px}
+#notif .ic{width:40px;height:40px;border-radius:10px;background:var(--y);display:flex;align-items:center;justify-content:center;flex:none}
+#notif .tx{flex:1;min-width:0}
+#notif .r1{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.62);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+#notif .r1 span:last-child{text-transform:none;letter-spacing:0}
+#notif .r2{font-size:17px;font-weight:700;margin-top:3px}
+#notif .r3{display:flex;align-items:center;gap:6px;font-size:16px;color:rgba(255,255,255,.88);margin-top:2px}
+#hook{left:48px;width:392px;top:138px;text-align:center;font-size:37px;font-weight:900;letter-spacing:-.04em;line-height:1.04;text-shadow:0 2px 18px rgba(0,0,0,.55)}
+.rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.35);border:2px solid rgba(255,255,255,.75);pointer-events:none;opacity:0}
+/* ---------- chat ---------- */
+#chat{background:#0e0e10;opacity:0}
+#hdr{left:0;right:0;top:118px;height:66px;display:flex;align-items:center;padding:0 0 0 48px;border-bottom:1px solid rgba(255,255,255,.08)}
+#hdr .bk{font-size:34px;font-weight:300;color:var(--y);width:22px;margin-top:-4px}
+#hdr .av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#FFE680,#FFB800);color:#0B0B0B;font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center;margin-left:6px}
+#hdr .nm{margin-left:12px}
+#hdr .nm b{display:block;font-size:18px;font-weight:750;letter-spacing:-.01em}
+#hdr .nm span{display:block;font-size:13px;color:#8C8C8C;margin-top:1px}
+#msgs{left:0;right:0;top:188px;height:470px;overflow:hidden}
+#mi{position:absolute;left:0;right:0;top:0;height:900px}
+.chip{position:absolute;left:48px;width:392px;text-align:center;font-size:12px;font-weight:600;color:rgba(255,255,255,.5)}
+.bub{position:absolute;max-width:300px;padding:9px 13px 8px;font-size:17px;line-height:1.28;letter-spacing:-.005em}
+.bub .tm{font-size:11px;opacity:.55;margin-left:8px;white-space:nowrap;float:right;margin-top:6px}
+.in{left:48px;background:#232327;border-radius:19px 19px 19px 6px}
+.out{right:100px;background:var(--y);color:#0B0B0B;border-radius:19px 19px 6px 19px}
+#voice{left:48px;top:174px;width:332px;height:170px;background:#232327;border-radius:20px 20px 20px 6px;padding:12px 14px}
+#voice .row{display:flex;align-items:center;gap:11px;height:42px}
+#voice .pl{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+#voice .wv{flex:1;height:34px;display:flex;align-items:center;gap:2.6px}
+#voice .wv i{display:block;width:3.4px;border-radius:2px;background:#5b5b62}
+#voice .du{font-size:13px;color:rgba(255,255,255,.62);font-variant-numeric:tabular-nums;width:30px;text-align:right}
+#voice .tr{margin-top:10px;height:94px;font-size:17px;line-height:1.36;color:#fff}
+#voice .tr .lb{display:block;font-size:11px;color:rgba(255,255,255,.45);margin-bottom:3px}
+#voice .tr span{transition:none}
+#typ{left:48px;width:66px;height:38px;background:#232327;border-radius:19px 19px 19px 6px;display:flex;align-items:center;justify-content:center;gap:6px;opacity:0}
+#typ i{display:block;width:8px;height:8px;border-radius:50%;background:#9a9aa0}
+#inp{left:48px;top:668px;width:392px;height:46px;display:flex;align-items:center;gap:8px}
+#inp .fld{flex:1;height:44px;border-radius:22px;background:#1d1d21;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;padding:0 16px;font-size:17px;color:#fff;white-space:nowrap;overflow:hidden}
+#inp .fld .ph{color:rgba(255,255,255,.35)}
+#inp .sb{width:44px;height:44px;border-radius:50%;background:#2a2a2f;display:flex;align-items:center;justify-content:center;flex:none}
+#scrim{background:rgba(5,5,6,.72);opacity:0}
+.big{position:absolute;left:48px;width:392px;font-weight:900;letter-spacing:-.045em;line-height:1.02;opacity:0}
+.sub{position:absolute;left:48px;width:392px;font-size:20px;font-weight:650;letter-spacing:-.015em;line-height:1.25;opacity:0}
+.src{position:absolute;left:48px;width:392px;font-size:10.5px;color:rgba(255,255,255,.5);letter-spacing:.08em;line-height:1.5;opacity:0}
+/* ---------- facts ---------- */
+#facts{background:#0B0B0B;opacity:0}
+#wv1,#wv2{position:absolute;left:48px;width:392px;height:70px;display:flex;align-items:center;gap:2.9px}
+#wv1 i,#wv2 i{display:block;width:4.1px;border-radius:2px;background:#4a4a50}
+#sel{position:absolute;border:2px solid var(--y);border-radius:8px;box-shadow:0 0 18px rgba(255,212,0,.35);opacity:0}
+#sel b{position:absolute;left:50%;top:-30px;transform:translateX(-50%);font-family:JB,monospace;font-size:14px;color:var(--y);font-weight:500;white-space:nowrap}
+#ppl{position:absolute;left:48px;top:470px;width:392px;display:flex;justify-content:space-between}
+#ppl svg{width:31px;height:44px}
+#end{background:#0B0B0B;opacity:0}
+#flash{background:#fff;opacity:0;mix-blend-mode:screen}
+#vig{background:radial-gradient(ellipse at 50% 45%,transparent 58%,rgba(0,0,0,.45) 100%);pointer-events:none}
+.gb{position:absolute;left:0;right:0;opacity:0;mix-blend-mode:screen}
+</style></head><body>
+<!-- LOCK SCREEN -->
+<div id="lock" class="layer"><div class="glow"></div><div class="moon"></div>
+  <div id="date" class="abs">pátek 9. října</div>
+  <div id="clock" class="abs">23:47</div>
+  <div id="notif" class="abs"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z" fill="#0B0B0B"/></svg></div>
+    <div class="tx"><div class="r1"><span>Zprávy</span><span>teď</span></div><div class="r2">Kubíček ❤️</div>
+      <div class="r3"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></svg>Hlasová zpráva (0:04)</div></div></div>
+  <div id="hook" class="abs">Tvoje máma nepozná<br>tvůj hlas <span class="y">od AI.</span></div>
+  <div id="rip1" class="rip"></div>
+</div>
+<!-- CHAT -->
+<div id="chat" class="layer">
+  <div id="hdr" class="abs"><div class="bk">‹</div><div class="av">K</div><div class="nm"><b>Kubíček ❤️</b><span id="st">online</span></div></div>
+  <div id="msgs" class="abs"><div id="mi">
+    <div class="chip" style="top:14px">Dnes</div>
+    <div class="bub out" id="m1" style="top:40px">Napiš, až dojedeš ❤️<span class="tm">20:31 ✓✓</span></div>
+    <div class="bub in" id="m2" style="top:94px">Jasně mami 👍<span class="tm">20:33</span></div>
+    <div class="chip" style="top:148px">23:47</div>
+    <div id="voice" class="abs"><div class="row"><div class="pl" id="pl"></div><div class="wv" id="wv"></div><div class="du" id="du">0:04</div></div>
+      <div class="tr" id="tr"></div></div>
+    <div class="bub in" id="m3" style="top:352px;opacity:0">Pošli to sem, prosím 🙏<span class="tm">23:48</span></div>
+    <div class="bub in" id="m4" style="top:398px;opacity:0;font-family:JB,monospace;font-size:15px;letter-spacing:.02em">1234567890/0100<br><b style="font-family:IT;font-size:17px;letter-spacing:0">48 000 Kč</b><span class="tm" style="font-family:IT">23:48</span></div>
+    <div class="bub out" id="m5" style="top:470px;opacity:0">Jaké je naše rodinné heslo?<span class="tm">23:49 ✓✓</span></div>
+    <div id="typ" class="abs" style="top:524px"><i></i><i></i><i></i></div>
+  </div></div>
+  <div id="inp" class="abs"><div class="fld" id="fld"><span class="ph">Zpráva</span></div><div class="sb" id="sb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></div></div>
+  <div id="rip2" class="rip"></div><div id="rip3" class="rip"></div>
+</div>
+<!-- OVERLAY TEXTS ON CHAT -->
+<div id="scrim" class="layer"></div>
+<div id="r1" class="big" style="top:318px;font-size:47px">Tohle nebyl Kuba.</div>
+<div id="r2" class="big y" style="top:378px;font-size:72px">Byla to AI.</div>
+<div id="r3" class="sub" style="top:470px;color:rgba(255,255,255,.75)">Hlas, přepis i zprávy.</div>
+<div id="x1" class="big" style="top:300px;font-size:46px">Podvodník ho nezná.</div>
+<div id="x2" class="abs" style="left:48px;top:424px;width:392px;opacity:0">
+  <div style="display:flex;align-items:center;gap:14px;background:#1a1a1d;border:1px solid rgba(255,212,0,.45);border-radius:18px;padding:16px 18px;box-shadow:0 0 40px rgba(255,212,0,.12)">
+    <div style="width:46px;height:46px;border-radius:12px;background:var(--y);display:flex;align-items:center;justify-content:center;flex:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B0B0B" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div>
+    <div><div style="font-size:26px;font-weight:850;letter-spacing:-.03em;line-height:1.05">Domluvte si<br>rodinné heslo.</div><div style="font-size:16px;color:rgba(255,255,255,.75);margin-top:6px">Jedno slovo, které zná jen rodina.</div></div></div>
+  <div class="mono" style="font-size:10.5px;color:rgba(255,255,255,.5);margin-top:12px">Doporučuje i FBI · Ještě dnes u večeře</div></div>
+<!-- FACTS -->
+<div id="facts" class="layer">
+  <div id="f1t" class="big" style="top:176px;font-size:42px">Stačí 3 sekundy<br>jeho hlasu.</div>
+  <div class="mono src" id="f1a" style="top:300px;font-size:11px;color:rgba(255,255,255,.55)">Třeba z jeho videa</div>
+  <div id="wv1" style="top:350px"></div><div id="sel"><b>3 s</b></div>
+  <div id="f1k" class="mono src" style="top:452px;font-size:11px;color:var(--y)">AI klon</div>
+  <div id="wv2" style="top:472px"></div>
+  <div id="f1s" class="src mono" style="top:600px">McAfee (2023): 3 s nahrávky = 85% shoda hlasu</div>
+  <div id="f2n" class="big y" style="top:190px;font-size:118px;font-variant-numeric:tabular-nums">0 %</div>
+  <div id="f2t" class="sub" style="top:330px;font-size:27px;font-weight:800;letter-spacing:-.03em">lidí si není jistých,<br>že by klon poznalo.</div>
+  <div id="ppl"></div>
+  <div id="f2s" class="src mono" style="top:560px">McAfee, průzkum 7 000 lidí v 9 zemích</div>
+  <div id="f3l" class="sub" style="top:196px;color:rgba(255,255,255,.62)">Kyberpodvody v Česku letos</div>
+  <div id="f3n" class="big" style="top:236px;font-size:74px;white-space:nowrap;font-variant-numeric:tabular-nums">0,0 mld. Kč</div>
+  <div id="f3t" class="sub" style="top:340px">za 7 měsíců roku 2026<br><span class="y">meziročně +79 %</span></div>
+  <div id="f3s" class="src mono" style="top:430px">Zdroj: Česká bankovní asociace, září 2026</div>
+</div>
+<!-- END -->
+<div id="end" class="layer">
+  <div id="e1" class="big" style="top:286px;font-size:64px">Pošli to<br>mámě.</div>
+  <div id="e2" class="sub y" style="top:430px;font-size:28px;font-weight:800;letter-spacing:-.03em">Dřív, než jí zavolají oni.</div>
+  <div id="e3" class="abs" style="left:48px;top:628px;display:flex;align-items:center;gap:12px;font-size:18px;font-weight:800;letter-spacing:-.03em;opacity:0"></div>
+  <div id="e4" class="src mono" style="top:670px">Zdroje: McAfee 2023 · ČBA 2026 · FBI IC3</div>
+</div>
+<div id="glitch" class="layer" style="pointer-events:none"></div>
+<div id="flash" class="layer"></div>
+<div id="vig" class="layer"></div>
+<script>
+const FPS=30;const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3),e5=x=>1-Math.pow(1-clamp(x),5),ei=x=>Math.pow(clamp(x),3);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c1=1.7,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const lerp=(a,b,p)=>a+(b-a)*p;const $=id=>document.getElementById(id);
+function mul(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const op=(e,v)=>{e.style.opacity=v};
+function show(e,t,a,b,dy=14,d=.3){if(t<a||(b!=null&&t>=b+.25)){op(e,0);return}const p=eo((t-a)/d),q=b==null?0:clamp((t-b)/.25);op(e,p*(1-q));e.style.transform=`translateY(${(1-p)*dy-q*8}px)`}
+function slam(e,t,a,b,k=.3,d=.28){if(t<a||(b!=null&&t>=b+.25)){op(e,0);return}const p=e5((t-a)/d),q=b==null?0:clamp((t-b)/.25);op(e,clamp((t-a)/.06)*(1-q));e.style.transform=`scale(${1+k*(1-p)})`;e.style.transformOrigin='0 50%';e.style.filter=p<1?`blur(${(1-p)*3}px)`:'none'}
+function ripple(e,t,t0,x,y,size=70){const p=(t-t0)/.45;if(p<0||p>1){op(e,0);return}const s=size*(.3+.9*eo(p));Object.assign(e.style,{left:x-s/2+'px',top:y-s/2+'px',width:s+'px',height:s+'px'});op(e,.9*(1-p))}
+function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
+$('e3').innerHTML=uzel(20,'#fff')+'<span>Better Digital</span>';
+
+/* ---------- the voice message: words in sync with the synthesized voice (sfx.py uses the same table) ---------- */
+const V0=3.0,V1=7.3;
+const WORDS=[['Mami,',3.02,3.30],['to',3.42,3.52],['jsem',3.52,3.70],['já.',3.70,3.98],['Měl',4.18,4.34],['jsem',4.34,4.52],['nehodu.',4.52,4.98],
+ ['Potřebuju',5.16,5.52],['hned',5.52,5.72],['poslat',5.72,6.00],['peníze.',6.00,6.40],['Nemůžu',6.58,6.92],['volat.',6.92,7.28]];
+window.WORDS=WORDS;
+// waveform bars follow the speech envelope
+const NB=36,wv=$('wv'),bars=[];const RB=mul(5);
+for(let i=0;i<NB;i++){const tc=V0+(i+.5)/NB*(V1-V0);let a=.12;for(const[,s,e]of WORDS)if(tc>=s-.03&&tc<=e+.03)a=.45+.55*RB();const b=document.createElement('i');b.style.height=Math.round(6+a*26)+'px';wv.appendChild(b);bars.push(b)}
+const PLAY='<svg width="16" height="18" viewBox="0 0 16 18"><path d="M2 1.5v15l12.5-7.5z" fill="#0B0B0B"/></svg>',PAUSE='<svg width="16" height="18" viewBox="0 0 16 18"><rect x="2" y="1.5" width="4.2" height="15" rx="1" fill="#0B0B0B"/><rect x="9.8" y="1.5" width="4.2" height="15" rx="1" fill="#0B0B0B"/></svg>';
+// facts: waveforms + people
+const RW=mul(11),w1=$('wv1'),w2=$('wv2'),W1=[],W2=[],NW=56;for(let i=0;i<NW;i++){const h=8+Math.pow(RW(),1.4)*58*(.55+.45*Math.sin(i*.37)**2);const a=document.createElement('i');a.style.height=h+'px';w1.appendChild(a);W1.push(a);
+  const b=document.createElement('i');b.style.height=h+'px';b.style.background='#FFD400';b.style.opacity=0;w2.appendChild(b);W2.push(b)}
+const SEL0=20,SEL1=31;
+const PERSON=c=>`<svg viewBox="0 0 31 44"><circle cx="15.5" cy="9" r="7.5" fill="${c}"/><path d="M2 43c0-10 6-17 13.5-17S29 33 29 43z" fill="${c}"/></svg>`;
+const ppl=$('ppl');const PP=[];for(let i=0;i<10;i++){const d=document.createElement('div');d.innerHTML=PERSON('#3a3a3f');ppl.appendChild(d);PP.push(d)}
+// glitch bars
+const gl=$('glitch'),GB=[];for(let i=0;i<9;i++){const d=document.createElement('div');d.className='gb';gl.appendChild(d);GB.push(d)}
+
+const T_OPEN=1.72,T_GL=8.2,T_REV=8.62,T_FACTS=11.0,T_F2=13.3,T_F3=15.6,T_FIX=17.8,T_END=22.6,T_LOOP=25.55;
+window.DURATION=26;window.CUTS=[0,T_OPEN,T_GL,T_FACTS,T_FIX,T_END];
+const typed=(s,t,t0,t1)=>s.slice(0,Math.round(s.length*clamp((t-t0)/(t1-t0))));
+window.render=function(t){
+  const f=Math.floor(t*FPS+1e-6);
+  /* ---- lock screen (+ loop back at the end) ---- */
+  const lk=$('lock');const back_=eo((t-T_LOOP)/.4);
+  let lo=t<T_OPEN?1:1-eo((t-T_OPEN)/.35);if(t>=T_LOOP)lo=back_;op(lk,lo);
+  lk.style.filter=(t>=T_OPEN&&t<T_LOOP)?`blur(${eo((t-T_OPEN)/.35)*8}px)`:'none';
+  const bz=t<.55?Math.sin(t*95)*3.2*Math.exp(-t/.25):0;$('notif').style.transform=`translateX(${bz}px) scale(${t<T_OPEN||t>=T_LOOP?1:1+.06*eo((t-T_OPEN)/.35)})`;
+  op($('hook'),t<T_OPEN?1:(t>=T_LOOP?back_:1-eo((t-T_OPEN)/.2)));$('hook').style.transform=t<.18?`scale(${1.04-.04*e5(t/.18)})`:'none';
+  ripple($('rip1'),t,1.52,300,505);
+  /* ---- chat ---- */
+  const ch=$('chat');let co=0;
+  if(t>=T_OPEN-.05&&t<T_REV)co=eo((t-T_OPEN+.05)/.35);
+  else if(t>=T_REV&&t<T_FACTS)co=lerp(1,.17,eo((t-T_GL-.1)/.4))*(1-eo((t-(T_FACTS-.3))/.3));
+  else if(t>=T_FIX-.1&&t<T_END)co=eo((t-T_FIX+.1)/.35)*(t<20.45?1:lerp(1,.17,eo((t-20.45)/.35)))*(1-eo((t-(T_END-.25))/.25));
+  op(ch,co);
+  const inRev=t>=T_GL&&t<T_FACTS;const inFixDim=t>=20.45&&t<T_END;
+  ch.style.transform=t<T_REV?`translateY(${(1-eo((t-T_OPEN+.05)/.35))*24}px)`:'none';
+  let flt='none';
+  if(t>=T_GL&&t<T_REV){const k=f%3,s=6+((f*37)%11);flt=`drop-shadow(${s}px 0 0 rgba(255,0,70,.85)) drop-shadow(${-s}px 0 0 rgba(0,220,255,.85)) brightness(${1.2+.5*((f*7)%3)/2})`;ch.style.transform=`translate(${((f*53)%17)-8}px,${((f*31)%7)-3}px)`}
+  else if(inRev||inFixDim)flt=`blur(${inRev?5:4}px) grayscale(.6)`;
+  ch.style.filter=flt;
+  // chat state: fix scene shows the conversation again, scrolled, with the safe-word question
+  const fix=t>=T_FIX-.1;
+  $('mi').style.transform=`translateY(${fix?-lerp(0,118,eio((t-18.15)/.35)):0}px)`;
+  // voice message
+  const vp=clamp((t-V0)/(V1-V0));const playing=t>=V0&&t<V1;
+  const pl=$('pl');const ph=playing?PAUSE:PLAY;if(pl.innerHTML!==ph)pl.innerHTML=ph;
+  const vin=fix?1:eo((t-2.4)/.3);$('voice').style.opacity=vin;$('voice').style.transform=`scale(${fix?1:(.92+.08*back((t-2.4)/.35))*(1+.035*eio((t-V0)/(V1-V0))*(1-eo((t-7.35)/.4)))})`;$('voice').style.transformOrigin='0 100%';
+  bars.forEach((b,i)=>{b.style.background=(fix||i/NB<vp)?'#ffffff':'#5b5b62'});
+  const du='0:0'+Math.min(4,Math.floor(vp*4.3));$('du').textContent=playing?du:'0:04';
+  let h='<span class="lb">Přepis</span>';for(const[w,s,e]of WORDS){if(!fix&&t<s)break;const cur=!fix&&t>=s&&t<e+.05;h+=`<span style="color:${cur?'#FFD400':'#fff'}">${w}</span> `}
+  if($('tr').innerHTML!==h)$('tr').innerHTML=h;
+  ripple($('rip2'),t,2.86,88,188+174+33,60);
+  // follow-up messages
+  const pop=(e,a)=>{if(fix){op(e,1);e.style.transform='none';return}const p=clamp((t-a)/.25);op(e,t<a?0:clamp(p*3));e.style.transform=`scale(${t<a?.9:.9+.1*back(p)})`;e.style.transformOrigin='0 100%'};
+  pop($('m3'),7.42);pop($('m4'),7.72);
+  // input: mom types a reply → freeze; in the fix scene she asks for the safe word
+  const fld=$('fld');let it='',active=false;
+  if(!fix){if(t>=7.88){it=typed('Posílám, Kubí ❤️',t,7.88,8.13);active=true}}
+  else if(t<18.2){it=typed('Jaké je naše rodinné heslo?',t,T_FIX+.05,18.12);active=it.length>0}
+  const ih=it?it+(Math.floor(t*4)%2?'':'<span style="color:#FFD400">|</span>'):'<span class="ph">Zpráva</span>';if(fld.innerHTML!==ih)fld.innerHTML=ih;
+  $('sb').style.background=active?'#FFD400':'#2a2a2f';
+  ripple($('rip3'),t,fix?18.1:8.1,418,691,64);
+  const m5=$('m5');if(t>=18.2&&fix){const p=clamp((t-18.2)/.25);op(m5,clamp(p*3));m5.style.transform=`scale(${.9+.1*back(p)})`;m5.style.transformOrigin='100% 100%'}else op(m5,0);
+  // typing indicator: the "son" starts typing… and stops
+  const ty=$('typ');const tOn=t>=18.85&&t<20.05;op(ty,tOn?clamp((t-18.85)/.15)*(1-clamp((t-19.9)/.15)):0);
+  ty.querySelectorAll('i').forEach((d,i)=>{const ph2=Math.sin((t*7.5-i*.8));d.style.transform=`translateY(${-Math.max(0,ph2)*4}px)`;d.style.opacity=.5+.5*Math.max(0,ph2)});
+  $('st').textContent=(fix&&t>=20.1)?'naposledy online před chvílí':(t>=18.85&&t<20.05&&fix?'píše…':'online');
+  /* ---- overlays: reveal ---- */
+  op($('scrim'),0);
+  slam($('r1'),t,8.68,10.75,.35);slam($('r2'),t,9.5,10.75,.45);show($('r3'),t,10.0,10.75);
+  /* ---- facts ---- */
+  const fc=$('facts');op(fc,t<T_FACTS-.3||t>=T_FIX?0:eo((t-(T_FACTS-.3))/.3)*(1-eo((t-(T_FIX-.25))/.25)));
+  show($('f1t'),t,11.0,13.1,18);show($('f1a'),t,11.25,13.1);
+  const wvIn=eo((t-11.15)/.35);w1.style.opacity=t<13.1?wvIn:1-clamp((t-13.1)/.25);
+  W1.forEach((b,i)=>{const inSel=i>=SEL0&&i<=SEL1;b.style.background=(inSel&&t>=11.55)?'#FFD400':'#4a4a50';b.style.transform=`scaleY(${.2+.8*eo((t-11.15-i*.006)/.3)})`});
+  const sel=$('sel');const b0=W1[SEL0],b1=W1[SEL1];const x0=b0.offsetLeft+48-7,x1=b1.offsetLeft+48+b1.offsetWidth+7;
+  Object.assign(sel.style,{left:x0+'px',top:'340px',width:(x1-x0)+'px',height:'90px'});op(sel,t<11.5||t>=13.35?0:eo((t-11.5)/.25)*(1-clamp((t-13.1)/.25)));
+  W2.forEach((b,i)=>{const d=Math.abs(i-(SEL0+SEL1)/2);const tt=11.95+d*.022;b.style.opacity=t<13.1?eo((t-tt)/.25):1-clamp((t-13.1)/.25);b.style.transform=`scaleY(${eo((t-tt)/.3)})`});
+  show($('f1k'),t,12.0,13.1);show($('f1s'),t,11.7,13.1);
+  // fact 2
+  show($('f2n'),t,13.3,15.4,16);const n2=Math.round(70*eio((t-13.4)/.7));$('f2n').textContent=n2+' %';show($('f2t'),t,13.5,15.4);
+  ppl.style.opacity=t<13.55||t>=15.65?0:eo((t-13.55)/.3)*(1-clamp((t-15.4)/.25));
+  PP.forEach((d,i)=>{const on=i<7&&t>=13.75+i*.09;const c=on?'#FFD400':'#3a3a3f';if(d.dataset.c!==c){d.innerHTML=PERSON(c);d.dataset.c=c}d.style.transform=`scale(${on?1+.25*Math.exp(-(t-13.75-i*.09)/.1):1})`});
+  show($('f2s'),t,13.8,15.4);
+  // fact 3
+  show($('f3l'),t,15.6,17.6);show($('f3n'),t,15.68,17.6,16);
+  const n3=1.9*eio((t-15.75)/.9);$('f3n').textContent=n3.toFixed(1).replace('.',',')+' mld. Kč';$('f3n').style.color=t>=16.65?'#FFD400':'#fff';
+  show($('f3t'),t,16.05,17.6);show($('f3s'),t,16.25,17.6);
+  /* ---- fix overlays ---- */
+  slam($('x1'),t,20.5,22.4,.3);
+  const x2=$('x2');if(t<21.25||t>=22.6){op(x2,0)}else{const p=e5((t-21.25)/.4);op(x2,p*(1-clamp((t-22.4)/.2)));x2.style.transform=`translateY(${(1-p)*20}px)`}
+  /* ---- end ---- */
+  const en=$('end');op(en,t<T_END-.1?0:(t<T_LOOP?eo((t-T_END+.1)/.3):1-back_));
+  slam($('e1'),t,22.7,null,.3);show($('e2'),t,23.35,null);show($('e3'),t,23.9,null);show($('e4'),t,24.1,null);
+  /* ---- glitch + flash ---- */
+  const gOn=t>=T_GL&&t<T_REV+.05;
+  GB.forEach((d,i)=>{if(!gOn){op(d,0);return}const r=mul(f*13+i*7)();const r2=mul(f*7+i*31)();
+    Object.assign(d.style,{top:(130+r*600)+'px',height:(4+r2*26)+'px',background:i%3==0?'#FFD400':(i%3==1?'#00e0ff':'#ffffff'),transform:`translateX(${(r2-.5)*80}px)`});op(d,.25+.6*r)});
+  let fl=0;for(const[a,k,dc]of[[T_GL,.55,.06],[8.68,.18,.1],[9.5,.22,.1],[20.5,.12,.12],[22.7,.1,.12]])if(t>=a)fl=Math.max(fl,k*Math.exp(-(t-a)/dc));op($('flash'),fl);
+};
+const FONTS=['900 20px IT','800 20px IT','700 20px IT','600 20px IT','300 20px IT','20px JB'];
+Promise.all(FONTS.map(s=>document.fonts.load(s,'ěščřžýáíéúůĚŠČŘŽ‹')))
+ .then(()=>document.fonts.ready).then(()=>{window.READY=true;render(0)});
+</script></body></html>
