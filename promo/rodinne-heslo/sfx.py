@@ -1,13 +1,13 @@
-"""„Tvoje máma nepozná tvůj hlas od AI.“ – zvuk (27,4 s), časy podle reel.html.
-Hlasovka je dětský hlas (voice/voice.wav, viz voice/make_voice.py), časy slov sedí na přepis v reel.html.
-Všechno od 7,3 s se posouvá o SHIFT (1,4 s), než hlas doběhne – stejně jako v reel.html.
+"""„Tvoje máma nepozná tvůj hlas od AI.“ – zvuk (28 s), časy podle reel.html.
+Hlasovka je šeptající vyděšené dítě (voice/voice.wav, viz voice/make_voice.py), časy slov sedí na přepis v reel.html.
+Všechno od 7,3 s se posouvá o SHIFT (2 s), než hlas doběhne – stejně jako v reel.html.
 Pak glitch, napětí pod fakty, ticho, když „syn“ přestane psát, a rozřešení v dur.
 usage: python3 sfx.py out.wav"""
 import sys
 import numpy as np, wave
 from scipy.signal import fftconvolve, butter, sosfilt, lfilter
 
-SR = 48000; SHIFT = 1.4; HOLD = 7.3; DUR = 26 + SHIFT; N = int(DUR * SR)   # events from 7.3 s on are delayed by SHIFT
+SR = 48000; SHIFT = 2; HOLD = 7.3; DUR = 26 + SHIFT; N = int(DUR * SR)   # events from 7.3 s on are delayed by SHIFT
 rng = np.random.default_rng(909)
 hz = lambda n: 440 * 2 ** ((n - 69) / 12)
 
@@ -15,9 +15,9 @@ hz = lambda n: 440 * 2 ** ((n - 69) / 12)
 class Bus:
     def __init__(s): s.L = np.zeros(N); s.R = np.zeros(N)
 
-    def add(s, sig, at, g=1.0, pan=0.0):
+    def add(s, sig, at, g=1.0, pan=0.0, hold=False):          # hold=True: čas výstupu (uvnitř zastaveného obrazu), bez posunu
         i = int(round(at * SR))
-        if at >= HOLD: i = int(round((at + SHIFT) * SR))
+        if at >= HOLD and not hold: i = int(round((at + SHIFT) * SR))
         if i >= N: return
         if i < 0: sig = sig[-i:]; i = 0
         j = min(N, i + len(sig)); seg = sig[:j - i] * g
@@ -40,9 +40,9 @@ def env(d, a, dec, rel=None):
     return e
 
 
-def put(bus, wet, sig, at, g, pan=0.0, w=.3):
-    bus.add(sig, at, g, pan)
-    if w: wet.add(sig, at, g * w, pan)
+def put(bus, wet, sig, at, g, pan=0.0, w=.3, hold=False):
+    bus.add(sig, at, g, pan, hold)
+    if w: wet.add(sig, at, g * w, pan, hold)
 
 
 def sweep_bp(x, f0, f1, q=1.0, blk=256):
@@ -59,8 +59,8 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 with wave.open(os.path.join(HERE, 'voice', 'voice.wav')) as w_:
     voice = np.frombuffer(w_.readframes(w_.getnframes()), np.int16).astype(float) / 32768
-FILE0 = 2.66                                    # = VF v reel.html: hned po ťuknutí na Přehrát (2.62 s), první slovo ve 2.841 s
-Vb.add(voice, FILE0, 1.0, 0)
+FILE0 = 2.66                                    # = VF v reel.html: hned po ťuknutí na Přehrát (2.62 s), první slovo ve 2.985 s
+Vb.add(voice, FILE0, 1.7, 0)                    # šepot má nízkou hustotu energie -> +4,6 dB, ať je nad hudbou
 
 # ================================================================ instruments
 def tick_ui(at, g=.3, f=2600):
@@ -120,10 +120,10 @@ def pulse(at, g=1.0):
     s = np.sin(2 * np.pi * np.cumsum(f) / SR) * env(d, .002, .18) + lp(noise(d), 1000) * env(d, .001, .01) * .4
     put(X, Xw, s, at, g, 0, .15)
 
-def heartbeat(at, g=1.0):
+def heartbeat(at, g=1.0, hold=False):
     for dt, gg, f00 in ((0, 1, 58), (.16, .7, 52)):
         d = .45; t = T(d); f = f00 + 28 * np.exp(-t / .03)
-        s = np.sin(2 * np.pi * np.cumsum(f) / SR) * env(d, .003, .09); put(X, Xw, s, at + dt, g * gg, 0, .2)
+        s = np.sin(2 * np.pi * np.cumsum(f) / SR) * env(d, .003, .09); put(X, Xw, s, at + dt, g * gg, 0, .2, hold)
 
 # ================================================================ TIMELINE
 # lock screen: vibration + chime, quiet unease
@@ -135,14 +135,17 @@ tick_ui(1.52, .35); whoosh(1.88, .35, .12, 3000, 500)
 # chat: message bubble, tap on play, the voice
 pop(2.42, 820, .22); tick_ui(2.62, .3); tick_ui(FILE0, .12, 3200)
 pad(2.5, [50, 57, 62, 65], 5.6 + SHIFT, .04, 1.0, .8)              # D minor, low and soft under the voice
-for k in range(5): heartbeat(3.1 + k * .86, .35 + .05 * k)
+import json as _j
+VEND_WORDS = FILE0 + _j.load(open(os.path.join(HERE, 'voice', 'words.json')))['lastWordEnd']
+for k in range(12):                                                   # tlukot srdce pod celou hlasovkou (i v zastaveném obrazu)
+    if 3.1 + k * .86 < VEND_WORDS: heartbeat(3.1 + k * .86, min(.38, .24 + .03 * k), hold=True)
 pop(7.42, 760, .22); pop(7.72, 760, .2)
 tt = 7.88
 while tt < 8.13: key(tt, .22); tt += .035 * rng.uniform(.7, 1.3)
 tick_ui(8.1, .3)
 # GLITCH: crack, stutter of the voice, tape-stop, shock silence
 d = .025; put(X, Xw, bp(noise(d), 800, 9000) * env(d, .0003, .01), 8.2, .7, 0, .1)
-seg = voice[int(4.38 * SR):int(4.38 * SR) + int(.05 * SR)]            # a slice of „peníze“
+seg = voice[int(4.8 * SR):int(4.8 * SR) + int(.05 * SR)]            # a slice of „peníze“
 for k in range(8):
     rate = 1 - .07 * k; s = np.interp(np.arange(0, len(seg) - 1, rate), np.arange(len(seg)), seg)
     s = np.round(s * 7) / 7; put(X, Xw, s * np.hanning(len(s)), 8.22 + k * .05, .55, (-1) ** k * .4, .1)
@@ -193,7 +196,7 @@ ML = M.L + fftconvolve(Mw.L, IRL)[:N]; MR = M.R + fftconvolve(Mw.R, IRR)[:N]
 XL = X.L + fftconvolve(Xw.L, IRL)[:N]; XR = X.R + fftconvolve(Xw.R, IRR)[:N]
 VL = Vb.L + fftconvolve(Vb.L, IRL)[:N] * .08; VR = Vb.R + fftconvolve(Vb.R, IRR)[:N] * .08
 tt_ = np.arange(N) / SR
-duck = 1 - .55 * np.clip((tt_ - 2.45) / .1, 0, 1) * np.clip((HOLD + SHIFT + .1 - tt_) / .1, 0, 1)   # music ducks under the voice
+duck = 1 - .68 * np.clip((tt_ - 2.45) / .1, 0, 1) * np.clip((HOLD + SHIFT + .1 - tt_) / .1, 0, 1)   # music ducks under the voice
 L_ = ML * duck + XL + VL; R_ = MR * duck + XR + VR
 silence = 1 - np.clip((tt_ - 20.0 - SHIFT) / .05, 0, 1) * np.clip((20.45 + SHIFT - tt_) / .05, 0, 1) * .85  # the dramatic pause (20.0–20.45 in t)
 L_ *= silence; R_ *= silence

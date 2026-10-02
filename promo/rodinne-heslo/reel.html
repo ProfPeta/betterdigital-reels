@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="cs"><head><meta charset="utf-8">
-<!-- „Tvoje máma nepozná tvůj hlas od AI.“ – varianta B (bez natáčení). TikTok/Reels 540×960 CSS px (render 2×), 30 fps, 27,4 s.
+<!-- „Tvoje máma nepozná tvůj hlas od AI.“ – varianta B (bez natáčení). TikTok/Reels 540×960 CSS px (render 2×), 30 fps, 28 s.
      Kompozice je vycentrovaná: obsah ve sloupci x 74–466 (symetrické okraje 74 px), y 130–740. Konec plynule navazuje na první snímek (smyčka).
      Hlas: voice/voice.wav (od 2,66 s, hned po ťuknutí na Přehrát). Časy slov ve WORDS jsou z voice/words.json + 2,66 s.
-     Obraz stojí v t = 7,3 s 1,4 s, než hlas doběhne (SHIFT). -->
+     Obraz stojí v t = 7,3 s 2 s, než hlas doběhne (SHIFT). -->
 <style>
 @font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
 @font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
@@ -84,7 +84,7 @@ body{font-family:IT,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;pos
   <div id="clock" class="abs">23:47</div>
   <div id="notif" class="abs"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z" fill="#0B0B0B"/></svg></div>
     <div class="tx"><div class="r1"><span>Zprávy</span><span>teď</span></div><div class="r2">Kubíček ❤️</div>
-      <div class="r3"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></svg>Hlasová zpráva (0:06)</div></div></div>
+      <div class="r3"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></svg>Hlasová zpráva (0:07)</div></div></div>
   <div id="hook" class="abs">Tvoje máma nepozná<br>tvůj hlas <span class="y">od AI.</span></div>
   <div id="rip1" class="rip"></div>
 </div>
@@ -96,7 +96,7 @@ body{font-family:IT,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;pos
     <div class="bub out" id="m1" style="top:40px">Napiš, až dojedeš ❤️<span class="tm">20:31 ✓✓</span></div>
     <div class="bub in" id="m2" style="top:94px">Jasně mami 👍<span class="tm">20:33</span></div>
     <div class="chip" style="top:148px">23:47</div>
-    <div id="voice" class="abs"><div class="row"><div class="pl" id="pl"></div><div class="wv" id="wv"></div><div class="du" id="du">0:06</div></div>
+    <div id="voice" class="abs"><div class="row"><div class="pl" id="pl"></div><div class="wv" id="wv"></div><div class="du" id="du">0:07</div></div>
       <div class="tr" id="tr"></div></div>
     <div class="bub in" id="m3" style="top:352px;opacity:0">Pošli to sem, prosím 🙏<span class="tm">23:48</span></div>
     <div class="bub in" id="m4" style="top:398px;opacity:0;font-family:JB,monospace;font-size:15px;letter-spacing:.02em">1234567890/0100<br><b style="font-family:IT;font-size:17px;letter-spacing:0">48 000 Kč</b><span class="tm" style="font-family:IT">23:48</span></div>
@@ -159,12 +159,12 @@ function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}"
 $('e3').innerHTML=uzel(20,'#fff')+'<span>Better Digital</span>';
 
 /* ---------- the voice message: words in sync with the synthesized voice (sfx.py uses the same table) ---------- */
-const VF=2.66,V0=2.841,V1=8.7,VTOT=6;   // hlas: voice/voice.wav od VF (ťuknutí na Přehrát v 2.62 s), první slovo ve V0, konec ve V1, délka zprávy 0:06
-const WORDS=[["Mami,", 2.841, 3.469], ["to", 3.469, 3.598], ["jsem", 3.598, 3.883], ["já.", 3.883, 4.252], ["Měl", 4.352, 4.751], ["jsem", 4.751, 5.09], ["nehodu.", 5.09, 5.607], ["Potřebuju", 5.797, 6.5], ["hned", 6.5, 6.924], ["peníze.", 6.924, 7.433], ["Nemůžu", 7.503, 8.131], ["volat.", 8.131, 8.67]];
+const VF=2.66,V0=2.985,V1=9.3,VEND=9.6,VTOT=7;   // hlas: voice/voice.wav od VF (ťuknutí na Přehrát v 2.62 s), první slovo ve V0, poslední do V1 (pak obraz pokračuje), nahrávka do VEND, délka zprávy 0:07
+const WORDS=[["Mami,", 2.985, 3.549], ["to", 3.549, 3.693], ["jsem", 3.693, 3.973], ["já.", 3.973, 4.378], ["Měl", 4.538, 4.987], ["jsem", 4.987, 5.376], ["nehodu.", 5.376, 5.945], ["Potřebuju", 6.205, 6.869], ["hned", 6.869, 7.338], ["peníze.", 7.338, 7.869], ["Nemůžu", 8.109, 8.732], ["volat.", 8.732, 9.219]];
 window.WORDS=WORDS;
 // waveform bars follow the speech envelope
 const NB=36,wv=$('wv'),bars=[];const RB=mul(5);
-for(let i=0;i<NB;i++){const tc=VF+(i+.5)/NB*(V1-VF);let a=.12;for(const[,s,e]of WORDS)if(tc>=s-.03&&tc<=e+.03)a=.45+.55*RB();const b=document.createElement('i');b.style.height=Math.round(6+a*26)+'px';wv.appendChild(b);bars.push(b)}
+for(let i=0;i<NB;i++){const tc=VF+(i+.5)/NB*(VEND-VF);let a=.12;for(const[,s,e]of WORDS)if(tc>=s-.03&&tc<=e+.03)a=.45+.55*RB();const b=document.createElement('i');b.style.height=Math.round(6+a*26)+'px';wv.appendChild(b);bars.push(b)}
 const PLAY='<svg width="16" height="18" viewBox="0 0 16 18"><path d="M2 1.5v15l12.5-7.5z" fill="#0B0B0B"/></svg>',PAUSE='<svg width="16" height="18" viewBox="0 0 16 18"><rect x="2" y="1.5" width="4.2" height="15" rx="1" fill="#0B0B0B"/><rect x="9.8" y="1.5" width="4.2" height="15" rx="1" fill="#0B0B0B"/></svg>';
 // facts: waveforms + people
 const RW=mul(11),w1=$('wv1'),w2=$('wv2'),W1=[],W2=[],NW=56;for(let i=0;i<NW;i++){const h=8+Math.pow(RW(),1.4)*58*(.55+.45*Math.sin(i*.37)**2);const a=document.createElement('i');a.style.height=h+'px';w1.appendChild(a);W1.push(a);
@@ -176,9 +176,9 @@ const ppl=$('ppl');const PP=[];for(let i=0;i<10;i++){const d=document.createElem
 const gl=$('glitch'),GB=[];for(let i=0;i<9;i++){const d=document.createElement('div');d.className='gb';gl.appendChild(d);GB.push(d)}
 
 const T_OPEN=1.72,T_GL=8.2,T_REV=8.62,T_FACTS=11.0,T_F2=13.3,T_F3=15.6,T_FIX=17.8,T_END=22.6,T_LOOP=25.55;
-window.DURATION=27.4;window.CUTS=[0,T_OPEN,T_GL,T_FACTS,T_FIX,T_END];
+window.DURATION=28;window.CUTS=[0,T_OPEN,T_GL,T_FACTS,T_FIX,T_END];
 const typed=(s,t,t0,t1)=>s.slice(0,Math.round(s.length*clamp((t-t0)/(t1-t0))));
-window.render=function(T0){const SHIFT=1.4;const t=T0<=7.3?T0:(T0<7.3+SHIFT?7.3:T0-SHIFT);
+window.render=function(T0){const SHIFT=2;const t=T0<=7.3?T0:(T0<7.3+SHIFT?7.3:T0-SHIFT);
   const f=Math.floor(t*FPS+1e-6);
   /* ---- lock screen (+ loop back at the end) ---- */
   const lk=$('lock');const back_=eo((t-T_LOOP)/.4);
@@ -204,9 +204,9 @@ window.render=function(T0){const SHIFT=1.4;const t=T0<=7.3?T0:(T0<7.3+SHIFT?7.3:
   const scr=fix?lerp(0,118,eio((t-18.15)/.35)):0;$('mi').style.transform=`translateY(${-scr}px)`;
   {const fd=Math.min(30,scr)/1;const m=fd>.5?`linear-gradient(to bottom,transparent 0,#000 ${fd.toFixed(1)}px)`:'none';$('msgs').style.webkitMaskImage=m;$('msgs').style.maskImage=m;}
   // voice message
-  const vp=clamp((T0-VF)/(V1-VF));const playing=T0>=VF&&T0<V1;
+  const vp=clamp((T0-VF)/(VEND-VF));const playing=T0>=VF&&T0<VEND;
   const pl=$('pl');const ph=playing?PAUSE:PLAY;if(pl.innerHTML!==ph)pl.innerHTML=ph;
-  const vin=fix?1:eo((t-2.4)/.3);$('voice').style.opacity=vin;$('voice').style.transform=`scale(${fix?1:(.92+.08*back((t-2.4)/.35))*(1+.035*eio((T0-VF)/(V1-VF))*(1-eo((T0-V1-.05)/.4)))})`;$('voice').style.transformOrigin='0 100%';
+  const vin=fix?1:eo((t-2.4)/.3);$('voice').style.opacity=vin;$('voice').style.transform=`scale(${fix?1:(.92+.08*back((t-2.4)/.35))*(1+.035*eio((T0-VF)/(VEND-VF))*(1-eo((T0-VEND-.05)/.4)))})`;$('voice').style.transformOrigin='0 100%';
   bars.forEach((b,i)=>{b.style.background=(fix||i/NB<vp)?'#ffffff':'#5b5b62'});
   const du='0:0'+Math.min(VTOT,Math.max(0,Math.floor(T0-VF)));$('du').textContent=playing?du:'0:0'+VTOT;
   let h='<span class="lb">Přepis</span>';for(const[w,s,e]of WORDS){if(!fix&&T0<s)break;const cur=!fix&&T0>=s&&T0<e+.05;h+=`<span style="color:${cur?'#FFD400':'#fff'}">${w}</span> `}

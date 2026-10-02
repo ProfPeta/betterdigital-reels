@@ -1,55 +1,63 @@
-"""Hlasovka „Kubíčka“: dětský, přirozeně znějící hlas jako hlasová zpráva nahraná telefonem venku v noci.
+"""Hlasovka „Kubíčka“ jako skutečná hlasová zpráva z telefonu: vyděšené dítě, které nemůže mluvit nahlas.
 
-1. Neuronové TTS Piper cs_CZ-jirka-medium (offline přes sherpa-onnx). Pro každou větu se vygeneruje několik variant
-   s živější prozodií (vyšší noise_scale) a vybere se nejvýraznější intonace bez úletů výšky.
-2. Časy slov: DTW zarovnání věty s toutéž větou složenou ze samostatně vyslovených slov (MFCC), takže přepis
-   v reel.html sedí na hlas i uvnitř vět.
-3. Převod na dětský hlas vokodérem WORLD (časování se nemění): výška ~265 Hz, formanty ×1,27 (hlasové ústrojí
-   zhruba desetiletého kluka), širší melodie (×1,3), dýchavost ve výškách, jemné chvění hlasu, „Mami“ jako zavolání.
-4. Rytmus: různě dlouhé pauzy a roztřesené nádechy mezi větami.
-5. Zvuk telefonu: EQ mikrofonu, jemná komprese, tichá ulice, krátký prostor.
+Styly (--style):
+  whisper  šepot (výchozí). Bez hlasivek, takže nezbude syntetická intonace ani „vokodérový“ bzukot, který
+           u převodu dospělého TTS na dětský hlas zní uměle. Sedí na „Nemůžu volat.“ a podvodníci šepot
+           i pláč používají, protože se hlas hůř pozná.
+  hushed   přidušený, dýchavý dětský hlas (trochu hlasivek, hodně vzduchu).
+  voice    normální dětský hlas (WORLD: ~265 Hz, formanty ×1,27).
+
+Postup:
+1. Neuronové TTS Piper cs_CZ-jirka-medium (offline přes sherpa-onnx). Pro každou větu se vygeneruje 8 variant.
+2. Převod vokodérem WORLD (časování se nemění): formanty ×1,25 (hlasové ústrojí zhruba desetiletého dítěte),
+   podle stylu šepot / dýchavý hlas / hlas, chvění strachem.
+3. Kontrola srozumitelnosti Whisperem (volitelně, --asr). Nesrozumitelná varianta se nahradí další v pořadí.
+4. Časy slov: DTW zarovnání věty s toutéž větou složenou ze samostatně vyslovených slov (MFCC).
+5. Lidské zvuky: šustnutí telefonu na začátku a na konci, roztřesené nádechy, popotáhnutí nosem, výdech.
+6. Telefon: EQ mikrofonu, automatické zesílení (komprese, víc slyšet okolí), tichá ulice, kodek Opus 24 kb/s
+   jako u hlasových zpráv v messengerech.
 
 Výstup: voice.wav (48 kHz mono) a words.json (časy slov od začátku souboru, pro přepis v reel.html).
-Model: https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-cs_CZ-jirka-medium.tar.bz2
-usage: python3 make_voice.py <složka s modelem vits-piper-cs_CZ-jirka-medium> [<složka sherpa-onnx-whisper-turbo>]
-       S Whisperem (https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-whisper-turbo.tar.bz2)
-       se každá věta po převodu ověří přepisem a nesrozumitelná varianta se nahradí další v pořadí.
+Modely: https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-cs_CZ-jirka-medium.tar.bz2
+        https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-whisper-turbo.tar.bz2
+usage: python3 make_voice.py <model TTS> [--asr <sherpa-onnx-whisper-turbo>] [--style whisper|hushed|voice] [--out <složka>]
 Pozn.: VITS dává při každém běhu jiné varianty, zdrojem pravdy je uložený voice.wav.
 """
-import json, os, re, sys
+import argparse, json, os, re, subprocess, sys, tempfile
 import numpy as np, soundfile as sf, pyworld as pw, librosa
 from scipy.signal import butter, sosfilt, resample_poly, fftconvolve
 
-D = sys.argv[1].rstrip('/') + '/'
 HERE = os.path.dirname(os.path.abspath(__file__))
+A = argparse.ArgumentParser()
+A.add_argument('tts'); A.add_argument('--asr'); A.add_argument('--out', default=HERE)
+A.add_argument('--style', default='whisper', choices=['whisper', 'hushed', 'voice']); A.add_argument('--seed', type=int, default=7)
+ARGS = A.parse_args()
+D = ARGS.tts.rstrip('/') + '/'; STYLE = ARGS.style
 SR = 48000
-#        text v přepisu            text pro TTS                                   rychlost  (pauza po větě v s, nádech?)
-SENT = [('Mami, to jsem já.',       'Mamí, to sem já.',                            1.12,   (.10, False)),
-        ('Měl jsem nehodu.',        'Měl sem nehodu.',                             1.20,   (.19, True)),
-        ('Potřebuju hned peníze.',  'Potřebuju hned peníze.',                      1.22,   (.07, False)),
-        ('Nemůžu volat.',           'Nemůžu volat.',                               1.18,   None)]
+#        text v přepisu            text pro TTS              rychlost  co následuje po větě (druh, délka v s)
+SENT = [('Mami, to jsem já.',       'Mamí, to sem já.',       1.12,   ('pause', .16)),
+        ('Měl jsem nehodu.',        'Měl sem nehodu.',        1.18,   ('shaky', .26)),
+        ('Potřebuju hned peníze.',  'Potřebuju hned peníze.', 1.20,   ('sniff', .24)),
+        ('Nemůžu volat.',           'Nemůžu volat.',          1.15,   None)]
 # Pozn.: Piper vyslovuje „jsem“ s j („Měli jsem“, „to i sem“) a krátké „Mami“ zní jako „Máme“. Hovorové „sem“ a protažené
 #       „Mamí“ (dítě volá mámu) znějí přirozeněji a přepisují se správně. V přepisu ve videu zůstává spisovný text.
 N_CAND = 8                 # variant TTS na větu
-F0_TARGET = 262.0          # Hz, medián výšky (kluci 8–11 let ~240–270 Hz)
-FORMANT = 1.27             # posun formantů (dospělý muž -> dítě ~1,25–1,35; žena ~1,15)
-RANGE = 1.30               # rozšíření melodie kolem trendu věty
-BREATHY = .28              # přidaná dýchavost nad ~1,5 kHz
+F0_TARGET = 262.0          # Hz, medián výšky pro styl voice (kluci 8–11 let ~240–270 Hz)
+FORMANT = 1.25             # posun formantů (dospělý muž -> dítě ~1,25–1,35; žena ~1,15)
+RANGE = 1.30               # rozšíření melodie kolem trendu věty (voice)
 FP = 5.0                   # WORLD frame period (ms)
-rng = np.random.default_rng(7)
+rng = np.random.default_rng(ARGS.seed)
 
 import sherpa_onnx
-cfg = sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(vits=sherpa_onnx.OfflineTtsVitsModelConfig(
+tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(vits=sherpa_onnx.OfflineTtsVitsModelConfig(
     model=D + 'cs_CZ-jirka-medium.onnx', lexicon='', data_dir=D + 'espeak-ng-data', tokens=D + 'tokens.txt',
-    noise_scale=.8, noise_scale_w=1.0), num_threads=2), max_num_sentences=1)
-tts = sherpa_onnx.OfflineTts(cfg)
+    noise_scale=.8, noise_scale_w=1.0), num_threads=2), max_num_sentences=1))
 FS = 22050                 # nativní vzorkovací frekvence modelu
 ASR = None
-if len(sys.argv) > 2:
-    W = sys.argv[2].rstrip('/') + '/'
+if ARGS.asr:
+    W = ARGS.asr.rstrip('/') + '/'
     ASR = sherpa_onnx.OfflineRecognizer.from_whisper(encoder=W + 'turbo-encoder.int8.onnx', decoder=W + 'turbo-decoder.int8.onnx',
                                                      tokens=W + 'turbo-tokens.txt', language='cs', task='transcribe', num_threads=2)
-
 
 EQUIV = {'sem': 'jsem', 'potřebuji': 'potřebuju', 'mamí': 'mami'}   # hovorové a spisovné tvary jsou pro kontrolu totéž
 def norm(s): return ' '.join(EQUIV.get(w, w) for w in re.sub(r'[^\w\s]', ' ', s.lower()).split())
@@ -85,9 +93,9 @@ def candidate(text, speed):
 
 
 def rank(cands):
-    """Pořadí: nejživější intonace bez úletů výšky (mírně preferuje svižnější variantu), pak ostatní."""
+    """Bez úletů výšky. Šepot: nejsvižnější varianta. Hlas: nejživější intonace (mírně preferuje svižnější)."""
     med = np.median([c['dur'] for c in cands])
-    score = lambda c: c['sd'] - 2.0 * (c['dur'] / med - 1)
+    score = (lambda c: -c['dur']) if STYLE == 'whisper' else (lambda c: c['sd'] - 2.0 * (c['dur'] / med - 1))
     ok = [c for c in cands if abs(c['dur'] / med - 1) < .12 and c['rng'] < 13 and c['jump'] < 7]
     ids = {id(c) for c in ok}
     return sorted(ok, key=score, reverse=True) + sorted([c for c in cands if id(c) not in ids], key=score, reverse=True)
@@ -118,99 +126,158 @@ def warp(rows, alpha):
     return np.array([np.interp(src, k, r) for r in rows])
 
 
-def kid(x, ratio, first_word_boost=0.0, fw_len=.36):
-    """WORLD: výška, melodie, formanty, dýchavost, chvění. Délka a časování zůstávají."""
+def smooth(x, n): return np.convolve(x, np.ones(n) / n, 'same')
+
+
+def convert(x, ratio, first_word_boost=0.0, fw_len=.36):
+    """WORLD: dětské formanty + styl (šepot / dýchavý hlas / hlas) + chvění strachem. Délka a časování zůstávají."""
     f0, t = pw.harvest(x, FS, f0_floor=70, f0_ceil=420, frame_period=FP)
     sp = pw.cheaptrick(x, f0, t, FS); ap = pw.d4c(x, f0, t, FS)
-    v = f0 > 0
-    lf = np.log2(np.where(v, f0, 1.0))
-    tv = t[v]; A = np.vstack([tv, np.ones_like(tv)]).T; coef = np.linalg.lstsq(A, lf[v], rcond=None)[0]
-    trend = np.vstack([t, np.ones_like(t)]).T @ coef
-    lf2 = trend + (lf - trend) * RANGE + np.log2(ratio)
-    if first_word_boost:                                    # „Mami“ jako zavolání: o kousek výš, plynule
-        on = t[v][0]; w = np.clip((t - on) / .06, 0, 1) * np.clip((on + fw_len - t) / .12, 0, 1)
-        lf2 += first_word_boost / 12 * w
-    n = len(t)                                              # jemné chvění: tremolo ~5,8 Hz + jitter
-    trem = .0095 * np.sin(2 * np.pi * (5.8 + .4 * np.sin(2 * np.pi * .7 * t)) * t + rng.uniform(0, 6))
-    jit = np.convolve(rng.standard_normal(n), np.ones(6) / 6, 'same') * .007
-    f0n = np.where(v, 2 ** lf2 * (1 + trem + jit), 0.0)
-    sp2 = np.exp(warp(np.log(sp + 1e-12), FORMANT))
-    ap2 = warp(ap, FORMANT)
+    v = f0 > 0; n = len(t)
     freqs = np.arange(sp.shape[1]) * FS / ((sp.shape[1] - 1) * 2)
-    b = BREATHY * np.clip((freqs - 1500) / 4500, 0, 1)
-    ap2 = np.clip(1 - (1 - ap2) * (1 - b), 0, 1)
+    sp2 = np.exp(warp(np.log(sp + 1e-12), FORMANT)); ap2 = warp(ap, FORMANT)
+    vg = smooth(v.astype(float), 9)                                   # „znělost“ snímku, plynule
+    if STYLE == 'whisper':
+        f0n = np.zeros(n); ap2 = np.ones_like(ap2)
+        tilt = np.interp(freqs, [0, 250, 500, 900, 1500, 3000, 5000, 7000, 11025], [-26, -22, -12, -4, 0, 2, 3, 1, -3])
+        sp2 *= 10 ** (tilt / 10)                                       # šepot nemá basy hlasivek, víc vzduchu ve výškách
+        sp2 *= 10 ** (-7 * vg / 10)[:, None]                           # samohlásky v šepotu slabší vůči sykavkám
+    else:
+        lf = np.log2(np.where(v, f0, 1.0))
+        tv = t[v]; M = np.vstack([tv, np.ones_like(tv)]).T; coef = np.linalg.lstsq(M, lf[v], rcond=None)[0]
+        trend = np.vstack([t, np.ones_like(t)]).T @ coef
+        rg, r = (RANGE, ratio) if STYLE == 'voice' else (.85, ratio * .93)
+        lf2 = trend + (lf - trend) * rg + np.log2(r)
+        if first_word_boost:                                          # „Mami“ jako zavolání: o kousek výš
+            on = t[v][0]; w = np.clip((t - on) / .06, 0, 1) * np.clip((on + fw_len - t) / .12, 0, 1)
+            lf2 += first_word_boost / 12 * w
+        trem = .0095 * np.sin(2 * np.pi * (5.8 + .4 * np.sin(2 * np.pi * .7 * t)) * t + rng.uniform(0, 6))
+        jit = smooth(rng.standard_normal(n), 6) * .007
+        f0n = np.where(v, 2 ** lf2 * (1 + trem + jit), 0.0)
+        if STYLE == 'voice':
+            b = .28 * np.clip((freqs - 1500) / 4500, 0, 1)
+            ap2 = np.clip(1 - (1 - ap2) * (1 - b), 0, 1)
+        else:                                                         # hushed: hodně vzduchu, hlasivky jen naznačené
+            ap2 = np.maximum(ap2, np.interp(freqs, [0, 1000, 3000, 11025], [.55, .78, .93, .98]))
+            sp2 *= 10 ** (np.interp(freqs, [0, 250, 500, 900, 1500, 3000, 5000, 11025], [-10, -8, -4, -1, 0, 1, 2, -2]) / 10)
+            sp2 *= 10 ** (-3 * vg / 10)[:, None]
     y = pw.synthesize(f0n, sp2, ap2, FS, FP)[:len(x)]
     y = np.pad(y, (0, len(x) - len(y)))
-    amp = 1 + .05 * np.sin(2 * np.pi * 5.8 * np.arange(len(y)) / FS + 1.3)   # lehké kolísání hlasitosti
+    depth = .08 if STYLE != 'voice' else .05                           # chvění strachem (hlasitost)
+    amp = 1 + depth * np.sin(2 * np.pi * 5.6 * np.arange(len(y)) / FS + rng.uniform(0, 6))
     return y * amp, sp2[v].mean(0)
 
 
-def breath(d, g, env_sp, shaky=False):
-    """Nádech: šum tvarovaný průměrnou obálkou (dětského) hlasového traktu + vzduch ve výškách."""
-    n = int(d * SR)
+# ---------- lidské a telefonní zvuky ----------
+def shaped_noise(n, env_sp):
     H = np.sqrt(env_sp / env_sp.max()); h = np.fft.irfft(H); h = np.roll(h, len(h) // 2) * np.hanning(len(h))
-    x = resample_poly(fftconvolve(rng.standard_normal(int(d * FS) + 64), h, 'same'), 320, 147)[:n]
-    x = np.pad(x, (0, n - len(x)))
-    x = hp(x, 450) + .35 * np.std(x) * bp(rng.standard_normal(n), 2500, 7000)
+    x = resample_poly(fftconvolve(rng.standard_normal(int(n * FS / SR) + 64), h, 'same'), 320, 147)[:n]
+    return np.pad(x, (0, n - len(x)))
+
+
+def breath(d, g, env_sp, shaky=False):
+    """Nádech ústy: šum tvarovaný hlasovým traktem + vzduch ve výškách; roztřesený = trhaný."""
+    n = int(d * SR); x = hp(shaped_noise(n, env_sp), 450); x = x + .35 * np.std(x) * bp(rng.standard_normal(n), 2500, 7000)
     tt = np.arange(n) / n; e = np.sin(np.pi * tt ** .7) ** 1.4
-    if shaky: e *= .7 + .3 * np.abs(np.sin(np.pi * 3 * tt))   # roztřesený, trhaný nádech
+    if shaky: e *= .55 + .45 * np.abs(np.sin(np.pi * 3.5 * tt))
     s_ = x * e; return s_ / (np.abs(s_).max() + 1e-9) * g
 
 
-# --- 1) + 2) varianty, výběr, dětský hlas, kontrola srozumitelnosti, hranice slov ---
+def sniff(d, g):
+    """Popotáhnutí nosem (pláč na krajíčku): dva krátké nosní nádechy."""
+    n = int(d * SR); tt = np.arange(n) / n
+    e = np.exp(-((tt - .3) / .09) ** 2) + .75 * np.exp(-((tt - .68) / .1) ** 2)
+    x = bp(rng.standard_normal(n), 700, 4200) * e; return x / (np.abs(x).max() + 1e-9) * g
+
+
+def exhale(d, g, env_sp):
+    n = int(d * SR); tt = np.arange(n) / n
+    x = lp(hp(shaped_noise(n, env_sp), 300), 2500) * (np.minimum(1, tt / .15) * (1 - tt) ** 1.5)
+    return x / (np.abs(x).max() + 1e-9) * g
+
+
+def rustle(d, g):
+    """Šustnutí a ťuknutí prstem o telefon (začátek a konec nahrávání)."""
+    n = int(d * SR); x = np.zeros(n)
+    for _ in range(int(rng.integers(6, 12))):
+        L = int(rng.integers(80, 700)); i = int(rng.integers(0, max(1, n - L)))
+        x[i:i + L] += rng.standard_normal(L) * np.hanning(L) * rng.uniform(.25, 1)
+    x = bp(x, 900, 6000) + .7 * lp(x, 220); return x / (np.abs(x).max() + 1e-9) * g
+
+
+def opus(x):
+    """Kodek hlasových zpráv: Opus 24 kb/s, 16 kHz (voip). Vrací signál zarovnaný na původní délku."""
+    with tempfile.TemporaryDirectory() as d:
+        a, b, c = (os.path.join(d, f) for f in ('in.wav', 'v.ogg', 'out.wav'))
+        sf.write(a, (x / (np.abs(x).max() + 1e-9) * .9).astype(np.float32), SR)
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', a, '-ar', '16000', '-c:a', 'libopus', '-b:a', '24k', '-application', 'voip', b], check=True)
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', b, '-ar', str(SR), c], check=True)
+        y, _ = sf.read(c)
+    y = np.pad(y, (0, max(0, len(x) + 2000 - len(y))))
+    ex = smooth(np.abs(x), 96); ey = smooth(np.abs(y[:len(x) + 2000]), 96)       # zarovnání obálek (pre-skip, filtry)
+    lags = np.arange(-2000, 2001); m = len(x) - 4000
+    k = int(lags[np.argmax([np.dot(ex[2000:2000 + m], ey[2000 + l:2000 + l + m]) for l in lags])])
+    y = y[k:] if k >= 0 else np.concatenate([np.zeros(-k), y])
+    y = y[:len(x)]; return np.pad(y, (0, len(x) - len(y)))
+
+
+# --- 1) + 2) varianty, převod, kontrola srozumitelnosti, hranice slov ---
 gen = [[candidate(say, speed) for _ in range(N_CAND)] for _, say, speed, _ in SENT]
 ratio = F0_TARGET / np.median([c['f0med'] for cs in gen for c in cs])
 chosen, segs, envs = [], [], []
 for i, ((text, say, speed, _), cs) in enumerate(zip(SENT, gen)):
     first = None
     for k, c in enumerate(rank(cs)):
-        y, env = kid(c['x'], ratio, first_word_boost=1.6 if i == 0 else 0.0)
+        y, env = convert(c['x'], ratio, first_word_boost=1.6 if i == 0 else 0.0)
         first = first or (c, y, env)
         h = heard(y, FS) if ASR else text
         if norm(h) == norm(text): break
         print(f'   varianta {k + 1} zamítnuta, Whisper slyší: „{h}“')
     else:
-        c, y, env = first; print('   žádná varianta nebyla přepsána přesně, beru nejlepší podle intonace')
+        c, y, env = first; print('   žádná varianta nebyla přepsána přesně, beru první v pořadí')
     c['bounds'] = word_bounds(c['x'], say, speed); chosen.append(c)
     segs.append(resample_poly(y, 320, 147)); envs.append(env)
-    print(f'{text:26s} vybráno: {c["dur"]:.2f} s, sd {c["sd"]:.2f} st, rozsah {c["rng"]:.1f} st | varianty sd:',
-          ' '.join(f'{q["sd"]:.1f}' for q in cs), '| slova:', ' '.join(f'{b:.2f}' for b in c['bounds']))
+    print(f'{text:26s} vybráno: {c["dur"]:.2f} s | slova:', ' '.join(f'{b:.2f}' for b in c['bounds']))
 env_sp = np.mean(envs, 0)
+pk = max(np.abs(x).max() for x in segs); segs = [x / pk * .8 for x in segs]   # řeč na společnou úroveň (špička 0,8)
+LOUD = .6 if STYLE == 'voice' else 1.0                                # úroveň lidských zvuků vůči řeči (šepot: dech je slyšet víc)
 
-# --- 3) skladba s pauzami a nádechy ---
-LEAD = .17                                                            # krátký zalapavý nádech hned po ťuknutí na Přehrát
-parts, words, t = [breath(.14, .07, env_sp), np.zeros(int((LEAD - .14) * SR))], [], LEAD
+# --- 3) skladba: šustnutí, nádech, věty s pauzami a zvuky, výdech, šustnutí ---
+parts = [rustle(.12, .08 * LOUD), breath(.16, .13 * LOUD, env_sp)]
+t = sum(len(p) for p in parts) / SR; LEAD = t; words = []
 for (text, _, _, gap), x, c in zip(SENT, segs, chosen):
     b = c['bounds']; sc = (len(x) / SR) / b[-1]
     for j, w in enumerate(text.split()): words.append([w, round(t + b[j] * sc, 3), round(t + b[j + 1] * sc, 3)])
     parts.append(x); t += len(x) / SR
     if gap:
-        g, br = gap
-        parts.append(breath(g, .045, env_sp, shaky=True) if br else np.zeros(int(g * SR))); t += g
-parts.append(np.zeros(int(.25 * SR)))
+        kind, g = gap
+        s_ = {'pause': lambda: np.zeros(int(g * SR)), 'shaky': lambda: breath(g, .11 * LOUD, env_sp, shaky=True),
+              'sniff': lambda: sniff(g, .09 * LOUD), 'breath': lambda: breath(g, .10 * LOUD, env_sp)}[kind]()
+        parts.append(s_); t += len(s_) / SR
+parts += [exhale(.22, .07 * LOUD, env_sp), rustle(.10, .06 * LOUD), np.zeros(int(.06 * SR))]
 v = np.concatenate(parts)
 E = np.sqrt(np.convolve(v ** 2, np.ones(int(.015 * SR)) / int(.015 * SR), mode='same'))
-on = np.where(E[int((LEAD - .06) * SR):] > .06 * E.max())[0]           # skutečný nástup prvního slova
-if len(on): words[0][1] = round(LEAD - .06 + on[0] / SR, 3)
+on = np.where(E[int((LEAD - .04) * SR):] > .08 * E.max())[0]          # skutečný nástup prvního slova
+if len(on): words[0][1] = round(LEAD - .04 + on[0] / SR, 3)
 
-# --- 4) zvuk telefonu: EQ mikrofonu, presence, jemná komprese, jen lehké zaoblení špiček ---
-v = hp(v, 170); v = lp(v, 7800, o=4); v = v + .30 * bp(v, 1900, 4200)
-env = np.sqrt(np.convolve(v ** 2, np.ones(int(.02 * SR)) / int(.02 * SR), mode='same')) + 1e-6
-thr = .35 * env.max(); v = v * np.minimum(1, (thr / env) ** .4)
-v = np.tanh(v / np.abs(v).max() * 1.15)
-# tichá noční ulice: hukot, vzdálené auto, trocha větru do mikrofonu
+# --- 4) telefon: EQ mikrofonu, automatické zesílení, okolí, prostor, kodek ---
+v = hp(v, 140 if STYLE == 'whisper' else 170); v = lp(v, 7600, o=4); v = v + .30 * bp(v, 1900, 4200)
+env = np.sqrt(np.convolve(v ** 2, np.ones(int(.03 * SR)) / int(.03 * SR), mode='same')) + 1e-6
+thr = .3 * env.max(); v = v * np.minimum(1, (thr / env) ** (.5 if STYLE != 'voice' else .4))
+v = np.tanh(v / np.abs(v).max() * 1.1)
 L = len(v); tt = np.arange(L) / SR
 rumble = lp(np.cumsum(rng.standard_normal(L)) / 300, 120); rumble -= rumble.mean()
 car = bp(rng.standard_normal(L), 300, 2500) * np.exp(-((tt - (L / SR) * .62) / .9) ** 2) * .5
 wind = lp(rng.standard_normal(L), 300) * (.5 + .5 * np.sin(2 * np.pi * .7 * tt) ** 2)
-amb = rumble / (np.abs(rumble).max() + 1e-9) * .045 + car * .028 + wind * .03
+agc = 1.6 if STYLE != 'voice' else 1.0                                 # tichá řeč -> telefon zesílí i okolí
+amb = (rumble / (np.abs(rumble).max() + 1e-9) * .045 + car * .028 + wind * .03 + hp(rng.standard_normal(L), 3000) * .004) * agc
 ir_n = int(.22 * SR); ir = rng.standard_normal(ir_n) * np.exp(-np.arange(ir_n) / (.05 * SR)); ir = lp(ir, 5000)
 ir[:int(.004 * SR)] = 0; ir /= np.sqrt((ir ** 2).sum())
-v = v + fftconvolve(v, ir)[:L] * .10 + amb
-v = v / np.abs(v).max() * .9
-sf.write(os.path.join(HERE, 'voice.wav'), v.astype(np.float32), SR, subtype='PCM_16')
-json.dump({'duration': round(L / SR, 3), 'firstWord': words[0][1], 'lastWordEnd': words[-1][2], 'f0': F0_TARGET,
-           'formant': FORMANT, 'words': words}, open(os.path.join(HERE, 'words.json'), 'w'), ensure_ascii=False, indent=1)
-print(json.dumps({'duration': L / SR, 'speech': [words[0][1], words[-1][2]], 'ratio': round(ratio, 3), 'words': words},
-                 ensure_ascii=False))
+v = v + fftconvolve(v, ir)[:L] * .08 + amb
+v = opus(v); v = v / np.abs(v).max() * .9
+os.makedirs(ARGS.out, exist_ok=True)
+sf.write(os.path.join(ARGS.out, 'voice.wav'), v.astype(np.float32), SR, subtype='PCM_16')
+json.dump({'style': STYLE, 'duration': round(L / SR, 3), 'firstWord': words[0][1], 'lastWordEnd': words[-1][2],
+           'formant': FORMANT, 'words': words}, open(os.path.join(ARGS.out, 'words.json'), 'w'), ensure_ascii=False, indent=1)
+print(json.dumps({'style': STYLE, 'duration': L / SR, 'speech': [words[0][1], words[-1][2]], 'words': words}, ensure_ascii=False))
 if ASR: print('Whisper (celá hlasovka):', heard(v, SR))
