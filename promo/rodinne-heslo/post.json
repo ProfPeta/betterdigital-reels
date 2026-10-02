@@ -7,6 +7,6 @@
   "aiLabel": {
     "tiktokData.isAigc": true,
     "instagramData.isAiGenerated": true,
-    "why": "Hlas ve videu je syntetický (neuronové TTS) a realisticky simuluje skutečný podvod. TikTok i Instagram vyžadují u takového obsahu štítek AI."
+    "why": "Hlas ve videu je vygenerovaný AI (ElevenLabs) a realisticky simuluje skutečný podvod. TikTok i Instagram vyžadují u takového obsahu štítek AI."
   }
 }

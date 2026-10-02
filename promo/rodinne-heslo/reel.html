@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="cs"><head><meta charset="utf-8">
-<!-- „Tvoje máma nepozná tvůj hlas od AI.“ – varianta B (bez natáčení). TikTok/Reels 540×960 CSS px (render 2×), 30 fps, 28 s.
+<!-- „Tvoje máma nepozná tvůj hlas od AI.“ – varianta B (bez natáčení). TikTok/Reels 540×960 CSS px (render 2×), 30 fps, 28,8 s.
      Kompozice je vycentrovaná: obsah ve sloupci x 74–466 (symetrické okraje 74 px), y 130–740. Konec plynule navazuje na první snímek (smyčka).
      Hlas: voice/voice.wav (od 2,66 s, hned po ťuknutí na Přehrát). Časy slov ve WORDS jsou z voice/words.json + 2,66 s.
-     Obraz stojí v t = 7,3 s 2 s, než hlas doběhne (SHIFT). -->
+     Obraz stojí v t = 7,3 s 2,8 s, než hlas doběhne (SHIFT). -->
 <style>
 @font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
 @font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
@@ -159,8 +159,8 @@ function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}"
 $('e3').innerHTML=uzel(20,'#fff')+'<span>Better Digital</span>';
 
 /* ---------- the voice message: words in sync with the synthesized voice (sfx.py uses the same table) ---------- */
-const VF=2.66,V0=2.985,V1=9.3,VEND=9.6,VTOT=7;   // hlas: voice/voice.wav od VF (ťuknutí na Přehrát v 2.62 s), první slovo ve V0, poslední do V1 (pak obraz pokračuje), nahrávka do VEND, délka zprávy 0:07
-const WORDS=[["Mami,", 2.985, 3.549], ["to", 3.549, 3.693], ["jsem", 3.693, 3.973], ["já.", 3.973, 4.378], ["Měl", 4.538, 4.987], ["jsem", 4.987, 5.376], ["nehodu.", 5.376, 5.945], ["Potřebuju", 6.205, 6.869], ["hned", 6.869, 7.338], ["peníze.", 7.338, 7.869], ["Nemůžu", 8.109, 8.732], ["volat.", 8.732, 9.219]];
+const VF=2.66,V0=2.71,V1=10.1,VEND=10.15,VTOT=7;   // hlas: voice/voice.wav od VF (ťuknutí na Přehrát v 2.62 s), první slovo ve V0, poslední do V1 (pak obraz pokračuje), nahrávka do VEND, délka zprávy 0:07
+const WORDS=[["Mami,", 2.71, 3.76], ["to", 3.92, 4.02], ["jsem", 4.02, 4.23], ["já.", 4.23, 4.67], ["Měl", 5.2, 5.48], ["jsem", 5.48, 5.7], ["nehodu.", 5.7, 6.32], ["Potřebuju", 6.86, 7.36], ["hned", 7.36, 7.62], ["peníze.", 7.64, 8.29], ["Nemůžu", 8.88, 9.42], ["volat.", 9.42, 10.0]];
 window.WORDS=WORDS;
 // waveform bars follow the speech envelope
 const NB=36,wv=$('wv'),bars=[];const RB=mul(5);
@@ -176,9 +176,9 @@ const ppl=$('ppl');const PP=[];for(let i=0;i<10;i++){const d=document.createElem
 const gl=$('glitch'),GB=[];for(let i=0;i<9;i++){const d=document.createElement('div');d.className='gb';gl.appendChild(d);GB.push(d)}
 
 const T_OPEN=1.72,T_GL=8.2,T_REV=8.62,T_FACTS=11.0,T_F2=13.3,T_F3=15.6,T_FIX=17.8,T_END=22.6,T_LOOP=25.55;
-window.DURATION=28;window.CUTS=[0,T_OPEN,T_GL,T_FACTS,T_FIX,T_END];
+window.DURATION=28.8;window.CUTS=[0,T_OPEN,T_GL,T_FACTS,T_FIX,T_END];
 const typed=(s,t,t0,t1)=>s.slice(0,Math.round(s.length*clamp((t-t0)/(t1-t0))));
-window.render=function(T0){const SHIFT=2;const t=T0<=7.3?T0:(T0<7.3+SHIFT?7.3:T0-SHIFT);
+window.render=function(T0){const SHIFT=2.8;const t=T0<=7.3?T0:(T0<7.3+SHIFT?7.3:T0-SHIFT);
   const f=Math.floor(t*FPS+1e-6);
   /* ---- lock screen (+ loop back at the end) ---- */
   const lk=$('lock');const back_=eo((t-T_LOOP)/.4);

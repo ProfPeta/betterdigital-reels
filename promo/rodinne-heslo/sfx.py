@@ -1,13 +1,13 @@
-"""„Tvoje máma nepozná tvůj hlas od AI.“ – zvuk (28 s), časy podle reel.html.
-Hlasovka je šeptající vyděšené dítě (voice/voice.wav, viz voice/make_voice.py), časy slov sedí na přepis v reel.html.
-Všechno od 7,3 s se posouvá o SHIFT (2 s), než hlas doběhne – stejně jako v reel.html.
+"""„Tvoje máma nepozná tvůj hlas od AI.“ – zvuk (28,8 s), časy podle reel.html.
+Hlasovka je mladý kluk z ElevenLabs (voice/voice.wav, viz voice/process_take.py), časy slov sedí na přepis v reel.html.
+Všechno od 7,3 s se posouvá o SHIFT (2,8 s), než hlas doběhne – stejně jako v reel.html.
 Pak glitch, napětí pod fakty, ticho, když „syn“ přestane psát, a rozřešení v dur.
 usage: python3 sfx.py out.wav"""
 import sys
 import numpy as np, wave
 from scipy.signal import fftconvolve, butter, sosfilt, lfilter
 
-SR = 48000; SHIFT = 2; HOLD = 7.3; DUR = 26 + SHIFT; N = int(DUR * SR)   # events from 7.3 s on are delayed by SHIFT
+SR = 48000; SHIFT = 2.8; HOLD = 7.3; DUR = 26 + SHIFT; N = int(DUR * SR)   # events from 7.3 s on are delayed by SHIFT
 rng = np.random.default_rng(909)
 hz = lambda n: 440 * 2 ** ((n - 69) / 12)
 
@@ -59,8 +59,8 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 with wave.open(os.path.join(HERE, 'voice', 'voice.wav')) as w_:
     voice = np.frombuffer(w_.readframes(w_.getnframes()), np.int16).astype(float) / 32768
-FILE0 = 2.66                                    # = VF v reel.html: hned po ťuknutí na Přehrát (2.62 s), první slovo ve 2.985 s
-Vb.add(voice, FILE0, 1.7, 0)                    # šepot má nízkou hustotu energie -> +4,6 dB, ať je nad hudbou
+FILE0 = 2.66                                    # = VF v reel.html: hned po ťuknutí na Přehrát (2.62 s), první slovo ve 2.71 s
+Vb.add(voice, FILE0, 1.2, 0)                    # hlas nad hudbou (ducking níž), viz kontrola odstupu v README
 
 # ================================================================ instruments
 def tick_ui(at, g=.3, f=2600):
@@ -145,7 +145,7 @@ while tt < 8.13: key(tt, .22); tt += .035 * rng.uniform(.7, 1.3)
 tick_ui(8.1, .3)
 # GLITCH: crack, stutter of the voice, tape-stop, shock silence
 d = .025; put(X, Xw, bp(noise(d), 800, 9000) * env(d, .0003, .01), 8.2, .7, 0, .1)
-seg = voice[int(4.8 * SR):int(4.8 * SR) + int(.05 * SR)]            # a slice of „peníze“
+seg = voice[int(5.1 * SR):int(5.1 * SR) + int(.05 * SR)]            # a slice of „peníze“
 for k in range(8):
     rate = 1 - .07 * k; s = np.interp(np.arange(0, len(seg) - 1, rate), np.arange(len(seg)), seg)
     s = np.round(s * 7) / 7; put(X, Xw, s * np.hanning(len(s)), 8.22 + k * .05, .55, (-1) ** k * .4, .1)
