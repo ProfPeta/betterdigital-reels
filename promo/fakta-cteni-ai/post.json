@@ -16,5 +16,12 @@
       "note": "Test: bez štítku vlastní značky (video nic neprodává). Žádná realistická AI média, štítek AI není potřeba."
     }
   },
-  "bestSlot": "Metricool: ne 10:00 (nejsilnější víkendové okno TT i IG), po 10:00 / 18:00 (nejsilnější v týdnu)"
+  "bestSlot": "Metricool: ne 10:00 (nejsilnější víkendové okno TT i IG), po 10:00 / 18:00 (nejsilnější v týdnu)",
+  "published": {
+    "metricoolId": 387367884,
+    "when": "2026-10-03T18:15 Europe/Prague",
+    "instagram": "https://www.instagram.com/reel/DeCd0NIn8AS/",
+    "tiktok": "https://www.tiktok.com/@betterdigital.cz/video/7692476008699661590",
+    "note": "TikTok bez štítku vlastní značky (test), bez štítku AI."
+  }
 }
