@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8">
+<!-- Fakta: „Tohle přečetla AI.“ TikTok/Reels 540×960 CSS px (render 2×), 30 fps, 14,5 s. Bez natáčení: vypadá jako nahrávka
+     obrazovky mobilu (Poznámky v tmavém režimu, psaní na klávesnici). Důležitý obsah ve sloupci x 74–466, y 130–740.
+     Výpočet: Llama 3 = přes 15 bilionů tokenů (Meta, 2024), 1 token ≈ 0,75 slova -> ~11 bilionů slov; průměrné tiché čtení
+     238 slov/min (Brysbaert 2019); 8 h denně, 5 dní v týdnu (261 dní) -> ~29,8 mil. slov za rok -> ~377 000 let.
+     Homo sapiens ~300 000 let (Smithsonian Human Origins) -> musel bys začít dřív, než existoval člověk.
+     Konec plynule navazuje na první snímek (smyčka). -->
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF}
+:root{--y:#FFD400;--g:#8E8E93}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden;background:#000}
+body{font-family:IT,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;position:relative}
+.abs{position:absolute}
+/* status + nav bar (dekorace, mimo bezpečnou oblast) */
+#sb{left:0;right:0;top:12px;height:24px;font-size:16px;font-weight:650;letter-spacing:-.01em}
+#sb .tm{position:absolute;left:38px;top:2px}
+#sb .ic{position:absolute;right:30px;top:4px;display:flex;gap:7px;align-items:center}
+#nav{left:0;right:0;top:52px;height:40px;color:var(--y);font-size:19px;font-weight:500}
+#nav .bk{position:absolute;left:16px;top:6px;display:flex;align-items:center;gap:2px}
+#nav .bk b{font-size:30px;font-weight:300;margin-top:-5px}
+#nav .rt{position:absolute;right:20px;top:8px;display:flex;gap:20px}
+/* poznámka */
+#vp{left:0;right:0;top:100px;bottom:0;overflow:hidden}
+#note{position:absolute;left:74px;width:392px;top:0}
+.date{font-size:13px;color:var(--g);text-align:center;margin-top:16px}
+.ttl{font-size:33px;font-weight:800;letter-spacing:-.025em;margin-top:12px;line-height:1.15}
+.big{font-size:40px;font-weight:850;letter-spacing:-.035em;color:var(--y);margin-top:14px;line-height:1.05;font-variant-numeric:tabular-nums;white-space:nowrap}
+.unit{font-size:24px;font-weight:700;margin-top:2px}
+.ln{font-size:23px;line-height:1.3;font-weight:500;letter-spacing:-.01em;margin-top:12px;position:relative}
+.ln .rest{visibility:hidden}
+.car{display:inline-block;width:2px;height:1.05em;background:var(--y);vertical-align:-.15em;margin:0 -1px;opacity:0}
+.cnt{font-size:62px;font-weight:900;letter-spacing:-.04em;color:var(--y);line-height:1;margin-top:6px;font-variant-numeric:tabular-nums;white-space:nowrap;transform-origin:0 60%}
+.mark .t{background:linear-gradient(transparent 12%,rgba(255,212,0,.32) 12%,rgba(255,212,0,.32) 92%,transparent 92%);box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.src{font-size:12px;line-height:1.45;color:var(--g);margin-top:22px}
+.sig{display:flex;align-items:center;gap:9px;margin-top:10px;font-size:14px;font-weight:800;letter-spacing:-.02em}
+/* bubliny ve stylu TikTok textu */
+.bub{position:absolute;left:60px;width:420px;text-align:center;opacity:0}
+.bub span{background:#fff;color:#0B0B0B;font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.52;padding:4px 12px;border-radius:9px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+/* klávesnice (dekorace, spodní pás) */
+#kb{left:0;right:0;bottom:0;height:290px;background:#1b1b1d;padding:10px 4px 0;transform:translateY(300px)}
+.row{display:flex;justify-content:center;gap:6px;margin-bottom:11px}
+.k{width:47px;height:46px;border-radius:7px;background:#46464a;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:400;color:#fff}
+.k.sp{width:236px;font-size:15px}.k.fn{width:66px;font-size:15px;background:#2f2f32}.k.ret{width:96px;font-size:15px;background:#2f2f32}
+</style></head><body>
+<div id="sb" class="abs"><span class="tm">17:42</span><span class="ic">
+  <svg width="19" height="12" viewBox="0 0 19 12"><rect x="0" y="8" width="3.4" height="4" rx="1" fill="#fff"/><rect x="5" y="5.5" width="3.4" height="6.5" rx="1" fill="#fff"/><rect x="10" y="3" width="3.4" height="9" rx="1" fill="#fff"/><rect x="15" y="0" width="3.4" height="12" rx="1" fill="#fff"/></svg>
+  <span style="font-size:13px;font-weight:700">5G</span>
+  <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="#fff" stroke-opacity=".45"/><rect x="2.5" y="2.5" width="16" height="8" rx="2" fill="#fff"/><rect x="24.5" y="4.2" width="2" height="4.6" rx="1" fill="#fff" fill-opacity=".45"/></svg>
+</span></div>
+<div id="nav" class="abs"><span class="bk"><b>‹</b>Poznámky</span><span class="rt">
+  <svg width="22" height="24" viewBox="0 0 22 24" fill="none" stroke="#FFD400" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15V2M6.5 6.5L11 2l4.5 4.5M4 10.5v10h14v-10"/></svg>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFD400" stroke-width="1.9"><circle cx="12" cy="12" r="10"/><circle cx="7.5" cy="12" r="1.2" fill="#FFD400" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="#FFD400" stroke="none"/><circle cx="16.5" cy="12" r="1.2" fill="#FFD400" stroke="none"/></svg>
+</span></div>
+<div id="vp" class="abs"><div id="note">
+  <div class="date">3. října 2026 v 17:42</div>
+  <div class="ttl">AI vs. já 📚</div>
+  <div class="big">11 000 000 000 000</div>
+  <div class="unit">slov</div>
+  <div class="ln" id="h0">Tolik „přečetla“ jedna AI.</div>
+  <div class="ln" id="L1"></div>
+  <div class="ln" id="L2"></div>
+  <div class="ln" id="L3"></div>
+  <div class="ln" id="L4"></div>
+  <div class="cnt" id="cnt">0 let</div>
+  <div class="ln" id="L5"></div>
+  <div class="ln" id="L6"></div>
+  <div class="src" id="src">Zdroje: Meta, Llama 3 (2024): přes 15 bilionů tokenů · Brysbaert (2019): 238 slov/min · Smithsonian Human Origins. Výpočet: 1 token ≈ 0,75 slova, 8 h denně, 5 dní v týdnu.</div>
+  <div class="sig" id="sig"></div>
+</div></div>
+<div id="b1" class="bub" style="top:430px"><span>Kolik let bys to četl ty?</span></div>
+<div id="b1b" class="bub" style="top:486px"><span>Tipni si 👇</span></div>
+<div id="b2" class="bub" style="top:345px"><span>Musel bys začít číst dřív,<br>než existoval člověk 🤯</span></div>
+<div id="b3" class="bub" style="top:345px"><span>Pošli to někomu,<br>kdo pořád čte 📚</span></div>
+<div id="kb" class="abs"></div>
+<script>
+const FPS=30;const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3),e5=x=>1-Math.pow(1-clamp(x),5);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c1=1.7,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const lerp=(a,b,p)=>a+(b-a)*p;const $=id=>document.getElementById(id);const op=(e,v)=>{e.style.opacity=v};
+function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
+$('sig').innerHTML='— '+uzel(15,'#fff')+'<span>Better Digital</span>';
+
+/* psané řádky: [id, text, začátek, znaků za sekundu]. Časy znaků sdílí sfx.py (cvakání klávesnice). */
+const TYPE=[['L1','Llama 3 od Mety: přes 15 bilionů tokenů ≈ 11 bilionů slov.',2.25,40],
+            ['L2','Ty čteš 238 slov za minutu.',3.95,36],
+            ['L3','8 hodin denně, 5 dní v týdnu.',4.9,36],
+            ['L4','Četl bys:',5.75,30],
+            ['L5','Homo sapiens je na Zemi asi 300 000 let.',7.95,40],
+            ['L6','A to je jen jedna AI. 😅',10.35,30]];
+const jit=i=>.012*Math.sin(i*12.9898+.5);                    // stejný vzorec v sfx.py
+const charT=(st,cps,i)=>st+i/cps+jit(i);
+const L={};TYPE.forEach(([id,txt,st,cps])=>{const e=$(id);e.innerHTML='<span class="t"></span><span class="car"></span><span class="rest"></span>';
+  L[id]={e,txt:Array.from(txt),st,cps,t:e.querySelector('.t'),car:e.querySelector('.car'),rest:e.querySelector('.rest')};
+  L[id].rest.textContent=txt});                                // plný text drží rozvržení (měření posunu) od začátku
+$('L6').classList.add('mark');
+/* klávesnice QWERTZ */
+const ROWS=['qwertzuiop','asdfghjkl','yxcvbnm'];const KEYS={};
+$('kb').innerHTML=ROWS.map((r,ri)=>'<div class="row">'+(ri==2?'<div class="k fn">⇧</div>':'')+Array.from(r).map(c=>`<div class="k" data-k="${c}">${c}</div>`).join('')+(ri==2?'<div class="k fn">⌫</div>':'')+'</div>').join('')
+  +'<div class="row"><div class="k fn">123</div><div class="k fn">🙂</div><div class="k sp" data-k=" ">mezera</div><div class="k ret">↵</div></div>';
+document.querySelectorAll('#kb .k[data-k]').forEach(k=>KEYS[k.dataset.k]=k);
+const BASE={'á':'a','č':'c','ď':'d','é':'e','ě':'e','í':'i','ň':'n','ó':'o','ř':'r','š':'s','ť':'t','ú':'u','ů':'u','ý':'y','ž':'z'};
+const keyOf=c=>{c=c.toLowerCase();c=BASE[c]||c;if(c==='\u00a0')c=' ';return KEYS[c]||null};
+const fmt=n=>Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0');
+
+const C0=5.95,C1=7.65,TOTAL=377000;                          // počítadlo let
+const T_TW=9.15,T_TW_OUT=11.75,T_CTA=12.0,T_END=14.0;window.DURATION=14.5;
+let POS=null;
+function measure(){const g=id=>{const e=$(id);return e.offsetTop+e.offsetHeight};POS={L5:g('L5'),L6:g('L6'),sig:g('sig')}}
+function scrollAt(t){const need=(b,kb)=>Math.max(0,100+b-(kb?640:742));       // spodek řádku nad klávesnicí / nad UI sítě
+  const s1=need(POS.L5,1),s2=need(POS.L6,1),s3=need(POS.sig,0);
+  let s=0;s=lerp(s,s1,eio((t-7.85)/.35));s=lerp(s,Math.max(s1,s2),eio((t-10.2)/.35));s=lerp(s,Math.max(s1,s2,s3),eio((t-12.25)/.4));
+  return s*(1-eio((t-T_END)/.35))}
+window.render=function(t){
+  if(!POS)measure();
+  const reset=t>=T_END;const rf=reset?1-eo((t-T_END)/.3):1;                 // smyčka: zpět na první snímek
+  $('note').style.transform=`translateY(${-scrollAt(t)}px)`;
+  /* klávesnice: vyjede při psaní, zajede po posledním řádku */
+  const kbIn=eo((t-2.05)/.25)*(1-eio((t-11.5)/.3));$('kb').style.transform=`translateY(${(1-kbIn)*300}px)`;
+  document.querySelectorAll('#kb .k[data-k]').forEach(k=>k.style.background='#46464a');
+  /* psaní */
+  let active=null;
+  for(const id in L){const o=L[id];const n=o.txt.length;let k=0;for(let i=0;i<n;i++)if(t>=charT(o.st,o.cps,i))k=i+1;
+    o.t.textContent=o.txt.slice(0,k).join('');o.rest.textContent=o.txt.slice(k).join('');
+    const end=charT(o.st,o.cps,n-1);const typing=t>=o.st-.05&&t<end+.12;
+    if(typing){active=o;const last=k>0?charT(o.st,o.cps,k-1):-9;const key=k>0?keyOf(o.txt[k-1]):null;
+      if(key&&t-last<.09)key.style.background='#8a8a90'}
+    op(o.e,(t>=o.st-.05?1:0)*rf)}
+  for(const id in L){const o=L[id];const blink=(Math.floor(t*2.2)%2)==0;const isAct=o===active;
+    const isLastDone=!active&&t>=o.st&&(id==='L6'?t<11.5:false);op(o.car,isAct?1:(isLastDone&&blink?1:0))}
+  /* počítadlo */
+  const c=$('cnt');const cp=eo((t-C0)/(C1-C0));op(c,(t>=C0-.05?1:0)*rf);
+  c.textContent=fmt(Math.round(TOTAL*cp/1000)*1000)+' let';
+  const pop=t>=C1?1+.08*Math.exp(-(t-C1)/.12)*Math.sin((t-C1)*28):1;c.style.transform=`scale(${pop})`;
+  op($('src'),eo((t-12.55)/.4)*rf);op($('sig'),eo((t-12.75)/.4)*rf);
+  op($('h0'),1);
+  /* bubliny */
+  const b1=t<2.05?1:(t<T_END+.15?Math.max(0,1-(t-2.05)/.18):eo((t-T_END-.15)/.25));
+  op($('b1'),b1);op($('b1b'),b1);                            // háček je vidět celý hned od prvního snímku (obálka)
+  const sc=(e,a,b)=>{if(t<a||t>=b+.2){op(e,0);return}const p=e5((t-a)/.22),q=clamp((t-b)/.2);op(e,clamp((t-a)/.05)*(1-q));e.querySelector('span').style.display='inline';e.style.transform=`scale(${1+.18*(1-p)})`};
+  sc($('b2'),T_TW,T_TW_OUT);sc($('b3'),T_CTA,T_END-.05);
+};
+const FONTS=['850 20px IT','800 20px IT','700 20px IT','500 20px IT','900 20px IT','20px JB'];
+Promise.all(FONTS.map(s=>document.fonts.load(s,'ěščřžýáíéúůĚŠČŘŽ„“…≈')))
+ .then(()=>document.fonts.ready).then(()=>{measure();window.READY=true;render(0)});
+</script></body></html>
