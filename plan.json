@@ -55,9 +55,13 @@
       "title": "Reporty",
       "keyword": "REPORTY",
       "publishAt": "2026-10-14T09:00:00+02:00",
-      "status": "ready",
+      "status": "scheduled",
       "teaserNext": "Díl 4: onboarding klienta",
-      "metricool": null
+      "metricool": {
+        "id": "388296988",
+        "uuid": "-4926849616555589296",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-4926849616555589296"
+      }
     },
     {
       "n": 4,
