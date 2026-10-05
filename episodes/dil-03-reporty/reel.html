@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF,U+2191,U+2193}
+:root{--y:#FFD400;--k:#0B0B0B;--g:#8C8C8C}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#fff}
+body{font-family:IT,sans-serif;-webkit-font-smoothing:antialiased;color:var(--k)}
+#stage{position:absolute;inset:0;overflow:hidden}
+.scene{position:absolute;inset:0;display:none;overflow:hidden}
+.inner{position:absolute;inset:0;transform-origin:50% 45%}
+.w{background:#fff;color:var(--k)}.b{background:var(--k);color:#fff}.y{background:var(--y);color:var(--k)}
+.abs{position:absolute}
+.mono{font-family:JB,monospace;letter-spacing:.14em;text-transform:uppercase;font-size:13px}
+.panel{position:absolute;border-radius:16px;overflow:hidden}
+.pa{background:#E9E9E9}
+.pb{background:#fff;border:2px solid var(--k)}
+.chip{position:absolute;left:14px;top:13px;font-family:JB,monospace;font-size:13px;letter-spacing:.12em;padding:5px 9px 4px;text-transform:uppercase;line-height:1.2}
+.pa .chip{background:var(--k);color:#fff}.pb .chip{background:var(--y);color:var(--k)}
+.timer{position:absolute;top:7px;font-family:JB,monospace;font-size:28px;letter-spacing:.01em;color:var(--k);font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px}
+.stg{position:absolute;left:12px;top:50px;width:428px;height:200px;overflow:hidden}
+.cap{position:absolute;left:14px;top:258px;font-size:17px;font-weight:650;letter-spacing:-.01em;white-space:nowrap}
+.cap .n{font-family:JB,monospace;font-size:13px;color:var(--g);margin-right:8px;letter-spacing:.05em}
+.win{position:absolute;background:#fff;border:1px solid #cdcdcd;border-radius:8px;box-shadow:0 8px 22px rgba(0,0,0,.16);overflow:hidden}
+.tb{height:24px;background:#f2f2f2;border-bottom:1px solid #e1e1e1;display:flex;align-items:center;gap:5px;padding:0 8px;font-size:12px;color:#666;white-space:nowrap}
+.tb i{width:8px;height:8px;border-radius:50%;background:#cfcfcf;display:inline-block;flex:none}
+.tb span{margin-left:6px;font-weight:600}
+.wb{position:relative;padding:8px 10px;font-size:13px;color:#222;overflow:hidden}
+.caret{display:inline-block;width:1.5px;height:1.05em;background:#111;vertical-align:-2px;margin-left:1px}
+.mrow{display:flex;height:22px;align-items:center;gap:8px;padding:0 6px;font-size:12.5px;white-space:nowrap;border-bottom:1px solid #f0f0f0}
+.mrow b{width:118px;flex:none;font-weight:700;overflow:hidden}
+.mrow span{color:#777;overflow:hidden}
+.mrow.sel{background:var(--k);color:#fff}.mrow.sel span{color:#ddd}
+.srch{height:20px;line-height:18px;border:1px solid #ccc;border-radius:4px;padding:0 6px;width:170px;margin-bottom:6px;font-size:12px}
+.frow{display:flex;align-items:center;height:19px;font-size:12.5px;white-space:nowrap}
+.frow em{font-style:normal;color:#888;width:82px;flex:none;font-size:11.5px}
+.frow .v{border:1px solid #d3d3d3;border-radius:3px;height:17px;line-height:15px;padding:0 5px;min-width:150px;overflow:hidden}
+.warn{color:#D42A17;font-size:11.5px;font-weight:700;height:18px;line-height:18px;opacity:0}
+.wbtn{position:absolute;left:10px;bottom:8px;background:var(--k);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:4px;white-space:nowrap}
+.pdf{background:#D42A17;color:#fff;font-size:9.5px;font-weight:700;padding:1px 4px;border-radius:2px;flex:none}
+.card{position:absolute;background:#fff;border:1.5px solid var(--k);border-radius:10px;overflow:hidden}
+.card .ct{height:26px;display:flex;align-items:center;gap:6px;padding:0 9px;font-size:12.5px;font-weight:700;border-bottom:1.5px solid var(--k);white-space:nowrap}
+.irow{display:flex;align-items:center;gap:6px;height:22px;padding:0 8px;font-size:12px;white-space:nowrap;border-bottom:1px solid #eee;opacity:0}
+.trow{display:flex;align-items:center;height:19px;padding:0 9px;font-size:12px;white-space:nowrap;border-bottom:1px solid #eee}
+.trow .s{flex:1;overflow:hidden}.trow .d{width:52px;color:#777}.trow .a{width:66px;text-align:right;font-weight:600}.trow .c{width:18px;display:flex;justify-content:flex-end}
+.btn{position:absolute;left:10px;right:10px;bottom:10px;height:28px;border-radius:14px;background:var(--k);color:#fff;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;opacity:0}
+.btn.ok{background:var(--y);color:var(--k)}
+.dotf{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--y);border:1.5px solid var(--k);opacity:0}
+.ripple{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;border:2px solid var(--k);opacity:0}
+.cur{position:absolute;width:18px;height:22px;z-index:200}
+.hl{position:relative;z-index:0;white-space:nowrap}
+.hl i{position:absolute;left:-3px;right:-3px;bottom:6%;height:38%;background:var(--y);z-index:-1;transform-origin:0 50%}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:400}
+.xls{background:#1E7A45;color:#fff;font-size:9.5px;font-weight:700;padding:1px 4px;border-radius:2px;flex:none}
+.csv{background:#0B0B0B;color:#fff;font-size:9.5px;font-weight:700;padding:1px 4px;border-radius:2px;flex:none}
+.fx{display:flex;align-items:center;height:20px;border:1px solid #d3d3d3;border-radius:3px;font-size:12px;white-space:nowrap;overflow:hidden;margin-bottom:4px}
+.fx em{font-style:italic;font-weight:700;color:#888;width:24px;flex:none;text-align:center;border-right:1px solid #d3d3d3;height:100%;line-height:18px}
+.fx span{padding:0 6px;font-family:JB,monospace;font-size:11px}
+.xg{display:grid;grid-template-columns:20px 96px 120px 70px;border-left:1px solid #e1e1e1;border-top:1px solid #e1e1e1;font-size:12px}
+.xg div{height:19px;line-height:18px;padding:0 5px;border-right:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;white-space:nowrap;overflow:hidden}
+.xg .h{background:#f2f2f2;color:#777;font-size:11px;text-align:center;padding:0}
+.xg .hd{font-weight:700}
+.xg .r{text-align:right}
+.bars{display:flex;align-items:flex-end;gap:10px}
+.bars i{display:block;background:var(--k);width:24px;border-radius:2px 2px 0 0}
+.seg{display:inline-block;border:1px solid #ccc;border-radius:3px;font-size:11px;padding:0 6px;height:17px;line-height:15px;margin-right:3px}
+.seg.on{background:var(--k);color:#fff;border-color:var(--k)}
+.prog{height:12px;border:1px solid #bbb;border-radius:6px;overflow:hidden;margin-top:8px;width:300px}
+.prog i{display:block;height:100%;background:#0B0B0B}
+.krow{display:flex;align-items:center;height:19px;padding:0 9px;font-size:12px;white-space:nowrap;border-bottom:1px solid #eee}
+.krow .s{flex:1;overflow:hidden}.krow .a{width:86px;text-align:right;font-weight:700}.krow .d{width:42px;text-align:right;font-size:11px;font-weight:700}
+.up{color:#1E7A45}.dn{color:#D42A17}
+.srow{display:flex;align-items:center;gap:6px;height:24px;padding:0 8px;font-size:12.5px;white-space:nowrap;border-bottom:1px solid #eee;opacity:0}
+.srow .ok{margin-left:auto;display:flex}
+</style></head><body>
+<div id="stage"></div><div id="flash"></div>
+<script>
+const W=innerWidth,H=innerHeight;
+const stage=document.getElementById('stage');
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3), e5=x=>1-Math.pow(1-clamp(x),5);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c1=1.8,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const el=(tag,cls,html,parent)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;if(parent)parent.appendChild(e);return e};
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function rise(e,lt,t0,d=.4){if(lt<t0){e.style.opacity=0;return}const q=eo((lt-t0)/d);e.style.opacity=q;e.style.filter=q<1?`blur(${(1-q)*5}px)`:'none';e.style.transform=`translateY(${(1-q)*12}px)`}
+function slam(e,lt,t0,d=.18){if(lt<t0){e.style.opacity=0;return}const p=e5((lt-t0)/d);e.style.opacity=1;e.style.transform=`scale(${1+.35*(1-p)})`}
+function typed(e,full,t,t0,t1,caret=true){const p=clamp((t-t0)/(t1-t0));const n=Math.round(full.length*p);const on=caret&&t>=t0&&t<t1+.12;const h=esc(full.slice(0,n))+(on?'<b class="caret"></b>':'');if(e.innerHTML!==h)e.innerHTML=h}
+function interp(keys,t){if(t<=keys[0][0])return keys[0][1];for(let i=1;i<keys.length;i++)if(t<=keys[i][0]){const[a,va]=keys[i-1],[b,vb]=keys[i];return va+(vb-va)*(t-a)/(b-a)}return keys[keys.length-1][1]}
+const hms=s=>{s=Math.floor(s);return Math.floor(s/3600)+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const kc=v=>v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+const CHECK=(c='currentColor',s=14)=>`<svg width="${s}" height="${s}" viewBox="0 0 16 16" style="flex:none"><path d="M3 8.5l3.2 3.2L13 5" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ARROW='<svg width="18" height="22" viewBox="0 0 18 22"><path d="M1.5 1.5v16.2l4.3-4 3 6.6 3-1.3-3-6.5h6z" fill="#0B0B0B" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+function cursorIn(parent){const c=el('div','cur',ARROW,parent);c.style.zIndex=350;const rp=[0,1].map(()=>el('div','ripple',null,parent));rp.forEach(r=>r.style.zIndex=349);return{c,rp}}
+function moveCursor(cu,keys,clicks,t,vis){let x,y;if(t<=keys[0][0]){x=keys[0][1];y=keys[0][2]}else if(t>=keys[keys.length-1][0]){const k=keys[keys.length-1];x=k[1];y=k[2]}
+  else for(let i=1;i<keys.length;i++)if(t<=keys[i][0]){const[a,xa,ya]=keys[i-1],[b,xb,yb]=keys[i];const q=eio((t-a)/(b-a));x=xa+(xb-xa)*q;y=ya+(yb-ya)*q;break}
+  let press=0;for(const c of clicks)if(t>=c&&t<c+.1)press=1;cu.c.style.left=x+'px';cu.c.style.top=y+'px';cu.c.style.opacity=vis;cu.c.style.transform=`scale(${press?.85:1})`;cu.c.style.transformOrigin='2px 2px';
+  let k=0;cu.rp.forEach(r=>r.style.opacity=0);for(const c of clicks){if(t>=c&&t<c+.35&&k<2){const r=cu.rp[k++];const p=(t-c)/.35;r.style.left=(x+2)+'px';r.style.top=(y+2)+'px';r.style.opacity=.55*(1-p)*vis;r.style.transform=`scale(${.4+p*1.3})`}}}
+const FLASH=[[17.6,.3]],SHAKE=[[17.6,1],[20.22,.5]];
+const flashAt=t=>{let v=0;for(const[a,i]of FLASH)if(t>=a)v=Math.max(v,i*Math.exp(-(t-a)/.05));return v};
+function shakeAt(t){let x=0,y=0;for(const[a,i]of SHAKE)if(t>=a&&t<a+.5){const k=i*Math.exp(-(t-a)/.08)*6;x+=Math.sin(t*171+a)*k;y+=Math.cos(t*213+a)*k}return[x,y]}
+const S=[];function scene(start,end,bg,build,update,push=.02){S.push({start,end,bg,build,update,push})}
+/* Safe area: the layout is drawn on the 540×960 grid (panels x 20–472), SAFE maps it into x 48–440, y ≥ 130,
+   because phones crop the edges and TikTok covers the right edge. Keep it in every episode. */
+const SAFE='translate(-5.2px,16px) scale(.8673)';
+</script>
+<script src="../../engine/cta.js"></script>
+<script>
+/* ================= DATA ================= */
+/* Modelový týden T40 (28. 9.–4. 10. 2026) vs. T39. Součty a podíly sedí: 486 320 / 214 = 2 273, 6 / 37 = 16 %, 512 900 − 318 450 = 194 450. */
+const KPI=[['Tržby','486 320 Kč','450 300 Kč','+8 %','E-shop — Objednávky'],['Nové leady','37','33','+12 %','CRM — Leady'],['Objednávky','214','204','+5 %','E-shop — Objednávky'],
+ ['Prům. objednávka','2 273 Kč','2 207 Kč','+3 %','E-shop — Objednávky'],['Vratky','9','11','−2','E-shop — Vratky'],['Vyhrané obchody','6','5','+1','CRM — Obchody'],
+ ['Konverze leadů','16 %','15 %','+1 pb','CRM — Obchody'],['Příjmy na účtu','512 900 Kč','468 200 Kč','+10 %','Banka — Pohyby'],['Výdaje','318 450 Kč','296 700 Kč','+7 %','Banka — Pohyby'],
+ ['Cash flow','194 450 Kč','171 500 Kč','+13 %','Banka — Pohyby'],['Pohledávky','63 800 Kč','71 200 Kč','−10 %','Fakturace — Pohledávky'],['Top produkt','Hrnek Sova','Deka Ovečka','—','E-shop — Produkty']];
+const GOOD=[1,1,1,1,1,1,1,1,0,1,1,0];   // green delta (fewer returns / receivables is good, costs up is red)
+const DAY40=[82140,74980,69450,77310,88620,52790,41030],DAY39=[70100,79400,61200,72900,80500,49300,36900];   // Σ 486 320 / 450 300
+const MKEYS=[[.25,0],[1.9,360],[3.4,900],[4.6,1140],[6.8,1800],[8.6,2400],[12.4,6000],[14.0,6600]];
+const AKEYS=[[.25,0],[.8,15],[2.6,60],[3.3,80],[3.95,120]];
+const DONE_M=14.0,DONE_A=3.95,SAVED=4.6;
+const kpiN=t=>t<5.3?1:t<8.6?2:Math.min(12,3+Math.floor((t-8.6)/.38));
+const tOfKpi=m=>8.6+(m-3)*.38;   // video time when the manual side starts KPI m (m ≥ 3)
+const STEPS=[[.25,'Exportuju objednávky z e-shopu'],[1.9,'Tahám obchody z CRM'],[3.4,'Stahuju výpis z banky'],[4.6,'Slepuju to v Excelu'],[6.8,'Dělám grafy'],[8.6,'Ukazatel po ukazateli. Ctrl+C, Ctrl+V.'],[12.4,'Posílám report vedení']];
+const ASTEPS=[[.25,'Data se stáhnou sama ze 4 systémů'],[.8,'Report se skládá sám'],[2.6,'Grafy jsou hotové'],[3.3,'Čeká na tvoji kontrolu'],[3.95,'Zkontrolováno. Odesláno vedení.']];
+const DAYS=['Po','Út','St','Čt','Pá','So','Ne'];
+
+/* ================= SPLIT SCREEN ================= */
+scene(0,14.8,'w',inner=>{
+  const top=el('div','abs mono',null,inner);top.textContent='Díl 3 · Reporty';Object.assign(top.style,{left:'24px',top:'66px',color:'var(--g)'});
+  const hd=el('div','abs',null,inner);hd.innerHTML='Stejný úkol. <span class="hl"><i></i>Dva světy.</span>';Object.assign(hd.style,{left:'22px',top:'86px',fontSize:'34px',fontWeight:820,letterSpacing:'-.035em'});
+  const mkPanel=(cls,y,label)=>{const p=el('div','panel '+cls,null,inner);Object.assign(p.style,{left:'20px',top:y+'px',width:'452px',height:'294px'});
+    const ch=el('div','chip',label,p);const tm=el('div','timer','<span>0:00:00</span>',p);const sg=el('div','stg',null,p);const cap=el('div','cap',null,p);return{p,ch,tm,sg,cap}};
+  const A=mkPanel('pa',142,'Ručně'),B=mkPanel('pb',448,'S automatizací');
+  const WW=350,WH=168;
+  const mkWin=(pos,title,z)=>{const d=el('div','win',null,A.sg);Object.assign(d.style,{left:(4+pos*12)+'px',top:(2+pos*5)+'px',width:WW+'px',height:WH+'px',opacity:0,zIndex:z});
+    const tb=el('div','tb',`<i></i><i></i><i></i><span>${title}</span>`,d);const b=el('div','wb',null,d);b.style.height=(WH-24)+'px';return{d,b,tb}};
+  // 1 e-shop export
+  const w1=mkWin(0,'E-shop — Objednávky',1);const s1=el('div','srch','<span style="color:#888">Období: </span><span></span>',w1.b);const s1t=s1.lastChild;
+  const ex1=el('div','wbtn','Exportovat CSV',w1.b);Object.assign(ex1.style,{left:'auto',right:'10px',top:'8px',bottom:'auto'});
+  const list=el('div',null,null,w1.b);list.style.margin='0 -10px';
+  const ORD=[['#2026-1841','J. Nováková · 2 340 Kč'],['#2026-1842','P. Dvořák · 1 190 Kč'],['#2026-1843','M. Černá · 4 870 Kč'],['#2026-1844','T. Veselý · 990 Kč'],['#2026-1845','K. Horáková · 3 260 Kč']];
+  const mrows=ORD.map(([a,s])=>el('div','mrow',`<b>${a}</b><span>${s}</span>`,list));
+  // 2 CRM export (slow)
+  const w2=mkWin(1,'CRM — Obchody',2);
+  el('div',null,'<b style="font-size:13px">Export obchodů</b>',w2.b).style.marginBottom='4px';
+  el('div','frow','<em>Období</em><span class="v">28. 9.–4. 10. 2026</span>',w2.b).style.marginBottom='4px';
+  el('div','frow','<em>Formát</em><span class="seg on">CSV</span><span class="seg">XLSX</span>',w2.b);
+  const pr2=el('div','prog','<i style="width:0"></i>',w2.b);const pf2=pr2.firstChild;const pl2=el('div',null,'',w2.b);Object.assign(pl2.style,{fontSize:'11.5px',color:'#666',marginTop:'4px',height:'16px'});
+  const b2=el('div','wbtn','Exportovat',w2.b);
+  // 3 bank statement
+  const w3=mkWin(2,'Banka — Výpisy z účtu',3);w3.b.style.padding='6px 10px';
+  el('div','frow','<em>Účet</em><span class="v">1234567890/0100</span>',w3.b);
+  const bk=[['Od','28. 9. 2026'],['Do','4. 10. 2026']].map(([k,v])=>({s:el('div','frow',`<em>${k}</em><span class="v"></span>`,w3.b).lastChild,v}));
+  const fm3=el('div','frow','<em>Formát</em><span class="seg">PDF</span><span class="seg">CSV</span><span class="seg">ABO</span>',w3.b);const csv3=fm3.children[2];
+  w3.b.querySelectorAll('.frow').forEach(f=>f.style.marginBottom='4px');
+  const dl3=el('div',null,'<span class="csv">CSV</span><span>vypis_2026-10-04.csv</span>'+CHECK('#1E7A45',12),w3.b);Object.assign(dl3.style,{display:'flex',alignItems:'center',gap:'5px',fontSize:'12px',position:'absolute',left:'110px',bottom:'11px',opacity:0});
+  const sb3=el('div','wbtn','Stáhnout',w3.b);
+  // 4 excel
+  const w4=mkWin(3,'Report_T40_FINAL_v3.xlsx',4);w4.b.style.padding='6px 10px';
+  const fx4=el('div','fx','<em>fx</em><span></span>',w4.b).lastChild;
+  const xg=el('div','xg',null,w4.b);const XG=[['','A','B','C'],['1','Ukazatel','Tento týden','Minulý'],['2','Tržby','','450 300'],['3','Nové leady','','33'],['4','Objednávky','','204']];
+  const xc=XG.map((r,i)=>r.map((v,j)=>el('div',(i==0||j==0)?'h':(i==1?'hd':(j>=2?'r':'')),v,xg)));
+  const xsel=el('div','abs',null,w4.b);Object.assign(xsel.style,{border:'2px solid #1E7A45',pointerEvents:'none',opacity:0,zIndex:5});
+  const warn4=el('div','warn','Proč to zas nefunguje?!',w4.b);Object.assign(warn4.style,{position:'absolute',left:'10px',bottom:'3px',fontSize:'12.5px'});
+  // 5 chart
+  const w5=mkWin(4,'Report_T40_FINAL_v3.xlsx — Graf',5);w5.b.style.padding='6px 12px';
+  const ct5=el('div',null,'',w5.b);Object.assign(ct5.style,{fontSize:'13px',fontWeight:800,height:'18px'});
+  const bars5=el('div','bars',null,w5.b);Object.assign(bars5.style,{height:'74px',marginTop:'4px',borderBottom:'1.5px solid #0B0B0B',paddingLeft:'6px'});const b5=DAYS.map(()=>el('i',null,null,bars5));
+  const dl5=el('div',null,DAYS.map(d=>`<span style="width:24px;text-align:center;display:inline-block">${d}</span>`).join(''),w5.b);Object.assign(dl5.style,{display:'flex',gap:'10px',fontSize:'10.5px',color:'#777',paddingLeft:'6px',marginTop:'2px'});
+  const rg5=el('div',null,'<span style="color:#888">Data: </span><span class="v"></span>',w5.b);Object.assign(rg5.style,{fontSize:'11.5px',marginTop:'3px',display:'inline-block',padding:'0 4px',border:'1px solid transparent',borderRadius:'3px'});const rg5v=rg5.lastChild;
+  const warn5=el('div','warn','To jsou data z minulého týdne!',w5.b);Object.assign(warn5.style,{position:'absolute',right:'12px',bottom:'6px'});
+  // montage slots
+  const slots=[];for(let k=0;k<8;k++){const isX=k%2==1;const w=mkWin(0,'',10);w.b.style.padding='6px 10px';
+    const f=(isX?['Ukazatel','Tento týden','Minulý']:['Hledám','Období','Výsledek']).map(l=>el('div','frow',`<em>${l}</em><span class="v"></span>`,w.b).lastChild);slots.push({...w,isX,f,n:-1})}
+  // 7 email to management
+  const w7=mkWin(6,'Nová zpráva',300);
+  const e7=[['Komu:','Vedení (Martin, Eva)'],['Předmět:','Týdenní report T40']].map(([k,v])=>({s:el('div','frow',`<em>${k}</em><span></span>`,w7.b).lastChild,v}));
+  const att7=el('div',null,'<span class="xls">XLSX</span><b>Report_T40_FINAL_v3.xlsx</b><span style="color:#888">· 2,4 MB</span>',w7.b);
+  Object.assign(att7.style,{display:'flex',alignItems:'center',gap:'4px',fontSize:'12px',margin:'4px 0',opacity:0});
+  const body7=el('div',null,null,w7.b);body7.style.fontSize='12.5px';body7.style.whiteSpace='normal';body7.style.width='320px';
+  const send7=el('div','wbtn','Odeslat',w7.b);
+  const doneA=el('div','abs',null,A.sg);Object.assign(doneA.style,{inset:0,background:'rgba(233,233,233,.88)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',fontSize:'22px',fontWeight:800,letterSpacing:'-.02em',opacity:0,zIndex:400});
+  doneA.innerHTML=CHECK('#0B0B0B',24)+'<span>Hotovo. Do příštího pondělí.</span>';
+  const curA=cursorIn(A.sg);
+  /* ---------- auto side ---------- */
+  const ib=el('div','card',null,B.sg);Object.assign(ib.style,{left:0,top:0,width:'150px',height:'196px',opacity:0});
+  const ibt=el('div','ct',null,ib);ibt.innerHTML='Zdroje <span class="bdg" style="margin-left:auto;background:var(--y);border:1.5px solid #0B0B0B;border-radius:9px;padding:0 6px;font-size:11px">0/4</span>';const bdg=ibt.querySelector('.bdg');
+  const SRC=['E-shop','CRM','Banka','Fakturace'];
+  const srows=SRC.map(s=>el('div','srow',`<span class="csv" style="background:#8C8C8C">API</span><span>${s}</span><span class="ok">${CHECK('#0B0B0B',12)}</span>`,ib));
+  const sch=el('div','mono',null,ib);sch.innerHTML='Každé pondělí<br>v 7:00';Object.assign(sch.style,{position:'absolute',left:'9px',bottom:'10px',fontSize:'10px',letterSpacing:'.08em',lineHeight:1.35,color:'var(--g)',opacity:0});
+  const tc=el('div','card',null,B.sg);Object.assign(tc.style,{left:'160px',top:0,width:'258px',height:'196px',opacity:0});
+  const tct=el('div','ct',null,tc);tct.innerHTML='Report T40 · 28. 9.–4. 10. <span class="cnt" style="margin-left:auto;font-family:JB,monospace;font-weight:500">0/12</span>';const cnt=tct.querySelector('.cnt');
+  const tv=el('div',null,null,tc);Object.assign(tv.style,{position:'absolute',left:0,right:0,top:'26px',height:'76px',overflow:'hidden'});const tl=el('div',null,null,tv);
+  const krows=KPI.map(([s,a,,d],i)=>el('div','krow',`<span class="s">${s}</span><span class="a">${a}</span><span class="d ${d=='—'?'':(GOOD[i]?'up':'dn')}">${d}</span>`,tl));
+  const ch=el('div',null,null,tc);Object.assign(ch.style,{position:'absolute',left:'9px',right:'9px',top:'104px',height:'40px',display:'flex',alignItems:'flex-end',gap:'8px'});
+  const chl=el('div','mono',null,ch);chl.innerHTML='Tržby<br>po dnech';Object.assign(chl.style,{fontSize:'9.5px',letterSpacing:'.06em',lineHeight:1.3,color:'var(--g)',width:'64px',alignSelf:'center'});
+  const mb=el('div','bars',null,ch);Object.assign(mb.style,{gap:'6px',height:'36px'});const mbs=DAYS.map(()=>{const b=el('i',null,null,mb);b.style.width='16px';return b});
+  const btn=el('div','btn','Zkontrolovat a odeslat',tc);
+  const curB=cursorIn(B.sg);const flows=[0,1,2].map(()=>el('div','dotf',null,B.sg));
+  const sv=el('div','abs',null,B.sg);Object.assign(sv.style,{inset:0,background:'rgba(255,255,255,.975)',display:'flex',flexDirection:'column',justifyContent:'center',paddingLeft:'8px',opacity:0,zIndex:400});
+  const svl=el('div','mono',null,sv);svl.textContent='Ušetřený čas';svl.style.color='var(--g)';
+  const svn=el('div',null,'<span class="hl"><i style="transform:scaleX(1)"></i><span class="v">0:00:00</span></span>',sv);Object.assign(svn.style,{fontFamily:'JB,monospace',fontSize:'56px',letterSpacing:'-.02em',lineHeight:1.15,marginTop:'2px'});
+  const svv=svn.querySelector('.v');const svt=el('div',null,'',sv);Object.assign(svt.style,{fontSize:'17px',fontWeight:650,marginTop:'4px'});
+  return{hd,hl:hd.querySelector('.hl i'),A,B,wins:[w1,w2,w3,w4,w5],s1t,ex1,mrows,pf2,pl2,b2,bk,csv3,dl3,sb3,fx4,xc,xsel,warn4,ct5,b5,rg5,rg5v,warn5,slots,w7,e7,att7,body7,send7,doneA,curA,
+    ib,bdg,srows,sch,tc,cnt,tl,krows,mbs,btn,curB,flows,sv,svv,svt}},
+(c,t)=>{
+  c.hl.style.transform=`scaleX(${eo((t-.1)/.35)})`;
+  const ms=interp(MKEYS,t),as=interp(AKEYS,t);const n=kpiN(t);
+  const ta=`<span>${hms(ms)}</span>`;if(c.A.tm.innerHTML!==ta)c.A.tm.innerHTML=ta;
+  const tb=`<span>${hms(as)}</span>`+(t>=DONE_A?CHECK('#0B0B0B',22):'');if(c.B.tm.innerHTML!==tb)c.B.tm.innerHTML=tb;
+  c.A.tm.style.left=(c.A.ch.offsetWidth+26)+'px';c.B.tm.style.left=(c.B.ch.offsetWidth+26)+'px';
+  /* captions */
+  let si=0;STEPS.forEach((s,i)=>{if(t>=s[0])si=i});
+  const capA=t>=DONE_M?`<span class="n">12/12</span>Hotovo po 1 h 50 min`:`<span class="n">${n}/12</span>${STEPS[si][1]}`;if(c.A.cap.innerHTML!==capA)c.A.cap.innerHTML=capA;rise(c.A.cap,t,t>=DONE_M?DONE_M:STEPS[si][0],.25);
+  let ai=0;ASTEPS.forEach((s,i)=>{if(t>=s[0])ai=i});const capB=t>=SAVED?'Hotovo. Čas běží dál.':ASTEPS[ai][1];if(c.B.cap.innerHTML!==capB)c.B.cap.innerHTML=capB;rise(c.B.cap,t,t>=SAVED?SAVED:ASTEPS[ai][0],.25);
+  /* detailed windows */
+  const WT=[.25,1.9,3.4,4.6,6.8];
+  c.wins.forEach((w,i)=>{const t0=WT[i];const p=eo((t-t0)/.18);w.d.style.opacity=t<t0?0:1;w.d.style.transform=`translateY(${(1-p)*8}px) scale(${.95+.05*p})`});
+  // 1 e-shop
+  typed(c.s1t,'28. 9.–4. 10.',t,.35,.95);c.mrows.forEach((r,i)=>{r.style.opacity=t<1.0+i*.05?0:1});c.ex1.style.background=(t>=1.6&&t<1.7)?'#555':'#0B0B0B';
+  // 2 CRM: crawls to 99 %, hangs, then finally done
+  const pr=t<2.25?0:t<2.7?99*eo((t-2.25)/.45):t<3.1?99:100;c.pf2.style.width=pr+'%';
+  const pl=t<2.25?'':t<3.1?`Připravuji export… ${Math.floor(pr)} %`:'Hotovo. obchody_T40.csv';if(c.pl2.textContent!==pl)c.pl2.textContent=pl;
+  const b2t=t<3.1?'Exportovat':'Stáhnout CSV';if(c.b2.textContent!==b2t)c.b2.textContent=b2t;c.b2.style.background=((t>=2.25&&t<2.35)||(t>=3.25&&t<3.35))?'#555':'#0B0B0B';
+  // 3 bank
+  c.bk.forEach((f,i)=>typed(f.s,f.v,t,3.5+i*.33,3.75+i*.33));c.csv3.className='seg'+(t>=4.15?' on':'');c.sb3.style.background=(t>=4.4&&t<4.5)?'#555':'#0B0B0B';c.dl3.style.opacity=t>=4.45?1:0;
+  // 4 excel: SUMA works, SVYHLEDAT breaks, fixed
+  let fx='',sel=null;
+  if(t>=4.65&&t<5.3){fx='=SUMA(Eshop!F2:F215)';typed(c.fx4,fx,t,4.7,5.15);sel=[2,2]}
+  else if(t>=5.3&&t<6.42){typed(c.fx4,'=SVYHLEDAT(A3;CRM!A:F;4;0)',t,5.35,5.9);sel=[3,2]}
+  else if(t>=6.42){if(t<6.47)c.fx4.innerHTML='';else typed(c.fx4,'=SVYHLEDAT(A3;CRM!B:F;3;0)',t,6.47,6.68);sel=[3,2]}
+  else c.fx4.innerHTML='';
+  const v2=t>=5.2?'486 320':'';if(c.xc[2][2].textContent!==v2)c.xc[2][2].textContent=v2;
+  const err=t>=5.95&&t<6.72;const v3=t>=6.72?'37':err?'#NENÍ_K_DISPOZICI':'';if(c.xc[3][2].textContent!==v3)c.xc[3][2].textContent=v3;
+  c.xc[3][2].style.color=err?'#D42A17':'';c.xc[3][2].style.fontWeight=err?700:'';c.warn4.style.opacity=(t>=6.05&&t<6.72)?1:0;
+  if(sel&&t<6.8){const cell=c.xc[sel[0]][sel[1]];c.xsel.style.opacity=1;Object.assign(c.xsel.style,{left:(cell.offsetLeft-1)+'px',top:(cell.offsetTop-1)+'px',width:(cell.offsetWidth+2)+'px',height:(cell.offsetHeight+2)+'px'})}else c.xsel.style.opacity=0;
+  // 5 chart: last week's data first, then fixed
+  typed(c.ct5,'Tržby po dnech · T40',t,6.9,7.25);
+  const fixq=eio((t-8.15)/.35);const mx=90000;
+  c.b5.forEach((b,i)=>{const g=eo((t-(7.3+i*.05))/.25);const v=DAY39[i]+(DAY40[i]-DAY39[i])*fixq;b.style.height=(t<7.3?0:g*v/mx*70)+'px'});
+  let rg;if(t<7.3)rg='';else if(t<7.95)rg='21.–27. 9.';else if(t<8.0)rg='';else rg='28. 9.–4. 10.'.slice(0,Math.round(13*clamp((t-8.0)/.15)));if(c.rg5v.textContent!==rg)c.rg5v.textContent=rg;
+  const bad=t>=7.55&&t<8.1;c.rg5.style.borderColor=bad?'#D42A17':'transparent';c.rg5v.style.color=bad?'#D42A17':'';c.warn5.style.opacity=bad?1:0;
+  /* montage */
+  c.slots.forEach(s=>{s.d.style.opacity=0});
+  if(t>=8.6&&t<DONE_M){for(let m=Math.max(3,n-7);m<=n;m++){const t0=tOfKpi(m);if(t<t0)continue;const s=c.slots[(m-3)%8];const pos=(m+4)%7;
+      s.d.style.left=(4+pos*12)+'px';s.d.style.top=(2+pos*5)+'px';s.d.style.zIndex=10+m;const p=eo((t-t0)/.1);s.d.style.opacity=1;s.d.style.transform=`translateY(${(1-p)*6}px) scale(${.96+.04*p})`;
+      if(s.n!==m){s.n=m;const[k,v,pv,,src]=KPI[m-1];s.tb.lastChild.textContent=s.isX?'Report_T40_FINAL_v3.xlsx':src;const vals=s.isX?[k,v,pv]:[k,'28. 9.–4. 10.',v];s.f.forEach((f,i)=>f.textContent=vals[i])}}
+    c.wins.forEach(w=>w.d.style.filter='brightness(.97)')}
+  /* email to management */
+  const p7=eo((t-12.4)/.18);c.w7.d.style.opacity=t<12.4?0:1;c.w7.d.style.transform=`translateY(${(1-p7)*8}px) scale(${.95+.05*p7})`;
+  c.e7.forEach((f,i)=>typed(f.s,f.v,t,12.5+i*.3,12.75+i*.3));c.att7.style.opacity=t>=13.1?1:0;typed(c.body7,'Ahoj, posílám report za minulý týden. Snad tentokrát všechno sedí…',t,13.15,13.7);
+  c.send7.style.background=(t>=13.85&&t<13.95)?'#555':'#0B0B0B';
+  const dq=eo((t-DONE_M)/.25);c.doneA.style.opacity=t>=DONE_M?dq:0;
+  /* cursor A */
+  const J=[];if(t>=8.6){let s=11;for(let k=0;k<28;k++){s=(s*9301+49297)%233280;const r1=s/233280;s=(s*9301+49297)%233280;const r2=s/233280;J.push([8.7+k*.13,90+r1*260,60+r2*120])}}
+  moveCursor(c.curA,[[.25,62,44],[.32,64,46],[1.0,150,60],[1.45,298,46],[1.75,300,48],[2.15,60,152],[2.27,60,152],[2.5,120,140],[3.05,122,141],[3.2,56,156],[3.3,57,157],[3.45,135,82],[4.1,140,128],[4.25,140,128],[4.35,74,162],[4.5,76,163],[4.65,226,104],[5.2,226,104],[5.3,226,123],[5.5,300,140],[6.25,302,141],[6.42,220,62],[6.75,222,64],[7.6,180,140],[7.95,108,174],[8.3,112,176],[8.5,116,177],...J,[12.45,300,120],[13.7,118,182]],
+    [.32,1.6,2.25,3.25,4.15,4.4,4.65,5.3,6.42,7.95,...J.filter((_,k)=>k%2==0).map(j=>j[0]+.06),13.85],t,t<DONE_M?1:clamp(1-(t-DONE_M)/.2));
+  /* auto side */
+  const ip=eo((t-.25)/.3);c.ib.style.opacity=t<.25?0:ip;c.ib.style.transform=`translateX(${(1-ip)*30}px)`;
+  const syn=t<.3?0:Math.min(4,1+Math.floor((t-.3)/.1));c.bdg.textContent=syn+'/4';
+  c.srows.forEach((r,i)=>{const t0=.32+i*.08;const p=eo((t-t0)/.12);r.style.opacity=t<t0?0:p;r.style.transform=`translateX(${(1-p)*-10}px)`;r.querySelector('.ok').style.opacity=t>=t0+.2?1:0});
+  c.sch.style.opacity=eo((t-.7)/.3);
+  const tp=eo((t-.8)/.25);c.tc.style.opacity=t<.8?0:tp;c.tc.style.transform=`translateY(${(1-tp)*10}px)`;
+  const done=t<.9?0:Math.min(12,1+Math.floor(11*Math.pow(clamp((t-.9)/1.4),1.2)));
+  c.cnt.textContent=done+'/12';c.krows.forEach((r,i)=>{r.style.opacity=i<done?1:0});
+  c.tl.style.transform=`translateY(${-Math.max(0,done-4)*19}px)`;
+  c.mbs.forEach((b,i)=>{const g=eo((t-(2.3+i*.05))/.25);b.style.height=(t<2.3?0:g*DAY40[i]/mx*36)+'px'});
+  c.flows.forEach((f,i)=>{const t0=.85+i*.12;if(t>=t0&&t<t0+.28){const q=eio((t-t0)/.28);const a=c.srows[i].getBoundingClientRect(),o=f.parentElement.getBoundingClientRect(),b=c.tc.getBoundingClientRect();
+      const k=o.width/f.parentElement.offsetWidth;   // screen px per layout px (safe-area + push scale)
+      const x0=(a.left-o.left)/k+40,y0=(a.top-o.top+a.height/2)/k,x1=(b.left-o.left)/k+20,y1=(b.top-o.top)/k+36+i*19;f.style.opacity=1;f.style.left=(x0+(x1-x0)*q-5)+'px';f.style.top=(y0+(y1-y0)*q-5-Math.sin(q*Math.PI)*16)+'px'}else f.style.opacity=0});
+  if(t<2.8)c.btn.style.opacity=0;else{const p=back((t-2.8)/.3);c.btn.style.opacity=clamp((t-2.8)/.1);c.btn.style.transform=`scale(${(t>=3.9&&t<3.98)?.95:p})`}
+  const ok=t>=DONE_A;const bh=ok?CHECK('#0B0B0B',14)+'Zkontrolováno · odesláno vedení':'Zkontrolovat a odeslat';if(c.btn.innerHTML!==bh)c.btn.innerHTML=bh;c.btn.className='btn'+(ok?' ok':'');
+  moveCursor(c.curB,[[3.3,395,196],[3.8,290,172],[4.4,296,176]],[3.9],t,t<3.3?0:(t<SAVED?clamp((t-3.3)/.15):0));
+  const sp=eo((t-SAVED)/.35);c.sv.style.opacity=t<SAVED?0:sp;c.svv.textContent=hms(Math.max(0,ms-120));
+  const st=t>=DONE_M?'Hotovo o 1 h 48 min dřív.':`…a ruční verze je u ukazatele ${n}/12 ↑`;if(c.svt.textContent!==st)c.svt.textContent=st;
+});
+
+/* ================= STAT CARDS ================= */
+scene(14.8,17.6,'w',inner=>{
+  const box=el('div','abs',null,inner);Object.assign(box.style,{left:'32px',right:'32px',top:0,bottom:0,display:'flex',flexDirection:'column',justifyContent:'center',paddingBottom:'150px'});
+  const l=el('div','mono',null,box);l.textContent='Za rok · 52 reportů';l.style.color='var(--g)';l.style.opacity=0;
+  const mk=(lab,val,mt)=>{const a=el('div',null,lab,box);Object.assign(a.style,{fontSize:'22px',fontWeight:600,color:'var(--g)',marginTop:mt+'px',opacity:0});
+    const v=el('div',null,val,box);Object.assign(v.style,{fontSize:'58px',fontWeight:850,letterSpacing:'-.045em',lineHeight:1.05,opacity:0});return[a,v]};
+  const[a1,v1]=mk('Ručně','95 h 20 min',22),[a2,v2]=mk('S automatizací','<span class="hl"><i></i>1 h 44 min</span>',20);
+  const fn=el('div','mono',null,box);fn.textContent='*modelový příklad: 1 report týdně';Object.assign(fn.style,{fontSize:'11px',color:'var(--g)',marginTop:'18px',opacity:0});
+  return{l,a1,v1,a2,v2,fn,hl:v2.querySelector('i')}},
+(c,lt)=>{rise(c.l,lt,.05);rise(c.a1,lt,.2);rise(c.v1,lt,.3);rise(c.a2,lt,.95);rise(c.v2,lt,1.05);c.hl.style.transform=`scaleX(${eo((lt-1.3)/.3)})`;rise(c.fn,lt,1.5)});
+
+scene(17.6,19.8,'b',inner=>{
+  const box=el('div','abs',null,inner);Object.assign(box.style,{left:'32px',right:'32px',top:0,bottom:0,display:'flex',flexDirection:'column',justifyContent:'center',paddingBottom:'150px'});
+  const a=el('div',null,'To jsou skoro',box);Object.assign(a.style,{fontSize:'26px',fontWeight:600,color:'rgba(255,255,255,.55)',opacity:0});
+  const b=el('div',null,'2,5 pracovního týdne.',box);Object.assign(b.style,{fontSize:'58px',fontWeight:850,letterSpacing:'-.045em',color:'var(--y)',lineHeight:1.02,opacity:0,transformOrigin:'0 50%'});
+  const d=el('div',null,'Lepením tabulek.',box);Object.assign(d.style,{fontSize:'30px',fontWeight:780,letterSpacing:'-.03em',marginTop:'8px',opacity:0});
+  return{a,b,d}},
+(c,lt)=>{rise(c.a,lt,.02,.3);slam(c.b,lt,0,.22);rise(c.d,lt,.7)},.04);
+
+ctaScene(19.8,23.2,'REPORTY','Díl 4: onboarding klienta');
+
+
+/* ===== engine ===== */
+function buildAll(){for(const s of S){s.root=el('div','scene '+s.bg,null,stage);s.root.style.display='block';s.inner=el('div','inner',null,s.root);s.ctx=s.build(s.inner)||{};s.root.style.display='none'}}
+window.DURATION=23.2;window.CUTS=S.map(s=>s.start);
+window.render=function(t){
+  for(const s of S){const on=t>=s.start&&t<s.end;s.root.style.display=on?'block':'none';
+    if(on){const lt=t-s.start;s.inner.style.transform=`${SAFE} scale(${1+s.push*(lt/(s.end-s.start))})`;s.update(s.ctx,lt)}}
+  const[sx,sy]=shakeAt(t);stage.style.transform=`translate(${sx}px,${sy}px)`;document.getElementById('flash').style.opacity=flashAt(t)};
+Promise.all(['800 20px IT','500 20px IT','600 20px IT','20px JB'].map(f=>document.fonts.load(f,'ěščřžýáíéúů↑•×0123456789'))).then(()=>document.fonts.ready).then(()=>{buildAll();window.READY=true;render(0)});
+</script></body></html>

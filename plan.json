@@ -27,7 +27,7 @@
       "title": "Cenová nabídka",
       "keyword": "NABÍDKA",
       "publishAt": "2026-09-30T09:00:00+02:00",
-      "status": "scheduled",
+      "status": "published",
       "teaserNext": "Díl 2: faktury",
       "metricool": {
         "id": "384554753",
@@ -55,8 +55,18 @@
       "title": "Reporty",
       "keyword": "REPORTY",
       "publishAt": "2026-10-14T09:00:00+02:00",
-      "status": "planned",
+      "status": "ready",
       "teaserNext": "Díl 4: onboarding klienta",
+      "metricool": null
+    },
+    {
+      "n": 4,
+      "slug": "dil-04-onboarding",
+      "title": "Onboarding klienta",
+      "keyword": "ONBOARDING",
+      "publishAt": "2026-10-21T09:00:00+02:00",
+      "status": "planned",
+      "teaserNext": "Díl 5: objednávky z e-mailu",
       "metricool": null
     }
   ]
