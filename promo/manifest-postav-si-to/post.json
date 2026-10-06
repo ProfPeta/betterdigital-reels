@@ -1,0 +1,21 @@
+{
+  "platform": "tiktok+instagram",
+  "text": "Canva, Shopify i český Mews začaly stejně: někoho něco pořádně štvalo. 😤\n\n→ Melanie Perkins učila spolužáky grafické programy. Byly složité a drahé. Udělala Canvu.\n→ Tobi Lütke chtěl prodávat snowboardy online. Žádný e-shopový systém mu nevyhovoval. Napsal si Shopify.\n→ Richard Valtr ve 14 letech v noci ručně pároval hotelové účtenky. Postavil Mews, dnes za 2,5 mld. $.\n\nKdyž rozumíš problému, můžeš si to dnes postavit taky. Programovat k tomu umět nemusíš.\n\n👇 Co tě v práci nejvíc štve? Napiš to do komentářů. Na ty nejčastější ukážeme, jak je vyřešit s AI.\n\n#podnikani #ai #automatizace #startup #motivace",
+  "firstComment": "Zdroje: Canva – Melanie Perkins v podcastu Remarkable People (Guy Kawasaki). Shopify – historie firmy, Snowdevil 2004 → Shopify 2006 (Wikipedia). Mews – Fortune, 27. 5. 2026 (noční uzávěrky v rodinném hotelu, ocenění 2,5 mld. $ v lednu 2026).",
+  "coverMs": 400,
+  "settings": {
+    "instagramData": {
+      "type": "REEL",
+      "showReelOnFeed": true,
+      "isAiGenerated": false
+    },
+    "tiktokData": {
+      "privacyOption": "PUBLIC_TO_EVERYONE",
+      "commercialContentOwnBrand": true,
+      "isAigc": false,
+      "note": "Doporučeno zapnout štítek vlastní značky: video přímo zmiňuje služby Better Digital (weby a AI automatizace). Rozhoduje Petr. Žádná realistická AI média, proto bez štítku AI."
+    }
+  },
+  "bestSlot": "Metricool: ne 10:00 (nejsilnější víkendové okno TT i IG), po 10:00 / 18:00 (nejsilnější v týdnu)",
+  "status": "ready – zatím neplánováno"
+}
