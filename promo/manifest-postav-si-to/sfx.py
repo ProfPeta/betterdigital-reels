@@ -1,16 +1,19 @@
-"""Manifest „Postav si to.“ – hudba a zvuky (42,6 s), časy podle reel.html (S, ERR_T, TYPED).
-100 BPM (doba 0,6 s). Úvod: temný dron a tikání, „Byli / sakra“ dva údery, „NAŠTVANÍ.“ velký úder s glitchem.
-Příběhy (4,2–18,6): trap groove v a moll (Am–F–Dm–E–Am–F), na každé jméno firmy úder, UI zvuky (klikání myší,
-chybová hlášení, tiskárna účtenek, rychle tikající hodiny). Zlom (18,6–22,2): jen piano, náběh do „DOST.“, kde
-všechno ztichne kromě úderu s dozvukem. „Postavím si to sám.“ = C dur, pak světlejší groove (F–G–Am–F–G), krátká
-pauza na „Ale upřímně?“, údery na profese, gradace s vířením a ukazatelem „Stavím…“, drop na „TEĎ.“ (C dur),
-psaní komentáře a podpis. Konec doznívá do ticha (smyčka začne znovu tichým úvodem).
-usage: python3 sfx.py out.wav"""
-import sys, wave
-import numpy as np
+"""Manifest „Postav si to.“ – hlas, hudba a zvuky. Časy scén z timeline.json (voice/timeline.py je počítá z hlasu),
+stejné jako S v reel.html. Hlas: voice/voice.wav (ElevenLabs, zrychlený 1,08×, zkrácené pauzy).
+100 BPM (doba 0,6 s). Úvod: temný dron a tikání, „Byli / sakra“ dva údery, „naštvaní“ velký úder s glitchem.
+Příběhy: trap groove v a moll (Am–F–Dm–E), na každé jméno firmy úder, UI zvuky (klikání myši, chybová hlášení,
+tiskárna účtenek, rychle tikající hodiny). Zlom: jen piano a náběh do „Dost.“, kde všechno ztichne kromě úderu.
+„Postavím si to sám.“ = C dur, pak světlejší groove (takty počítané zpětně od „Teď.“, aby drop padl na první dobu),
+pauza na „Ale upřímně?“, údery na profese, gradace, drop v C dur, psaní komentáře a podpis.
+Hudba uhýbá hlasu (~−8 dB), hlas je ~9 dB nad hudbou. usage: python3 sfx.py out.wav [PRE]"""
+import sys, wave, json, os
+import numpy as np, soundfile as sf
 from scipy.signal import fftconvolve, butter, sosfilt, sawtooth
+from scipy.ndimage import maximum_filter1d, minimum_filter1d
 
-SR = 48000; DUR = 42.6; N = int(DUR * SR)
+HERE = os.path.dirname(os.path.abspath(__file__))
+TL = json.load(open(os.path.join(HERE, 'timeline.json'))); S = TL['S']; VT = TL['VT']
+SR = 48000; DUR = TL['END']; N = int(DUR * SR)
 rng = np.random.default_rng(42)
 hz = lambda n: 440 * 2 ** ((n - 69) / 12)
 B = .6; ST = B / 4                                    # doba a šestnáctina
@@ -42,12 +45,8 @@ def put(bus, wet, sig, at, g, pan=0.0, w=.3):
     bus.add(sig, at, g, pan)
     if w: wet.add(sig, at, g * w, pan)
 
-# časy scén (stejné jako S v reel.html)
-S = dict(H1=0.0, H2=1.2, H3=2.4, H4=3.0, A1=4.2, A2=6.0, A3=7.2, B1=8.4, B2=10.2, B3=11.4, C1=12.6, C2=14.4, C3=16.8,
-         P1=18.6, P2=19.8, P3=21.0, P4=21.6, P5=22.2, P6=23.4, V1=25.2, V2=27.6, V3=28.2, Y1=30.0, Y2=30.9, Y3=31.5,
-         Y4=32.1, Y5=32.7, Y6=33.6, Y7=34.8, Y8=36.0, Y9=37.2, E1=38.4, E2=40.2)
-ERR_T = [.06 + i * .085 for i in range(10)]
-TYPED = 'přepisování faktur do Excelu 😤'; TY0, TYC = .35, 19
+ERR_T = [.06 + i * .2 for i in range(10)]            # stejné jako ERR_T v reel.html
+TYPED = 'přepisování faktur do Excelu 😤'; TY0, TYC = .9, 22
 
 
 # ---------------------------------------------------------------- nástroje
@@ -164,109 +163,117 @@ def arp(at, ch, g=.1, oct_=12, fc=2600, dec=.17, steps=8):
     for k in range(steps):
         pluck(at + k * 2 * ST, notes[ARP[k % 8]] + oct_, g * K_ARP * (1 if k % 2 == 0 else .75), .5, (k % 3 - 1) * .3, fc, dec)
 
-# ---------------------------------------------------------------- 0–4,2 úvod
-drone(0, 4.3, [33, 45, 52], .12)                                 # A1 A2 E3
-pad(0, [45, 48, 52], 4.2, .045, a=1.5, r=.3, fc=900)
-for k in range(4): tick(k * B, .08 + .02 * k, 2200)               # tikání (napětí)
-piano(0, 45, .17, 3.0); piano(0, 57, .09, 3.0); piano(1.2, 52, .11, 2.4); piano(1.2, 64, .06, 2.4)
-paper(.0, .14); paper(1.2, .16, .1); whoosh(1.2, .25, .07, 3000, 600)
+# ---------------------------------------------------------------- úvod (do „naštvaní“)
+drone(0, S['A1'] + .1, [33, 45, 52], .12)
+pad(0, [45, 48, 52], S['A1'], .045, a=1.5, r=.3, fc=900)
+for k in range(int(S['H3'] / B) + 1): tick(k * B, .07 + .015 * k, 2200)
+piano(0, 45, .17, 3.0); piano(0, 57, .09, 3.0); piano(S['H2'], 52, .11, 2.4); piano(S['H2'], 64, .06, 2.4)
+paper(.0, .14); paper(S['H2'], .16, .1); whoosh(S['H2'], .25, .07, 3000, 600)
 kick(S['H3'], .8); b808(S['H3'], 33, .3, .55)                    # „Byli“
-kick(S['H3'] + .3, .9); b808(S['H3'] + .3, 33, .3, .6); clap(S['H3'] + .3, .25)   # „sakra“
-rev(S['H4'], .6, .28)
-impact(S['H4'], .95, 1.6, .2); b808(S['H4'], 33, 1.1, .75, 7)    # „NAŠTVANÍ.“
-glitch(S['H4'] + .02, .4, .26)
+tS = S['H3'] + VT['sakra']; kick(tS, .9); b808(tS, 33, .3, .6); clap(tS, .25)   # „sakra“
+rev(S['H4'], .5, .28)
+impact(S['H4'], .95, 1.6, .2); b808(S['H4'], 33, 1.0, .75, 7); glitch(S['H4'] + .02, .4, .26)   # „naštvaní“
 riser(S['A1'], .8, .1, 300, 2400)
 
-# ---------------------------------------------------------------- 4,2–18,6 příběhy: groove v a moll
-PROG_A = ['Am', 'F', 'Dm', 'E', 'Am', 'F']
-for bi, ch in enumerate(PROG_A):
-    at = S['A1'] + bi * 4 * B
-    pad(at, CH[ch], 4 * B + .05, .085, a=.08, r=.12, fc=2600)
-    arp(at, ch, .085, 12, 4200, .15)
+# ---------------------------------------------------------------- příběhy: groove v a moll (A1 až P1)
+A0, AE = S['A1'], S['P1']; PROG_A = ['Am', 'F', 'Dm', 'E']
+for bi in range(int(np.ceil((AE - A0) / (4 * B)))):
+    at = A0 + bi * 4 * B; ch = PROG_A[bi % 4]; room = AE - at
+    pad(at, CH[ch], min(4 * B, room) + .05, .085, a=.08, r=.12, fc=2600)
+    arp(at, ch, .085, 12, 4200, .15, steps=max(0, min(8, int(room / (2 * ST)))))
     kicks = [0, 6, 10] + ([14] if bi % 2 else [])
     for j, k in enumerate(kicks):
+        if k * ST > room - .05: continue
         nxt = (kicks + [16])[j + 1]
         kick(at + k * ST, .85 if k == 0 else .65)
-        b808(at + k * ST, BS[ch], (nxt - k) * ST, .5 if k == 0 else .42, 5 if (k == 0 and bi in (2, 4)) else 0)
-    for k in (4, 12): clap(at + k * ST, .32)
-    for k in range(0, 16, 2): hat(at + k * ST, .09 if k % 4 else .12)
-    if bi % 2: hat(at + 13 * ST, .07); hat(at + 15 * ST, .08)
-    if bi == 5:
-        for q in range(6): hat(at + 12 * ST + q * (4 * ST / 6), .06 + .01 * q)
+        b808(at + k * ST, BS[ch], min((nxt - k) * ST, room - k * ST), .5 if k == 0 else .42, 5 if (k == 0 and bi % 4 == 2) else 0)
+    for k in (4, 12):
+        if k * ST < room - .05: clap(at + k * ST, .32)
+    for k in range(0, 16, 2):
+        if k * ST < room - .05: hat(at + k * ST, .09 if k % 4 else .12)
+    if bi % 2:
+        for k in (13, 15):
+            if k * ST < room - .05: hat(at + k * ST, .07)
 # A – Canva
 paper(S['A1'], .15); whoosh(S['A1'] + .3, .3, .06, 4000, 900)
 for o in (.1, .2, .3): mouse(S['A2'] + o, .2)
 mouse(S['A2'] + .62, .18); mouse(S['A2'] + .9, .18); ding(S['A2'] + .55, .1)
-rev(S['A3'], .6, .22); impact(S['A3'], .7, 1.0, .14)
+tC = S['A3'] + VT['a3s']; rev(tC, .6, .2); impact(tC, .6, 1.0, .14)
 # B – Shopify
 whoosh(S['B1'] + .25, .45, .14, 300, 2500); paper(S['B1'], .1)
-for i, e in enumerate(ERR_T): bonk(S['B2'] + e, 380 + 25 * (i % 4), .13, (i % 5 - 2) * .15)
-rev(S['B3'], .6, .22); impact(S['B3'], .7, 1.0, .14); whoosh(S['B3'] + .35, .3, .08, 600, 5000)
+for i, e in enumerate(ERR_T): bonk(S['B2'] + e, 380 + 25 * (i % 4), .12, (i % 5 - 2) * .15)
+tSh = S['B3'] + VT['b3s']; rev(tSh, .6, .2); impact(tSh, .6, 1.0, .14); whoosh(tSh + .35, .3, .08, 600, 5000)
 # C – Mews
 printer(S['C1'] + .15, .5, .09); paper(S['C1'], .1)
-for k in range(int(2.3 / .075)): tick(S['C2'] + k * .075, .045 + .02 * (k % 2), 2900)   # hodiny letí dvě hodiny
+for k in range(int((S['C3'] - S['C2'] - .1) / .075)): tick(S['C2'] + k * .075, .04 + .02 * (k % 2), 2900)
 for i in range(9): paper(S['C2'] + i * .2 + .05, .12, (i % 3 - 1) * .3)
 printer(S['C2'] + .3, .35, .07); printer(S['C2'] + 1.3, .35, .07)
-rev(S['C3'], .6, .24); stamp(S['C3'], .9); impact(S['C3'], .45, .8, .1)
+tM = S['C3'] + VT['c3s']; rev(tM, .6, .22); stamp(tM, .85); impact(tM, .4, .8, .1)
 
-# ---------------------------------------------------------------- 18,6–23,4 zlom: piano, náběh, DOST
-for o, ch in [(0, 'Am'), (1.2, 'F'), (2.4, 'Dm')]:
-    for n in CH[ch]: piano(S['P1'] + o, n, .07, 2.2)
-    piano(S['P1'] + o, BS[ch] + 12, .1, 2.2)
-pad(S['P1'], [45, 52], 3.6, .03, a=.8, r=.4, fc=700)
-for k in range(12): tick(S['P3'] + k * .045, .05 + .004 * k, 2400 + 40 * k)       # počítadlo dnů
-riser(S['P5'] - .02, 2.2, .11, 150, 1800); rev(S['P5'] - .04, .6, .2, 1500)
-impact(S['P5'], 1.0, 2.2, .3); b808(S['P5'], 28, 1.6, .7, 12)      # „DOST.“
+# ---------------------------------------------------------------- zlom: piano, náběh, „Dost.“
+for t0, ch in [(S['P1'], 'Am'), (S['P2'], 'F'), (S['P3'], 'Dm')]:
+    for n in CH[ch]: piano(t0, n, .07, 2.2)
+    piano(t0, BS[ch] + 12, .1, 2.2)
+pad(S['P1'], [45, 52], S['P5'] - S['P1'], .03, a=.8, r=.3, fc=700)
+for k in range(int((S['P4'] - S['P3']) / .05)): tick(S['P3'] + k * .05, .045 + .004 * k, 2400 + 40 * k)   # počítadlo dnů
+riser(S['P5'] - .02, S['P5'] - S['P2'], .11, 150, 1800); rev(S['P5'] - .04, .6, .2, 1500)
+impact(S['P5'], 1.0, 2.2, .3); b808(S['P5'], 28, 1.5, .7, 12)
 
-# ---------------------------------------------------------------- 23,4–42,6 světlá část
-pad(S['P6'], CH['C'] + [64], 1.85, .085, a=.25, r=.15, fc=2200)
+# ---------------------------------------------------------------- světlá část
+pad(S['P6'], CH['C'] + [64], S['V1'] - S['P6'] + .05, .085, a=.25, r=.15, fc=2200)
 for n in [36, 48, 55, 60, 64]: piano(S['P6'], n, .085, 2.4, bright=1.2)
 bell(S['P6'] + .3, 76, .05); bell(S['P6'] + .9, 79, .04)
-riser(S['V1'], 1.2, .08, 250, 2000)
-PROG_B = [(25.2, 'F'), (27.6, 'G'), (30.0, 'Am'), (32.4, 'F'), (34.8, 'G'), (37.2, 'C'), (39.6, 'F'), (42.0, 'C')]
-for at, ch in PROG_B:
-    d = min(4 * B, DUR - at)
-    drop = at >= 37.2
-    pad(at, CH[ch] + [CH[ch][0] + 12], d + .05, .13 if drop else .11, a=.06, r=.15, fc=3800 if drop else 3000)
-    if at != 42.0: arp(at, ch, .1 if drop else .1, 24 if drop else 12, 6000 if drop else 4800, .2)
-    if at == 42.0: continue
-    if at == 34.8:                                               # gradace
+Y9 = S['Y9']; nB = int((Y9 - S['V1']) // (4 * B)); B0 = Y9 - nB * 4 * B     # takty zpětně od dropu
+pad(S['V1'], CH['F'] + [65], B0 - S['V1'] + .05, .11, a=.06, r=.1, fc=3000)   # předtakt
+kick(S['V1'], .7); impact(S['V1'], .25, .5, .06)
+PROG_B = ['F', 'G', 'Am', 'F', 'Am', 'G']; v2a, v2b = S['V2'], S['V3']
+for bi in range(nB):
+    at = B0 + bi * 4 * B; ch = PROG_B[bi % len(PROG_B)]
+    pad(at, CH[ch] + [CH[ch][0] + 12], 4 * B + .05, .11, a=.06, r=.15, fc=3000)
+    arp(at, ch, .1, 12, 4800, .2)
+    if bi == nB - 1:                                              # gradace
         for k in (0, 4, 8, 12): kick(at + k * ST, .7); b808(at + k * ST, BS[ch], 4 * ST, .38)
         continue
-    kicks = [0, 6, 10] if drop else [0, 7, 10]
-    for j, k in enumerate(kicks):
-        nxt = (kicks + [16])[j + 1]; tt = at + k * ST
-        if 27.6 <= tt < 28.2: continue                           # pauza na „Ale upřímně?“
-        kick(tt, .85 if k == 0 else .7); b808(tt, BS[ch], (nxt - k) * ST, .5)
+    for j, k in enumerate([0, 7, 10]):
+        tt = at + k * ST
+        if v2a <= tt < v2b: continue                              # pauza na „Ale upřímně?“
+        nxt = ([0, 7, 10] + [16])[j + 1]; kick(tt, .85 if k == 0 else .7); b808(tt, BS[ch], (nxt - k) * ST, .5)
     for k in (4, 12):
         tt = at + k * ST
-        if not (27.6 <= tt < 28.2): clap(tt, .36 if drop else .34)
-    for k in range(0, 16, 1 if drop else 2):
+        if not (v2a <= tt < v2b): clap(tt, .34)
+    for k in range(0, 16, 2):
         tt = at + k * ST
-        if not (27.6 <= tt < 28.2): hat(tt, (.08 if k % 2 == 0 else .05) if drop else .09, pan=.25 if k % 2 else -.1)
-# „Ale upřímně?“ – krátké nadechnutí (tape stop / vzduch)
+        if not (v2a <= tt < v2b): hat(tt, .09, pan=.25 if k % 4 else -.1)
 whoosh(S['V2'] + .05, .4, .1, 3000, 400); rev(S['V3'], .5, .12)
-# profese: údery na každý střih
-for k, key in enumerate(['Y1', 'Y2', 'Y3', 'Y4']):
-    at = S[key]; impact(at, .22 + .05 * k, .35, .05); clap(at, .25)
-    for n in CH['Am'] if key in ('Y1', 'Y2', 'Y3') else CH['F']: pluck(at, n + 12, .07, .4, 0, 3500, .12)
-whoosh(S['Y5'] + .28, .3, .1, 800, 6000)                         # škrtnutí „programovat“
-# gradace 34,8–37,2: víření, náběh, ukazatel „Stavím…“
-roll = [S['Y7'] + i * .3 for i in range(4)] + [S['Y7'] + 1.2 + i * .15 for i in range(6)] + [S['Y8'] + .3 + i * .075 for i in range(12)]
+for k, key in enumerate(['Y1', 'Y2', 'Y3', 'Y4']):                # profese
+    at = S[key]; impact(at, .2 + .04 * k, .35, .05); clap(at, .22)
+    for n in (CH['Am'] if k < 3 else CH['F']): pluck(at, n + 12, .07, .4, 0, 3500, .12)
+whoosh(S['Y5'] + .28, .3, .1, 800, 6000)                           # škrtnutí „programovat“
+G0 = Y9 - 4 * B
+roll = [G0 + i * .3 for i in range(4)] + [G0 + 1.2 + i * .15 for i in range(4)] + [G0 + 1.8 + i * .075 for i in range(8)]
 for i, tt in enumerate(roll): snare(tt, .12 + .2 * i / len(roll))
-for k in range(16): kick(S['Y8'] + k * .075, .25 + .02 * k) if k % 2 == 0 else None
-for k in range(20): tick(S['Y8'] + .15 + k * .05, .03 + .002 * k, 3000 + 60 * k)
-riser(S['Y9'] - .05, 2.4, .14, 200, 3000); rev(S['Y9'] - .03, .8, .22)
-# DROP „TEĎ.“
-impact(S['Y9'], 1.0, 1.8, .35); b808(S['Y9'], 36, 1.2, .7, 12); hat(S['Y9'], .25, True)
+for k in range(int((Y9 - S['Y8'] - .2) / .05)): tick(S['Y8'] + .15 + k * .05, .03 + .002 * k, 3000 + 60 * k)
+riser(Y9 - .05, 2.4, .14, 200, 3000); rev(Y9 - .03, .8, .22)
+# drop „Teď.“ a závěr
+impact(Y9, 1.0, 1.8, .35); b808(Y9, 36, 1.2, .7, 12); hat(Y9, .25, True)
+for bi, ch in enumerate(['C', 'F', 'C']):
+    at = Y9 + bi * 4 * B
+    if at >= DUR - .2: break
+    room = DUR - at
+    pad(at, CH[ch] + [CH[ch][0] + 12], min(4 * B, room) + .05, .13, a=.06, r=.3, fc=3800)
+    arp(at, ch, .1, 24, 6000, .2, steps=max(0, min(8, int(room / (2 * ST)))))
+    for j, k in enumerate([0, 6, 10]):
+        if k * ST > room - .1: continue
+        nxt = ([0, 6, 10] + [16])[j + 1]; kick(at + k * ST, .85 if k == 0 else .7); b808(at + k * ST, BS[ch], (nxt - k) * ST, .5)
+    for k in (4, 12):
+        if k * ST < room - .1: clap(at + k * ST, .36)
+    for k in range(16):
+        if k * ST < room - .1: hat(at + k * ST, .08 if k % 2 == 0 else .05, pan=.25 if k % 2 else -.1)
 LEAD = [(0, 72), (.3, 76), (.6, 79), (1.2, 81), (1.5, 79), (1.8, 76), (2.4, 77), (2.7, 76), (3.0, 72), (3.6, 74), (4.2, 72)]
-for o, n in LEAD: bell(S['Y9'] + o, n, .07, 1.4, .1)
-# CTA: psaní komentáře, odeslání, podpis
-for i, ch in enumerate(TYPED):
-    click(S['E2'] + TY0 + i / TYC, .12, (i % 3 - 1) * .1)
+for o, n in LEAD: bell(Y9 + o, n, .07, 1.4, .1)
+for i, ch in enumerate(TYPED): click(S['E2'] + TY0 + i / TYC, .12, (i % 3 - 1) * .1)
 pop(S['E2'] + TY0 + len(TYPED) / TYC + .05, 1050, .16)
 bell(S['E2'] + .5, 84, .05, 1.6); bell(S['E2'] + .53, 91, .03, 1.4)
-pad(42.0, CH['C'] + [64], .6, .08, a=.02, r=.55, fc=1800)
 
 # ---------------------------------------------------------------- mix
 def ir(seed, d=1.8, tau=.45):
@@ -277,19 +284,26 @@ t_ = np.arange(N) / SR
 wet = lambda b, g: (fftconvolve(b.L, IRL)[:N] * g, fftconvolve(b.R, IRR)[:N] * g)
 mL, mR = wet(Mw, .55); dL, dR = wet(Dw, .5); xL, xR = wet(Xw, .9)
 ML, MR = M.L + mL, M.R + mR; ML, MR = ML + .5 * bp(ML, 1200, 5000), MR + .5 * bp(MR, 1200, 5000); DL, DR = D.L + dL, D.R + dR; XL, XR = X.L + xL, X.R + xR
-# hudba uhne úderům; na „DOST.“ hudba úplně ztichne (zůstane jen úder a jeho dozvuk)
+# hudba uhne úderům; na „Dost.“ hudba úplně ztichne (zůstane jen úder a jeho dozvuk)
 duck = np.ones(N)
-for at in (S['H4'], S['A3'], S['B3'], S['C3'], S['Y9']):
+for at in (S['H4'], tC, tSh, tM, Y9):
     duck *= 1 - .35 * np.clip((t_ - at) / .01, 0, 1) * np.clip((at + .35 - t_) / .3, 0, 1)
 mute = 1 - np.clip((t_ - (S['P5'] - .06)) / .05, 0, 1) * np.clip((S['P6'] - .02 - t_) / .02, 0, 1)
-L_ = (ML + DL) * duck * mute + XL; R_ = (MR + DR) * duck * mute + XR
-L_, R_ = hp(L_, 38), hp(R_, 38)                     # bez infrazvuku
 eq = lambda x: x - .5 * lp(x, 90, 2) + .4 * bp(x, 300, 3200, 1)   # EQ pro telefon: −6 dB pod 90 Hz, středy +3 dB
-L_, R_ = eq(L_), eq(R_)
+musL = eq(hp((ML + DL) * duck * mute, 38)); musR = eq(hp((MR + DR) * duck * mute, 38))
+fxL, fxR = eq(hp(XL, 38)), eq(hp(XR, 38))
+# hlas: hudba pod ním uhne (~−8 dB, náběh 30 ms, držení 250 ms), efekty méně
+vo, _ = sf.read(os.path.join(HERE, 'voice', 'voice.wav')); VO = np.zeros(N); VO[:min(N, len(vo))] = vo[:N]
+ve = np.sqrt(np.convolve(VO ** 2, np.ones(int(.05 * SR)) / int(.05 * SR), 'same'))
+act = np.clip(ve / (.12 * ve.max()), 0, 1); act = maximum_filter1d(act, int(.25 * SR))
+act = np.convolve(act, np.ones(int(.06 * SR)) / int(.06 * SR), 'same')
+musL, musR = musL * (1 - .6 * act), musR * (1 - .6 * act); fxL, fxR = fxL * (1 - .3 * act), fxR * (1 - .3 * act)
+on = act > .5
+gv = np.sqrt(np.mean(((musL + musR) / 2)[on] ** 2)) * 10 ** (9 / 20) / np.sqrt(np.mean(VO[on] ** 2))   # hlas ~9 dB nad hudbou
+L_ = musL + fxL + VO * gv; R_ = musR + fxR + VO * gv
 fade = np.clip(t_ / .01, 0, 1) * np.clip((DUR - t_) / .5, 0, 1); L_ *= fade; R_ *= fade
 # limiter s předstihem 4 ms (místo tvrdého tanh): zesílí celek na ~-14 LUFS, špičky drží pod -2,4 dBFS (true peak pod -1 dB)
-from scipy.ndimage import maximum_filter1d, minimum_filter1d
-PRE = float(sys.argv[2]) if len(sys.argv) > 2 else 1.55
+PRE = float(sys.argv[2]) if len(sys.argv) > 2 else 1.8
 pk = max(np.abs(L_).max(), np.abs(R_).max()); L_, R_ = L_ / pk * PRE, R_ / pk * PRE
 CEIL = .76; W = int(.004 * SR)
 need = np.minimum(1, CEIL / np.maximum(np.maximum(np.abs(L_), np.abs(R_)), 1e-9))

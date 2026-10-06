@@ -2,7 +2,7 @@
 <html lang="cs"><head><meta charset="utf-8">
 <!-- Manifest „Postav si to.“ – TikTok/Reels 540×960 CSS px (render 2×), 30 fps, 42,6 s.
      Inspirace: manifest Builder Cult (nejlepší zakladatelé byli naštvaní → příběh → „postavím si to sám“ → pivot značky
-     → „můžeš to postavit teď“). Kinetická typografie bez hlasu, tvrdé střihy na doby (100 BPM, doba 0,6 s).
+     → „můžeš to postavit teď“). Kinetická typografie s hlasem (ElevenLabs), střihy na začátky slov podle voice/timeline.py.
      Časy scén (S) sdílí sfx.py. Důležitý text ve sloupci x 74–466, y 130–740; dekorace (koláž, okna, účtenky) smí přesahovat.
      Fakta:
      - Canva: Melanie Perkins na University of Western Australia doučovala spolužáky grafické programy, byly moc složité
@@ -138,17 +138,43 @@ const fmt=n=>Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
 function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
 
 /* ------------------------------------------------------------ scény: [id, třída pozadí, začátek, konec] (sdílí sfx.py) */
-const S=[['H1','paper',0.0,1.2],['H2','paper',1.2,2.4],['H3','dark',2.4,3.0],['H4','dark',3.0,4.2],
- ['A1','paper',4.2,6.0],['A2','grey',6.0,7.2],['A3','yel',7.2,8.4],
- ['B1','dark',8.4,10.2],['B2','desk',10.2,11.4],['B3','dark',11.4,12.6],
- ['C1','night',12.6,14.4],['C2','night',14.4,16.8],['C3','paper',16.8,18.6],
- ['P1','paper',18.6,19.8],['P2','paper',19.8,21.0],['P3','paper',21.0,21.6],['P4','paper',21.6,22.2],['P5','dark',22.2,23.4],['P6','yel',23.4,25.2],
- ['V1','white',25.2,27.6],['V2','grey',27.6,28.2],['V3','dark',28.2,30.0],
- ['Y1','paper',30.0,30.9],['Y2','yel',30.9,31.5],['Y3','dark',31.5,32.1],['Y4','paper',32.1,32.7],['Y5','dark',32.7,33.6],
- ['Y6','paper',33.6,34.8],['Y7','paper',34.8,36.0],['Y8','dark',36.0,37.2],['Y9','yel',37.2,38.4],
- ['E1','dark',38.4,40.2],['E2','dark',40.2,42.6]];
-window.DURATION=42.6;
-const FLASH=[[3.0,.5],[7.2,.35],[11.4,.35],[16.8,.35],[22.2,.6],[37.2,.6]];
+/* časy podle hlasu (voice/timeline.py -> timeline.json; sdílí sfx.py) */
+const S=[['H1','paper',0,1.676],
+ ['H2','paper',1.676,3.334],
+ ['H3','dark',3.334,3.963],
+ ['H4','dark',3.963,5.02],
+ ['A1','paper',5.02,8.194],
+ ['A2','grey',8.194,9.945],
+ ['A3','yel',9.945,11.882],
+ ['B1','dark',11.882,14.563],
+ ['B2','desk',14.563,16.974],
+ ['B3','dark',16.974,19.136],
+ ['C1','night',19.136,22.073],
+ ['C2','night',22.073,26.519],
+ ['C3','paper',26.519,29.115],
+ ['P1','paper',29.115,30.727],
+ ['P2','paper',30.727,31.703],
+ ['P3','paper',31.703,32.509],
+ ['P4','paper',32.509,33.481],
+ ['P5','dark',33.481,34.432],
+ ['P6','yel',34.432,35.71],
+ ['V1','white',35.71,39.194],
+ ['V2','grey',39.194,40.098],
+ ['V3','dark',40.098,42.116],
+ ['Y1','paper',42.116,42.996],
+ ['Y2','yel',42.996,43.775],
+ ['Y3','dark',43.775,44.529],
+ ['Y4','paper',44.529,45.358],
+ ['Y5','dark',45.358,46.954],
+ ['Y6','paper',46.954,48.222],
+ ['Y7','paper',48.222,49.854],
+ ['Y8','dark',49.854,51.307],
+ ['Y9','yel',51.307,51.915],
+ ['E1','dark',51.915,53.504],
+ ['E2','dark',53.504,56.9]];
+const VT={"sakra": 0.278, "a1l": 0.974, "a3s": 1.317, "b1l": 0.894, "b3s": 1.316, "c1l": 0.673, "c2": [0, 1.62, 2.565, 3.492], "c3s": 1.819, "p6": 0.548, "v1": [0, 1.245, 2.705], "y7": 0.811, "y8": 0.656, "e1": 0.922, "vo_end": 54.65};
+window.DURATION=56.9;
+const FLASH=[[3.963, 0.5], [11.262, 0.35], [18.29, 0.35], [28.338, 0.35], [33.481, 0.6], [51.307, 0.6]];
 
 /* ------------------------------------------------------------ stavební kousky */
 function torn(seed,w,h,j=7,step=9){const r=rng(seed);const pts=[];
@@ -196,7 +222,7 @@ function admin(){const rows=[['#1042','Jana K.','2 490 Kč','⚠ chyba'],['#1041
    <div class="sb">${['Přehled','Objednávky','Produkty','Zákazníci','Platby','Doprava','Moduly','Šablony','Nastavení'].map((s,i)=>`<div${i==1?' style="background:#e2e5ea;color:#111;font-weight:700"':''}>${s}</div>`).join('')}</div>
    <div class="mn2"><div style="font-size:16px;font-weight:800;margin-bottom:10px">Objednávky</div>${rows.map(r=>`<div class="row">${r.map((c,j)=>`<span${j==3&&c.includes('⚠')?' style="color:#c0392b;font-weight:700"':''}>${c}</span>`).join('')}</div>`).join('')}</div></div>`}
 const EMSG=['Chyba 500: interní chyba serveru.','Platbu se nepodařilo dokončit.','Šablonu nelze upravit.','Modul není kompatibilní s verzí 1.4.2.','Košík: neznámá chyba.','Relace vypršela. Přihlas se znovu.','Obrázek je příliš velký.','Doprava: chybí nastavení zóny.','Import produktů selhal.','Aktualizace selhala. Zkus to znovu.'];
-const ERR_T=EMSG.map((m,i)=>.06+i*.085);                          // časy vyskočení (sdílí sfx.py)
+const ERR_T=EMSG.map((m,i)=>.06+i*.2);                          // časy vyskočení (sdílí sfx.py)
 function errs(){return EMSG.map((m,i)=>`<div class="err abs" data-at="${ERR_T[i].toFixed(3)}" style="left:${28+i*17}px;top:${292+i*36}px"><div class="et"><span>Chyba</span><b>×</b></div><div class="eb"><i>!</i><span>${m}</span></div><div class="ebn"><span>OK</span></div></div>`).join('')}
 function zig(w,h){const p=['0px 0px',`${w.toFixed(1)}px 0px`];const n=Math.round(w/8);for(let i=n;i>=0;i--)p.push(`${(i/n*w).toFixed(1)}px ${(i%2?h:h-6).toFixed(1)}px`);return `polygon(${p.join(',')})`}
 function rcpts(seed,list){const r=rng(seed);return list.map(([x,y,rot,at])=>{const w=118+r()*30,h=150+r()*60;
@@ -209,7 +235,7 @@ function rays(){let s='<g class="rg">';for(let i=0;i<18;i++){const a=i/18*Math.P
   s+=`<path d="M270 435 L${(270+900*Math.cos(a)).toFixed(1)} ${(435+900*Math.sin(a)).toFixed(1)} L${(270+900*Math.cos(b)).toFixed(1)} ${(435+900*Math.sin(b)).toFixed(1)} Z" fill="#0B0B0B" opacity=".1"/>`}return s+'</g>'}
 const NODES=[['WEB',150,440,.05],['FORMULÁŘ',386,440,.25],['AI',270,556,.7],['E-MAIL',126,672,1.25],['FAKTURA',270,672,1.35],['CRM',414,672,1.45]];
 const EDGES=[[0,1],[1,2],[2,3],[2,4],[2,5]];
-const TYPED='přepisování faktur do Excelu 😤',TY0=.35,TYC=19;           // psaní komentáře (sdílí sfx.py)
+const TYPED='přepisování faktur do Excelu 😤',TY0=.9,TYC=22;           // psaní komentáře (sdílí sfx.py)
 
 /* ------------------------------------------------------------ obsah scén */
 const G=(txt,max,at=0,extra='',grp='g')=>`<div class="bw" data-fit="392,${max}" data-grp="${grp}" data-at="${at}" ${extra}>${txt}</div>`;
@@ -217,40 +243,40 @@ const P={
 H1:()=>`${collage(1)}${dust(11)}<div class="abs mono" style="left:74px;top:134px;font-size:12px;opacity:.7">Better Digital uvádí</div>
   <div class="col"><div class="bw" data-fit="392,76" data-grp="g">Nejlepší</div><div class="bw" data-fit="392,76" data-grp="g">zakladatelé</div><div class="bw" data-fit="392,76" data-grp="g">světa</div></div><div class="vig"></div>`,
 H2:()=>`${collage(2)}${dust(12)}<div class="col">${G('mají',96)}${G('<span class="hl" data-wipe=".1"><i></i>jedno</span>',96)}${G('společné:',96)}</div><div class="vig"></div>`,
-H3:()=>`<div class="col"><div class="bw" data-at="0" style="font-size:62px">Byli</div><div class="bw" data-at=".3" style="font-size:116px;margin-top:6px">sakra</div></div><div class="vig"></div>`,
+H3:()=>`<div class="col"><div class="bw" data-at="0" style="font-size:62px">Byli</div><div class="bw" data-at="${VT.sakra}" style="font-size:116px;margin-top:6px">sakra</div></div><div class="vig"></div>`,
 H4:()=>`<div class="echoes"></div><div class="col"><div class="bw main" data-fit="392,100" data-slam="0" style="color:var(--y)">NAŠTVANÍ.</div></div><div class="vig"></div>`,
 A1:()=>`${dust(21)}<div class="col"><div class="mono lab" data-at="0">Příběh 1/3 · Austrálie</div>
   <div style="margin-top:20px">${G('Melanie',112)}${G('Perkins',112)}</div>
   <svg class="ul" width="300" height="24" viewBox="0 0 300 24" style="margin-top:4px"><path d="M8 14 C 90 5, 200 7, 292 11" pathLength="1" stroke="#FFD400" stroke-width="13" stroke-linecap="round" fill="none" stroke-dasharray="1 1" stroke-dashoffset="1"/></svg>
-  <div class="ln" data-at=".3" style="margin-top:14px">Učila spolužáky<br><span class="hl" data-wipe=".5"><i></i>grafické programy.</span></div></div><div class="vig"></div>`,
+  <div class="ln" data-at="${VT.a1l}" style="margin-top:14px">Učila spolužáky<br><span class="hl" data-wipe="${(VT.a1l+.25).toFixed(3)}"><i></i>grafické programy.</span></div></div><div class="vig"></div>`,
 A2:()=>`${appUI()}<div class="abs card" data-at="0" style="left:74px;width:392px;top:336px">Byly složité<br>a drahé.</div>`,
 A3:()=>`<div class="col"><div class="ln" data-at="0" style="font-size:27px">Tak udělala vlastní:</div>
-  <div class="bw" data-fit="392,150" data-slam="0" style="margin-top:10px">Canva</div><div class="mono lab" data-at=".3" style="margin-top:20px">2013</div></div>`,
+  <div class="bw" data-fit="392,150" data-slam="${VT.a3s}" style="margin-top:10px">Canva</div><div class="mono lab" data-at="${(VT.a3s+.3).toFixed(3)}" style="margin-top:20px">2013</div></div>`,
 B1:()=>`${board()}<div class="col"><div class="mono lab y" data-at="0">Příběh 2/3 · Kanada</div>
   <div style="margin-top:20px">${G('Tobi',124)}${G('Lütke',124)}</div>
-  <div class="ln" data-at=".3" style="margin-top:24px">Chtěl prodávat<br><span style="color:var(--y)">snowboardy online.</span></div></div><div class="vig"></div>`,
+  <div class="ln" data-at="${VT.b1l}" style="margin-top:24px">Chtěl prodávat<br><span style="color:var(--y)">snowboardy online.</span></div></div><div class="vig"></div>`,
 B2:()=>`${admin()}${errs()}<div class="abs" style="left:60px;width:420px;top:146px;text-align:center"><div class="bxl" data-at="0"><span class="bx">Žádný e-shopový systém</span><br><span class="bx">mu nevyhovoval.</span></div></div>`,
 B3:()=>`<div class="col"><div class="ln" data-at="0" style="font-size:27px">Tak si napsal vlastní:</div>
-  <div class="bw" data-fit="392,128" style="margin-top:12px">${[...'Shopify'].map((c,i)=>`<span data-at="${(i*.035).toFixed(3)}" style="display:inline-block">${c}</span>`).join('')}</div>
+  <div class="bw" data-fit="392,128" style="margin-top:12px">${[...'Shopify'].map((c,i)=>`<span data-at="${(VT.b3s+i*.035).toFixed(3)}" style="display:inline-block">${c}</span>`).join('')}</div>
   <div class="ubar" style="width:310px;height:11px;background:var(--y);margin-top:12px;transform-origin:0 50%;transform:scaleX(0)"></div>
-  <div class="mono lab y" data-at=".4" style="margin-top:18px">2006</div></div><div class="vig"></div>`,
+  <div class="mono lab y" data-at="${(VT.b3s+.4).toFixed(3)}" style="margin-top:18px">2006</div></div><div class="vig"></div>`,
 C1:()=>`${rcpts(41,[[24,712,-12],[352,728,9],[188,800,-3]])}<div class="col"><div class="mono lab w" data-at="0">Příběh 3/3 · Praha 🇨🇿</div>
   <div style="margin-top:20px">${G('Richard',116)}${G('Valtr',116)}</div>
-  <div class="ln" data-at=".3" style="margin-top:24px">Ve 14 letech<br>v rodinném hotelu:</div></div><div class="vig"></div>`,
+  <div class="ln" data-at="${VT.c1l}" style="margin-top:24px">Ve 14 letech<br>v rodinném hotelu:</div></div><div class="vig"></div>`,
 C2:()=>`${rcpts(52,[[18,636,-14,0],[300,652,11,.2],[150,700,-4,.4],[360,756,6,.6],[36,776,9,.8],[206,818,-9,1.0],[330,846,13,1.2],[76,868,-6,1.4],[244,896,4,1.6]])}
   <div class="abs" style="left:0;right:0;top:144px;text-align:center"><div class="mono" style="font-size:12px;opacity:.6">Noční uzávěrka</div><div class="clk">01:00</div></div>
-  <div class="abs" style="left:74px;width:392px;top:318px;text-align:center"><div class="ln2" data-at="0">Ručně pároval účtenky.</div><div class="ln2" data-at=".6">V 1 ráno.</div><div class="ln2" data-at="1.2">Každou noc.</div><div class="ln2" data-at="1.8" style="color:var(--y)">Dvě hodiny.</div></div><div class="vig"></div>`,
+  <div class="abs" style="left:74px;width:392px;top:318px;text-align:center"><div class="ln2" data-at="0">Ručně pároval účtenky.</div><div class="ln2" data-at="${VT.c2[1]}">V 1 ráno.</div><div class="ln2" data-at="${VT.c2[2]}">Každou noc.</div><div class="ln2" data-at="${VT.c2[3]}" style="color:var(--y)">Dvě hodiny.</div></div><div class="vig"></div>`,
 C3:()=>`${dust(33)}<div class="col"><div class="ln" data-at="0" style="font-size:26px">Tak postavil vlastní systém:</div>
-  <div class="bw" data-fit="392,170" data-slam="0" style="margin-top:8px">Mews</div><div class="mono lab y" data-at=".35" style="margin-top:22px">Český jednorožec · 2,5 mld. $</div></div><div class="vig"></div>`,
+  <div class="bw" data-fit="392,170" data-slam="${VT.c3s}" style="margin-top:8px">Mews</div><div class="mono lab y" data-at="${(VT.c3s+.35).toFixed(3)}" style="margin-top:22px">Český jednorožec · 2,5 mld. $</div></div><div class="vig"></div>`,
 P1:()=>`${dust(41)}<div class="col">${G('Skvělé',88)}${G('produkty',88)}${G('vznikají,',88)}</div><div class="vig"></div>`,
 P2:()=>`${dust(42)}<div class="col"><div class="bw" data-fit="392,66" data-at="0">když tě něco</div><div class="bw" data-fit="392,150" data-at=".1" style="margin-top:14px"><span class="hl" data-wipe=".1"><i></i>štve</span></div></div><div class="vig"></div>`,
 P3:()=>`${dust(43)}<div class="col"><div class="bw" data-fit="392,88" data-at="0">tak dlouho,</div><div class="mono cnt" style="margin-top:26px;font-size:21px">Den 1</div></div><div class="vig"></div>`,
 P4:()=>`${dust(44)}<div class="col"><div class="bw" data-at="0" style="font-size:62px">až řekneš:</div></div><div class="vig"></div>`,
 P5:()=>`<div class="col"><div class="bw" data-fit="392,190" data-slam="0">DOST.</div></div><div class="vig"></div>`,
-P6:()=>`<div class="col">${G('Postavím si',92)}${G('to sám.',92,.3)}</div>`,
+P6:()=>`<div class="col">${G('Postavím si',92)}${G('to sám.',92,VT.p6)}</div>`,
 V1:()=>`<svg class="abs" width="540" height="960" style="left:0;top:0">${EDGES.map(([a,b])=>`<line class="ed" x1="${NODES[a][1]}" y1="${NODES[a][2]}" x2="${NODES[b][1]}" y2="${NODES[b][2]}" pathLength="1" stroke="#0B0B0B" stroke-width="2.5" stroke-dasharray="1 1" stroke-dashoffset="1"/>`).join('')}${EDGES.map(()=>`<circle class="dt" r="5" fill="#0B0B0B" opacity="0"/>`).join('')}</svg>
   ${NODES.map(([n,x,y,at])=>`<div class="abs nd" data-at="${at}" style="left:${x}px;top:${y}px"><div class="${n==='AI'?'ai':'nb'}">${n}</div></div>`).join('')}
-  <div class="abs" style="left:60px;width:420px;top:150px;text-align:center"><div class="ln3" data-at="0"><span class="bx">Celou dobu stavíme</span></div><div class="ln3" data-at=".6"><span class="bx">weby a AI automatizace</span></div><div class="ln3" data-at="1.2"><span class="bx">pro firmy.</span></div></div>`,
+  <div class="abs" style="left:60px;width:420px;top:150px;text-align:center"><div class="ln3" data-at="0"><span class="bx">Celou dobu stavíme</span></div><div class="ln3" data-at="${VT.v1[1]}"><span class="bx">weby a AI automatizace</span></div><div class="ln3" data-at="${VT.v1[2]}"><span class="bx">pro firmy.</span></div></div>`,
 V2:()=>`<div class="scan"></div><div class="col"><div class="spc" data-at="0" data-pop="0">Ale upřímně?</div></div><div class="vig"></div>`,
 V3:()=>`<div class="col" style="justify-content:flex-start;padding-top:52px"><div class="ln" data-at="0" style="font-size:32px;white-space:nowrap">Chceme pomoct postavit</div>
   <div class="bw" data-at="0" style="font-size:84px;color:var(--y);margin-top:6px">ty další.</div>
@@ -261,10 +287,10 @@ Y3:()=>`<div class="col"><div class="emo" data-at="0">🧮</div><div class="bw" 
 Y4:()=>`${dust(54)}<div class="col"><div class="emo" data-at="0">🍳</div><div class="bw" data-fit="392,100" data-at="0">nebo kuchař.</div></div><div class="vig"></div>`,
 Y5:()=>`${codeBg()}<div class="col"><div class="ln" data-at="0" style="font-size:42px;font-weight:850">Nemusíš umět</div><div class="bw strike" data-fit="392,84" data-at="0" style="margin-top:10px">programovat.<i></i></div></div><div class="vig"></div>`,
 Y6:()=>`${dust(56)}<div class="col"><div class="bw" data-fit="392,72" data-at="0">Když rozumíš</div><div class="bw" data-fit="392,104" data-at=".12" style="margin-top:14px"><span class="hl" data-wipe=".12"><i></i>problému,</span></div></div><div class="vig"></div>`,
-Y7:()=>`${dust(57)}<div class="col">${G('a věříš, že',84)}${G('to jde líp,',84,.25)}</div><div class="vig"></div>`,
-Y8:()=>`<div class="col">${G('můžeš si to',86)}${G('postavit.',86,.2)}<div class="prog" style="margin-top:50px"><div class="mono pl">Stavím… 0 %</div><div class="pb"><i></i></div></div></div><div class="vig"></div>`,
+Y7:()=>`${dust(57)}<div class="col">${G('a věříš, že',84)}${G('to jde líp,',84,VT.y7)}</div><div class="vig"></div>`,
+Y8:()=>`<div class="col">${G('můžeš si to',86)}${G('postavit.',86,VT.y8)}<div class="prog" style="margin-top:50px"><div class="mono pl">Stavím… 0 %</div><div class="pb"><i></i></div></div></div><div class="vig"></div>`,
 Y9:()=>`<svg class="abs" width="540" height="960" style="left:0;top:0">${rays()}</svg><div class="col"><div class="bw" data-fit="392,230" data-slam="0">TEĎ.</div></div>`,
-E1:()=>`<div class="col">${G('Co tě v práci',84)}${G('nejvíc <span style="color:var(--y)">štve?</span>',84,.3)}</div><div class="vig"></div>`,
+E1:()=>`<div class="col">${G('Co tě v práci',84)}${G('nejvíc <span style="color:var(--y)">štve?</span>',84,VT.e1)}</div><div class="vig"></div>`,
 E2:()=>`<div class="abs" style="left:74px;width:392px;top:296px;text-align:center">${G('Napiš to',62)}${G('do komentářů 👇',62)}</div>
   <div class="cmt abs" data-at=".15" style="left:58px;width:424px;top:494px"><div class="av"></div><div class="tx"><span class="ty"></span><span class="ca"></span><span class="ph">Přidej komentář…</span></div><div class="snd">↑</div></div>
   <div class="abs sig" data-at=".5" style="left:0;right:0;top:640px">— ${uzel(16,'#fff')}<span>Better Digital</span></div><div class="vig"></div>`};
@@ -292,9 +318,9 @@ const AN={
  A2:(u,s)=>{let i=0;while(i<MOUSE.length-2&&u>MOUSE[i+1][0])i++;const a=MOUSE[i],b=MOUSE[i+1];const p=eio((u-a[0])/(b[0]-a[0]));
    s.el.querySelector('.mouse').style.transform=`translate(${lerp(a[1],b[1],p).toFixed(1)}px,${lerp(a[2],b[2],p).toFixed(1)}px)`},
  B1:(u,s)=>{const p=e5(u/.4);s.el.querySelector('.board').style.transform=`translate(${(lerp(560,0,p)-u*14).toFixed(1)}px,${(lerp(-40,0,p)+u*4).toFixed(1)}px) rotate(${(lerp(-24,-11,p)).toFixed(2)}deg)`},
- B3:(u,s)=>{s.el.querySelector('.ubar').style.transform=`scaleX(${e5((u-.3)/.22).toFixed(4)})`},
- C2:(u,s)=>{const m=60+120*eio(clamp(u/2.25));s.el.querySelector('.clk').textContent=String(Math.floor(m/60)).padStart(2,'0')+':'+String(Math.floor(m%60)).padStart(2,'0')},
- P3:(u,s)=>{s.el.querySelector('.cnt').textContent='Den '+fmt(Math.max(1,Math.round(1000*eo(u/.5))))},
+ B3:(u,s)=>{s.el.querySelector('.ubar').style.transform=`scaleX(${e5((u-VT.b3s-.3)/.22).toFixed(4)})`},
+ C2:(u,s,d)=>{const m=60+120*eio(clamp(u/(d-.2)));s.el.querySelector('.clk').textContent=String(Math.floor(m/60)).padStart(2,'0')+':'+String(Math.floor(m%60)).padStart(2,'0')},
+ P3:(u,s,d)=>{s.el.querySelector('.cnt').textContent='Den '+fmt(Math.max(1,Math.round(1000*eo(u/(d*.8)))))},
  P4:(u,s,d)=>{s.cam.style.transform=`scale(${(1+.12*eio(u/d)).toFixed(4)})`},
  V1:(u,s)=>{const ed=s.el.querySelectorAll('.ed'),dt=s.el.querySelectorAll('.dt');
    EDGES.forEach(([a,b],i)=>{const at=NODES[b][3];ed[i].style.strokeDashoffset=(1-e5((u-at+.05)/.22)).toFixed(4);
@@ -303,7 +329,7 @@ const AN={
  V2:(u,s)=>{s.el.querySelector('.spc').style.letterSpacing=lerp(.46,.3,eo(u/.6)).toFixed(4)+'em'},
  V3:(u,s)=>{const c=s.el.querySelector('.cur i');c.style.opacity=(Math.floor((u-.85)/.3)%2===0)?1:0},
  Y5:(u,s)=>{s.el.querySelector('.strike>i').style.transform=`scaleX(${e5((u-.28)/.22).toFixed(4)})`},
- Y8:(u,s)=>{const p=eio(clamp((u-.15)/1.0));s.el.querySelector('.pb i').style.transform=`scaleX(${p.toFixed(4)})`;
+ Y8:(u,s,d)=>{const p=eio(clamp((u-.15)/(d-.3)));s.el.querySelector('.pb i').style.transform=`scaleX(${p.toFixed(4)})`;
    s.el.querySelector('.pl').textContent=(p>=1?'Hotovo · ':'Stavím… ')+Math.round(p*100)+' %'},
  Y9:(u,s)=>{s.el.querySelector('.rg').setAttribute('transform',`rotate(${(u*14).toFixed(2)} 270 435)`)},
  E2:(u,s)=>{const ch=Array.from(TYPED);const k=clamp(Math.floor((u-TY0)*TYC)+1,0,ch.length);
@@ -332,7 +358,7 @@ window.render=function(t){
     const base=e.dataset.base||'';let m='';
     if(on)m=e.dataset.slam!==undefined?slamFx(e,u-at):popFx(e,u-at);
     e.style.transform=(m+' '+base).trim()}
-  for(const e of s.el.querySelectorAll('[data-slam]'))if(e.dataset.at===undefined){const m=slamFx(e,u-(+e.dataset.slam));e.style.transform=m;e.style.opacity=1}
+  for(const e of s.el.querySelectorAll('[data-slam]'))if(e.dataset.at===undefined){const st=+e.dataset.slam,on=u>=st;e.style.opacity=on?1:0;e.style.transform=on?slamFx(e,u-st):''}
   for(const e of s.wipes)e.firstElementChild.style.transform=`scaleX(${e5((u-(+e.dataset.wipe))/.16).toFixed(4)})`;
   for(const e of s.drifts){const [vx,vy]=e.dataset.drift.split(',').map(Number);e.style.transform=`translate(${(vx*u).toFixed(2)}px,${(vy*u).toFixed(2)}px) ${e.dataset.base||''}`}
   if(AN[s.id])AN[s.id](u,s,d);
