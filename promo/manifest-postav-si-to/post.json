@@ -7,15 +7,23 @@
     "instagramData": {
       "type": "REEL",
       "showReelOnFeed": true,
-      "isAiGenerated": false
+      "isAiGenerated": true
     },
     "tiktokData": {
       "privacyOption": "PUBLIC_TO_EVERYONE",
       "commercialContentOwnBrand": true,
-      "isAigc": false,
-      "note": "Doporučeno zapnout štítek vlastní značky: video přímo zmiňuje služby Better Digital (weby a AI automatizace). Rozhoduje Petr. Žádná realistická AI média, proto bez štítku AI."
+      "isAigc": true,
+      "note": "Štítek vlastní značky zapnutý (video zmiňuje služby Better Digital). Štítek AI zapnutý: hlas je z ElevenLabs (jako u rodinného hesla)."
     }
   },
   "bestSlot": "Metricool: ne 10:00 (nejsilnější víkendové okno TT i IG), po 10:00 / 18:00 (nejsilnější v týdnu)",
-  "status": "ready – zatím neplánováno"
+  "video": "video-hlas.mp4 (verze s hlasem, 56,9 s); video.mp4 = původní verze bez hlasu (42,6 s)",
+  "scheduled": {
+    "metricoolId": 389762474,
+    "uuid": "3351796703626215967",
+    "when": "2026-10-06T21:35 Europe/Prague",
+    "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=3351796703626215967",
+    "media": "https://raw.githubusercontent.com/ProfPeta/betterdigital-reels/54e7e8caf1c67a7c13183cc37a8bdf74903805ad/promo/manifest-postav-si-to/video-hlas.mp4",
+    "note": "Petr chtěl 21:15. Verze s hlasem se do té doby nestihla vyrenderovat, proto nejbližší termín 21:35."
+  }
 }
