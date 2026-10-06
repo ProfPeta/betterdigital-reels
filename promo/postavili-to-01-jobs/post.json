@@ -1,0 +1,23 @@
+{
+  "platform": "tiktok+instagram",
+  "series": "POSTAVILI TO",
+  "episode": 1,
+  "text": "Ve 30 letech ho vyhodili z firmy, kterou sám založil. O 26 let později byl Apple nejhodnotnější firmou světa.\n\nPOSTAVILI TO #01 · Steve Jobs 🍎\nKaligrafie, garáž, vyhazov, Pixar, návrat a iPhone. Celý příběh za minutu.\n\nKoho chceš v dalším díle? Gates, Wozniak, nebo Musk? 👇\n\n#stevejobs #apple #podnikani #pribeh #inspirace",
+  "firstComment": "Zdroje: projev Steva Jobse na Stanfordu (2005), Wikipedia (Steve Jobs, NeXT, Pixar), Cult of Mac (Michael Dell, 6. 10. 1997), Bloomberg (9. 8. 2011). Foto: Matthew Yohe (CC BY-SA 3.0), Joi Ito (CC BY 2.0), Ed Uthman (CC BY-SA 2.0), Rama (CC BY-SA 2.0 FR), Wikimedia Commons.",
+  "coverMs": 4000,
+  "settings": {
+    "instagramData": {
+      "type": "REEL",
+      "showReelOnFeed": true,
+      "isAiGenerated": true
+    },
+    "tiktokData": {
+      "privacyOption": "PUBLIC_TO_EVERYONE",
+      "commercialContentOwnBrand": false,
+      "isAigc": true,
+      "note": "Čistě příběh bez prodeje, proto bez štítku vlastní značky (jako fakta video). Štítek AI ano: hlas je z ElevenLabs."
+    }
+  },
+  "bestSlot": "Metricool: ne 10:00 (nejsilnější víkendové okno TT i IG), po 10:00 / 18:00 (nejsilnější v týdnu). Středy 9:00 má série Stejný úkol. Dva světy.",
+  "status": "ready – zatím neplánováno"
+}
