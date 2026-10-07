@@ -1,0 +1,23 @@
+{
+  "platform": "tiktok+instagram",
+  "series": "POSTAVILI TO",
+  "episode": 2,
+  "text": "Jeho první tři rakety selhaly. Kdyby selhala i čtvrtá, byl by konec.\n\nPOSTAVILI TO #02 · Elon Musk 🚀\nBlastar, Zip2, PayPal, SpaceX, Tesla a X. Šílená fakta i kontroverze, celý příběh za minutu.\n\nKoho chceš v dalším díle? Gates, Wozniak, nebo Bezos? 👇\n\n#elonmusk #spacex #tesla #podnikani #pribeh",
+  "firstComment": "Zdroje: Space.com (60 Minutes 2014), Vice (Blastar), Stanford Daily (2024), Snopes (PayPal 2000), Spaceflight Now (NASA 2008), SEC (2018), Al Jazeera/Reuters a CNBC (IPO SpaceX, 12. 6. 2026), Forbes. Foto start Starshipu: SpaceX.",
+  "coverMs": 5300,
+  "settings": {
+    "instagramData": {
+      "type": "REEL",
+      "showReelOnFeed": true,
+      "isAiGenerated": true
+    },
+    "tiktokData": {
+      "privacyOption": "PUBLIC_TO_EVERYONE",
+      "commercialContentOwnBrand": false,
+      "isAigc": true,
+      "note": "Stejně jako #01: příběh bez prodeje, štítek AI kvůli hlasu z ElevenLabs."
+    }
+  },
+  "rightsNote": "Fotky nahrál Petr, licence neověřené (kromě startu Starshipu – SpaceX). Na fotce z Oválné pracovny je ořez jen na Muska.",
+  "status": "ready – zatím neplánováno"
+}

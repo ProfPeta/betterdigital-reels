@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8">
+<!-- POSTAVILI TO #02 – Elon Musk. TikTok/Reels 540×960 CSS px (render 2×), 30 fps, délka podle hlasu (timeline.js).
+     Styl SpaceX / Tesla / X: černá, telemetrie ze startu (T−odpočet, rychlost, výška), úzké velké číslice (Barlow Condensed),
+     prostrkané popisky (Barlow), minimalistické karty, posty a anketa jako na X, červený akcent. Časy vět a titulků generuje
+     voice/timeline.py (timeline.js), scény začínají 0,06 s před větou. Důležitý text ve sloupci x 74–466, y 130–740.
+     Zvukové události: window.EV (export_ev.py -> fx.json pro sfx.py). Fakta a zdroje: README.md. Fotky: photos/process.py
+     (nahrál Petr, licence neověřené, proto nejsou v gitu). Na fotce z Oválné pracovny je ořez jen na Muska. -->
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+@font-face{font-family:IS;font-style:italic;src:url(../../engine/fonts/instrument-serif-latin-ext-400-italic.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:IS;font-style:italic;src:url(../../engine/fonts/instrument-serif-latin-400-italic.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026}
+@font-face{font-family:BR;font-weight:300;src:url(../../engine/fonts/barlow-latin-ext-300-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:BR;font-weight:300;src:url(../../engine/fonts/barlow-latin-300-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+@font-face{font-family:BR;font-weight:500;src:url(../../engine/fonts/barlow-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:BR;font-weight:500;src:url(../../engine/fonts/barlow-latin-500-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+@font-face{font-family:BR;font-weight:600;src:url(../../engine/fonts/barlow-latin-ext-600-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:BR;font-weight:600;src:url(../../engine/fonts/barlow-latin-600-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+@font-face{font-family:BR;font-weight:800;src:url(../../engine/fonts/barlow-latin-ext-800-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:BR;font-weight:800;src:url(../../engine/fonts/barlow-latin-800-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+@font-face{font-family:BC;font-weight:600;src:url(../../engine/fonts/barlow-condensed-latin-ext-600-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:BC;font-weight:600;src:url(../../engine/fonts/barlow-condensed-latin-600-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+@font-face{font-family:BC;font-weight:800;src:url(../../engine/fonts/barlow-condensed-latin-ext-800-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:BC;font-weight:800;src:url(../../engine/fonts/barlow-condensed-latin-800-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+@font-face{font-family:VT;src:url(../../engine/fonts/vt323-latin-ext-400-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:VT;src:url(../../engine/fonts/vt323-latin-400-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026}
+:root{--red:#E31937;--g:#9AA0A6;--line:#2F3336;--blue:#1D9BF0;--ok:#35D07F;--y:#FFD400}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden;background:#000}
+body{font-family:IT,'Noto Color Emoji',sans-serif;-webkit-font-smoothing:antialiased;position:relative;color:#fff}
+.abs{position:absolute}
+#stage{position:absolute;left:0;top:0;width:540px;height:960px;z-index:0}
+.sc{position:absolute;inset:0;overflow:hidden;display:none;background:#000}
+.cam{position:absolute;inset:0;transform-origin:50% 45%}
+.space{background:#000}
+.tes{background:#0B0B0C}
+.lab{background:#05070A}
+.alarm{background:#120405}
+.xbg{background:#000}
+.big{font-family:BC;font-weight:800;line-height:.86;letter-spacing:-.005em;white-space:nowrap}
+.wide{font-family:BR;font-weight:600;letter-spacing:.3em;text-transform:uppercase;white-space:nowrap}
+.lbl{font-family:BR;font-weight:600;font-size:13px;letter-spacing:.26em;text-transform:uppercase;color:var(--g);white-space:nowrap}
+.mono{font-family:JB,monospace;letter-spacing:.06em;white-space:nowrap}
+.red{color:var(--red)}.okc{color:var(--ok)}.gc{color:var(--g)}
+.credit{font-family:JB;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;opacity:.55}
+.badge{display:inline-flex;align-items:center;gap:10px;background:var(--y);color:#0E0E0E;font-family:BC;font-weight:800;font-size:22px;padding:5px 12px 4px;letter-spacing:.04em}
+.badge b{font-family:JB;font-size:12px;font-weight:500;letter-spacing:.1em}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 14px 5px;font-family:BR;font-weight:600;font-size:14px;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap}
+.card{position:absolute;background:#141517;border:1px solid #26282B;border-radius:18px;color:#fff}
+.lcard{position:absolute;background:#F4F4F4;border-radius:18px;color:#111;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.stamp{display:inline-block;font-family:BC;font-weight:800;font-size:46px;color:var(--red);border:5px solid var(--red);padding:2px 16px 0;letter-spacing:.03em;line-height:1.05;white-space:nowrap}
+.stars{position:absolute;inset:0;pointer-events:none}
+/* X: post a anketa */
+.post{position:absolute;background:#000;border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;color:#E7E9EA;font-family:IT}
+.post .hd{display:flex;align-items:center;gap:12px}
+.post .av{width:48px;height:48px;border-radius:50%;background:#333 url(photos/musk_cut.png) 50% 6%/220% no-repeat;flex:none}
+.post .nm{font-weight:800;font-size:18px;line-height:1.15}.post .hn{font-size:15px;color:#71767B}
+.post .tx{font-size:23px;line-height:1.3;margin-top:12px;font-weight:500;letter-spacing:-.005em}
+.post .dt{font-size:14px;color:#71767B;margin-top:12px}
+.post .ic{display:flex;gap:46px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.post .ic i{width:20px;height:20px;border:2px solid #71767B;border-radius:6px;display:block;opacity:.8}
+.opt{position:relative;height:50px;border:1.5px solid #536471;border-radius:12px;margin-top:12px;overflow:hidden;display:flex;align-items:center;padding:0 16px;font-weight:700;font-size:20px;color:#E7E9EA}
+.opt .f{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(29,155,240,.32)}
+.opt span{position:relative}
+.opt.on{border-color:var(--blue)}
+/* titulky */
+#cap{position:absolute;left:40px;right:40px;text-align:center;pointer-events:none}
+#cap span{display:inline;background:rgba(10,10,10,.82);color:#fff;font-weight:850;font-size:30px;letter-spacing:-.02em;line-height:1.5;padding:4px 12px;box-decoration-break:clone;-webkit-box-decoration-break:clone;border-radius:4px}
+#cap b{font-weight:850;background:var(--red);color:#fff;padding:0 6px;border-radius:3px}
+/* časová osa 1971–2026 (jako telemetrie startu) */
+#tl{position:absolute;left:74px;width:392px;top:126px;height:36px;pointer-events:none}
+#tl .ln{position:absolute;left:0;right:0;top:24px;height:1.5px;background:rgba(255,255,255,.35)}
+#tl .pg{position:absolute;left:0;top:24px;height:1.5px;background:#fff}
+#tl .ev{position:absolute;top:20px;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);background:#000}
+#tl .ev.p{background:#fff;border-color:#fff}
+#tl .cur{position:absolute;top:17px;width:15px;height:15px;margin-left:-7.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(227,25,55,.45),0 0 14px rgba(255,255,255,.8)}
+#tl .yr{position:absolute;top:0;transform:translateX(-50%);font-family:JB;font-size:13px;letter-spacing:.1em;color:#fff;white-space:nowrap}
+#gl{position:absolute;inset:0;pointer-events:none}
+#scanl{position:absolute;left:0;width:540px;height:3px;background:#fff;box-shadow:0 0 18px 4px rgba(255,255,255,.8);display:none;pointer-events:none}
+#grain{position:absolute;left:0;top:0;width:540px;height:960px;pointer-events:none}
+#vig{position:absolute;inset:0;background:radial-gradient(120% 85% at 50% 45%,transparent 58%,rgba(0,0,0,.45) 100%);pointer-events:none}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+</style></head><body>
+<div id="stage"></div>
+<div id="tl"></div>
+<div id="cap"></div>
+<div id="gl"></div><div id="scanl"></div>
+<canvas id="grain" width="180" height="320"></canvas>
+<div id="vig"></div><div id="flash"></div>
+<script src="timeline.js"></script>
+<script>
+const FPS=30;const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3),e5=x=>1-Math.pow(1-clamp(x),5);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,p)=>a+(b-a)*p;const $=id=>document.getElementById(id);
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const fmt=n=>Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
+const T=window.TL;const st=s=>T.S[s][0],en=s=>T.S[s][1];
+const CK={};T.chunks.forEach(([s,i,txt,a,b])=>{(CK[s]=CK[s]||[])[i]=[a,b,txt]});
+const ck=(s,i)=>CK[s][i][0];
+window.DURATION=T.END;
+const show=(e,on)=>{e.style.opacity=on?1:0};
+function slamT(u,s0=1.35,amp=7){const p=e5(u/.1),k=Math.exp(-Math.max(0,u)/.13);
+  return `translate(${(amp*k*Math.sin(u*97+1.1)).toFixed(2)}px,${(amp*.7*k*Math.sin(u*83+.3)).toFixed(2)}px) scale(${lerp(s0,1,p).toFixed(4)})`}
+function rgbSplit(u,d=.2,px=6){const r=u>=0&&u<d?px*(1-u/d):0;return r>0?`${r.toFixed(2)}px 0 rgba(255,30,60,.85),${(-r).toFixed(2)}px 0 rgba(0,200,255,.85)`:'none'}
+const popIn=(e,t,a,d=.22,s0=.6)=>{e.style.opacity=t>=a?1:0;e.style.transform=`scale(${lerp(s0,1,back((t-a)/d)).toFixed(4)})`};
+const slideIn=(e,t,a,dy=24,d=.3)=>{const p=e5((t-a)/d);e.style.opacity=t>=a?p:0;e.style.transform=`translateY(${(dy*(1-p)).toFixed(1)}px)`};
+function stars(seed,n=90,h=960){const r=rng(seed);let s=`<svg class="stars" width="540" height="${h}">`;for(let i=0;i<n;i++)s+=`<circle cx="${(r()*540).toFixed(1)}" cy="${(r()*h).toFixed(1)}" r="${(.3+r()*1.1).toFixed(2)}" fill="#fff" opacity="${(.2+r()*.6).toFixed(2)}"/>`;return s+'</svg>'}
+const ROCKET=(w,col='#fff')=>`<svg width="${w}" height="${w*5}" viewBox="0 0 24 120" style="display:block;overflow:visible"><path d="M12 0 C16 8 18 17 18 27 L18 100 L23 116 L1 116 L6 100 L6 27 C6 17 8 8 12 0 Z" fill="${col}"/><rect x="6" y="38" width="12" height="2.5" fill="#000" opacity=".55"/><rect x="6" y="88" width="12" height="2.5" fill="#000" opacity=".55"/></svg>`;
+const FLAME=(w)=>`<svg class="fl" width="${w}" height="${w*2.2}" viewBox="0 0 20 44" style="display:block;overflow:visible"><path d="M3 0 L17 0 C17 14 13 30 10 44 C7 30 3 14 3 0 Z" fill="#FFB347"/><path d="M6 0 L14 0 C14 10 12 22 10 32 C8 22 6 10 6 0 Z" fill="#FFF3C4"/></svg>`;
+/* telemetrický budík (rychlost / výška), SpaceX styl */
+function gauge(id,label,unit){return `<div class="abs" id="${id}" style="width:150px;height:150px"><svg width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="62" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="5" stroke-dasharray="292 98" transform="rotate(130 75 75)"/><circle class="ga" cx="75" cy="75" r="62" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="0 390" transform="rotate(130 75 75)" stroke-linecap="round"/></svg>
+  <div class="mono gv" style="position:absolute;left:0;right:0;top:50px;text-align:center;font-size:26px">0</div><div class="lbl" style="position:absolute;left:0;right:0;top:86px;text-align:center;font-size:11px">${label}</div><div class="mono gc" style="position:absolute;left:0;right:0;top:104px;text-align:center;font-size:11px">${unit}</div></div>`}
+function setGauge(e,v,max){e.querySelector('.ga').setAttribute('stroke-dasharray',`${(292*clamp(v/max)).toFixed(1)} 390`);e.querySelector('.gv').textContent=fmt(v)}
+/* pixelové sprity (vlastní, ne kopie existujících her) */
+const SPR={ship:['...x...','..xxx..','.xxxxx.','xx.x.xx','x.....x'],a1:['.x...x.','..xxx..','.xxxxx.','xx.x.xx','xxxxxxx','.x...x.'],a2:['..xxx..','.xxxxx.','x.xxx.x','xxxxxxx','.x.x.x.']};
+const sprite=(m,px,col)=>`<svg width="${m[0].length*px}" height="${m.length*px}" viewBox="0 0 ${m[0].length} ${m.length}" shape-rendering="crispEdges" style="display:block">${m.map((r,y)=>[...r].map((c,x)=>c==='x'?`<rect x="${x}" y="${y}" width="1" height="1" fill="${col}"/>`:'').join('')).join('')}</svg>`;
+const SUN_RED='radial-gradient(60% 40% at 50% 100%,rgba(227,25,55,.5),rgba(227,25,55,.12) 55%,transparent 75%)';
+
+/* ------------------------------------------------------------ scény */
+const SCN=[
+ /* 1 · háček: Falcon 1, tři selhání, čtvrtý pokus, odpočet T− */
+ {id:'hook',from:'s1',cls:'space',cap:1,year:2008,
+  html:()=>`${stars(3)}
+   <div class="abs lbl" style="left:74px;top:176px;color:#fff">Falcon 1 · Kwajalein</div><div class="abs mono" id="hclk" style="right:74px;top:174px;font-size:15px;color:#fff">T+00:00:00</div>
+   <div class="abs" id="hrow" style="left:0;right:0;top:250px;height:240px;transform-origin:50% 0">${[0,1,2].map(i=>`<div class="abs hr" style="left:${150+i*100}px;top:0;width:40px">
+     <div class="hrk" style="position:relative">${ROCKET(40)}<div class="hfl" style="position:absolute;left:10px;top:196px">${FLAME(20)}</div></div>
+     <div class="hx abs big" style="left:-22px;top:46px;width:84px;text-align:center;font-size:110px;color:var(--red);opacity:0">✕</div>
+     <div class="abs mono" style="left:-30px;top:212px;width:100px;text-align:center;font-size:15px">${2006+i}</div>
+     <div class="abs mono hfail" style="left:-40px;top:232px;width:120px;text-align:center;font-size:11px;color:var(--red);opacity:0">SELHÁNÍ</div></div>`).join('')}</div>
+   <div class="abs" id="h4" style="left:250px;top:300px;width:40px;opacity:0">${ROCKET(40)}<div class="abs" style="left:10px;top:196px">${FLAME(20)}</div><div class="abs mono" style="left:64px;top:70px;font-size:14px;line-height:1.6">LET 4 · 2008<br><span class="red">POSLEDNÍ ŠANCE</span></div></div>
+   <div class="abs" id="hmoney" style="left:74px;top:616px;width:392px;opacity:0"><div class="lbl" style="color:#fff">Peníze na další pokus</div><div style="margin-top:8px;height:12px;border:1px solid rgba(255,255,255,.5)"><div id="hmbar" style="height:100%;width:100%;background:var(--red)"></div></div></div>
+   <div class="abs mono" id="hcd" style="left:0;right:0;top:548px;text-align:center;font-size:44px;opacity:0">T−00:00:05</div>`,
+  anim:(t,s)=>{const X1=ck('s1',2),S2=st('s2')-.06,E2=en('s2');
+    $('hclk').textContent='T+00:00:'+String(Math.floor(t)).padStart(2,'0');
+    const row=$('hrow'),m=eio((t-S2)/.3);row.style.transform=`translate(${(-120*m).toFixed(1)}px,${(-80*m).toFixed(1)}px) scale(${lerp(1,.45,m).toFixed(4)})`;row.style.opacity=(1-.5*m).toFixed(3);
+    s.el.querySelectorAll('.hr').forEach((r,i)=>{const a=X1+i*.14,dead=t>=a;const rk=r.querySelector('.hrk');
+      rk.style.transform=dead?`translateY(${(30*eo((t-a)/.6)).toFixed(1)}px) rotate(${((i-1)*14+8)*eo((t-a)/.6)}deg)`:`translateY(${(-6*Math.sin(t*3+i)).toFixed(1)}px)`;
+      rk.style.opacity=dead?(.35+.65*Math.exp(-(t-a)/.15)).toFixed(3):1;r.querySelector('.hfl').style.opacity=dead?0:(.75+.25*Math.sin(t*40+i)).toFixed(2);
+      const x=r.querySelector('.hx');x.style.opacity=dead?1:0;if(dead)x.style.transform=slamT(t-a,1.8,6);r.querySelector('.hfail').style.opacity=dead?1:0});
+    const f=$('h4');f.style.opacity=t>=S2+.1?1:0;f.style.transform=`translateY(${(40*(1-e5((t-S2-.1)/.35))).toFixed(1)}px)`;f.querySelector('.fl').style.opacity=(.7+.3*Math.sin(t*45)).toFixed(2);
+    const mo=$('hmoney');mo.style.opacity=clamp((t-S2-.25)/.15);$('hmbar').style.width=(100*lerp(1,.08,eo((t-S2-.3)/1.2))).toFixed(1)+'%';$('hmbar').style.opacity=t>S2+1.3&&Math.floor(t*6)%2?'.35':'1';
+    const cd=$('hcd');cd.style.opacity=t>=S2+.15?1:0;const left=Math.max(0,E2-t);cd.textContent='T−00:00:0'+Math.ceil(left*5/(E2-S2)).toString().slice(-1);cd.style.color=left<.4?'var(--red)':'#fff'},
+  ev:s=>{const X1=ck('s1',2),S2=st('s2')-.06,E2=en('s2');const E=[[0,'hum',S2],[X1,'boom',1],[X1+.14,'boom',.8],[X1+.28,'boom',.9],[X1,'shk',7],[X1+.28,'shk',6]];
+    for(let k=4;k>=0;k--)E.push([E2-(k+.5)*(E2-S2)/5,'beep',k===0?1:0]);return E}},
+ /* 2 · jméno: portrét na černé, start rakety (= obálka videa) */
+ {id:'name',from:'s3',cls:'space',cap:0,year:1971,tr:'flash',
+  html:()=>`${stars(7,120)}<div class="abs" style="inset:0;background:${SUN_RED}"></div>
+   <div class="abs big" id="nn1" style="left:0;right:0;top:150px;text-align:center;font-size:178px;letter-spacing:.02em">ELON</div>
+   <div class="abs big" id="nn2" style="left:0;right:0;top:300px;text-align:center;font-size:178px;letter-spacing:.02em;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.85)">MUSK</div>
+   <img class="abs" id="ncut" src="photos/musk_cut.png" style="left:66px;top:286px;width:408px;height:566px;-webkit-mask-image:linear-gradient(#000 74%,transparent 96%)">
+   <div class="abs" id="nbd" style="left:74px;top:690px;display:flex;align-items:center;gap:12px"><span class="badge">POSTAVILI TO <b>#02</b></span><span class="mono" style="font-size:13px">*1971 · PRETORIA, JAR</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;const c=$('ncut');c.style.opacity=clamp(u/.12);c.style.transform=`translateY(${(40*(1-e5(u/.4))).toFixed(1)}px) scale(${(1.04-.04*e5(u/.6)).toFixed(4)})`;
+    slideIn($('nn1'),t,s.t0+.02,-30,.35);slideIn($('nn2'),t,s.t0+.1,30,.35);slideIn($('nbd'),t,s.t0+.3,14,.3)},
+  ev:s=>[[s.t0,'launch'],[s.t0+.3,'blip',2]]},
+ /* 3 · Blastar: hra ve 12 letech, prodaná za 500 $ */
+ {id:'blastar',from:'s4',cls:'space',cap:1,year:1984,tr:'glitch',punch:1,
+  html:()=>`<div class="abs" style="left:46px;top:176px;width:448px;height:340px;border-radius:26px;background:#1a1a1a;box-shadow:inset 0 0 0 2px #333,0 30px 60px rgba(0,0,0,.6)"></div>
+   <div class="abs" id="bscr" style="left:66px;top:196px;width:408px;height:300px;border-radius:16px;overflow:hidden;background:radial-gradient(120% 100% at 50% 40%,#0c2414,#030805)">
+    <div class="abs" style="left:0;right:0;top:12px;text-align:center;font-family:VT;font-size:40px;color:#7CFC8A;letter-spacing:.12em">BLASTAR</div>
+    <div class="abs" style="left:16px;top:16px;font-family:VT;font-size:20px;color:#7CFC8A">SKÓRE <span id="bsc">0</span></div>
+    <div class="abs" id="bal" style="left:56px;top:70px">${[0,1,2].map(r=>`<div style="display:flex;gap:18px;margin-bottom:12px">${Array.from({length:6},(_,c)=>`<span class="bal" data-r="${r}" data-c="${c}">${sprite(r%2?SPR.a2:SPR.a1,4,r===0?'#FF5E7A':'#7CFC8A')}</span>`).join('')}</div>`).join('')}</div>
+    <div class="abs" id="bship" style="left:186px;top:252px">${sprite(SPR.ship,5,'#E8FFE8')}</div><div id="bblt"></div>
+    <div class="abs" style="inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px)"></div></div>
+   <div class="abs" style="left:74px;top:548px;display:flex;gap:10px"><span class="chip" id="bc1">12 let</span><span class="chip" id="bc2">1984 · BASIC</span></div>
+   <div class="abs" id="bst" style="left:150px;top:590px;transform:rotate(-7deg);opacity:0"><span class="stamp">PRODÁNO · $500</span></div>
+   <div class="abs mono gc" id="bmag" style="left:74px;top:524px;width:392px;text-align:center;font-size:11px;opacity:0">časopis PC and Office Technology</div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('bal').style.transform=`translateX(${(22*Math.sin(u*2.2)).toFixed(1)}px)`;
+    const sx=186+70*Math.sin(u*2.9);$('bship').style.left=sx.toFixed(1)+'px';
+    const kills=Math.floor(Math.max(0,u-.2)/.32);s.el.querySelectorAll('.bal').forEach((e,i)=>{const ord=(i*7)%18;e.style.opacity=ord<kills?0:1});
+    let b='';for(let k=0;k<4;k++){const bt=(u-.05-k*.32);if(bt>0&&bt<.32){const y=245-bt*620;b+=`<i style="position:absolute;left:${(186+70*Math.sin((u-bt)*2.9)+15).toFixed(1)}px;top:${y.toFixed(0)}px;width:4px;height:12px;background:#E8FFE8"></i>`}}$('bblt').innerHTML=b;
+    const S=ck('s4',3);$('bsc').textContent=String(Math.min(500,kills*50+(t>=S?500:0))).padStart(4,'0');
+    popIn($('bc1'),t,s.t0+.15);popIn($('bc2'),t,s.t0+.3);const e=$('bst');e.style.opacity=t>=S?1:0;if(t>=S)e.style.transform='rotate(-7deg) '+slamT(t-S,1.7,6);$('bmag').style.opacity=clamp((t-S-.25)/.15)},
+  ev:s=>{const E=[];for(let k=0;k<12;k++){const a=s.t0+.25+k*.32;if(a<ck('s4',3))E.push([a,'zap',k%3])}E.push([ck('s4',3),'stamp',.45],[ck('s4',3),'coin']);return E}},
+ /* 4 · Stanford: přijat, nenastoupil */
+ {id:'stanford',from:'s5',cls:'tes',cap:1,year:1995,punch:1,
+  html:()=>`<div class="lcard" id="sfc" style="left:56px;top:206px;width:428px;height:300px;padding:28px 30px">
+    <div class="lbl" style="color:#666">Doktorský program · 1995</div>
+    <div style="font-family:BR;font-weight:800;font-size:46px;letter-spacing:-.01em;margin-top:12px;line-height:1">Stanford</div>
+    <div style="font-family:BR;font-weight:500;font-size:18px;color:#555;margin-top:8px">materiálové inženýrství</div>
+    <div style="display:flex;gap:10px;margin-top:30px"><span class="chip" style="color:#0a7a3e;border-color:#0a7a3e">✓ Přijat</span><span class="chip" id="sfn" style="color:var(--red);border-color:var(--red);opacity:0">✕ Nenastoupil</span></div>
+    <svg class="abs" width="428" height="300" style="left:0;top:0"><line id="sfx" x1="20" y1="120" x2="408" y2="70" stroke="#E31937" stroke-width="7" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/></svg></div>
+   <div class="abs" id="sfa" style="left:74px;top:540px;font-family:BR;font-weight:600;font-size:24px;opacity:0">→ startup v Silicon Valley</div>`,
+  anim:(t,s)=>{slideIn($('sfc'),t,s.t0,30,.35);const V=ck('s5',1);popIn($('sfn'),t,V+.05);$('sfx').style.strokeDashoffset=(1-eo((t-V)/.2)).toFixed(3);slideIn($('sfa'),t,ck('s5',2),16,.3)},
+  ev:s=>[[s.t0,'whoosh'],[ck('s5',1),'scratch'],[ck('s5',2),'blip',1]]},
+ /* 5 · Zip2: mladý Musk, spaní v kanceláři, prodej za 307 mil. $ */
+ {id:'zip2',from:'s6',cls:'tes',cap:1,year:1995,tr:'scan',punch:1,
+  html:()=>`<div class="abs" id="zph" style="left:56px;top:182px;width:428px;padding:12px 12px 44px;background:#F1EFE9;box-shadow:0 24px 50px rgba(0,0,0,.6);transform-origin:50% 0"><img src="photos/young.jpg" style="display:block;width:404px;height:303px"><div class="abs" style="left:16px;bottom:12px;font-family:BR;font-weight:600;font-size:15px;color:#333;letter-spacing:.12em">ZIP2 · 1995</div></div>
+   <div class="abs" style="left:74px;top:568px;display:flex;flex-wrap:wrap;gap:10px;width:400px"><span class="chip" id="zc1" style="opacity:0">s bratrem Kimbalem</span><span class="chip" id="zc2" style="opacity:0">spal v kanceláři 💤</span><span class="chip" id="zc3" style="opacity:0">sprchy v posilovně</span></div>
+   <div class="abs big" id="zcn" style="left:0;right:0;top:430px;text-align:center;font-size:92px;opacity:0">$0</div>
+   <div class="abs mono" id="zcl" style="left:0;right:0;top:526px;text-align:center;font-size:14px;opacity:0">COMPAQ · 1999 · ELONŮV PODÍL $22 MIL.</div>`,
+  anim:(t,s)=>{const S7=st('s7')-.06,m=eio((t-S7)/.35);const p=$('zph');p.style.transform=`translateY(${(-12*m).toFixed(1)}px) scale(${lerp(1,.66,m).toFixed(4)}) rotate(${lerp(-1.5,0,m).toFixed(2)}deg)`;
+    popIn($('zc1'),t,ck('s6',0)+.25);popIn($('zc2'),t,ck('s6',2));popIn($('zc3'),t,ck('s6',3)+.1);
+    ['zc1','zc2','zc3'].forEach(id=>{if(t>=S7)$(id).style.opacity=(1-m).toFixed(3)});
+    const c=$('zcn');c.style.opacity=t>=ck('s7',1)-.1?1:0;c.textContent='$'+fmt(307e6*eo((t-ck('s7',1)+.1)/.8));$('zcl').style.opacity=clamp((t-ck('s7',1)-.6)/.2)},
+  ev:s=>[[s.t0,'scanfx'],[ck('s6',0)+.25,'pop'],[ck('s6',2),'pop'],[ck('s6',3)+.1,'pop'],[st('s7')-.06,'whoosh'],[ck('s7',1)-.1,'count',.8],[ck('s7',1)+.72,'coin']]},
+ /* 6 · X.com → PayPal */
+ {id:'xcom',from:'s8',cls:'space',cap:1,year:1999,tr:'glitch',punch:1,
+  html:()=>`${stars(11,60)}
+   <div class="abs big" id="xx" style="left:0;right:0;top:190px;text-align:center;font-size:170px;font-family:BR;font-weight:800;letter-spacing:-.03em"><span class="red">X</span>.com</div>
+   <div class="abs mono gc" id="xl1" style="left:0;right:0;top:362px;text-align:center;font-size:14px;opacity:0">1999 · ONLINE BANKA</div>
+   <div class="abs" id="xar" style="left:258px;top:396px;width:24px;height:60px;opacity:0"><svg width="24" height="60"><line x1="12" y1="0" x2="12" y2="52" stroke="#fff" stroke-width="2"/><path d="M4 44 L12 56 L20 44" fill="none" stroke="#fff" stroke-width="2"/></svg></div>
+   <div class="abs" id="xpp" style="left:0;right:0;top:470px;text-align:center;font-family:BR;font-weight:800;font-size:88px;letter-spacing:-.02em;opacity:0">PayPal</div>
+   <div class="abs mono gc" id="xl2" style="left:0;right:0;top:572px;text-align:center;font-size:14px;opacity:0">2002 · eBAY HO KOUPIL ZA $1,5 MLD.</div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('xx').style.transform=slamT(u,1.3,5);$('xx').style.textShadow=rgbSplit(u,.25,6);slideIn($('xl1'),t,s.t0+.25,10);
+    const P=ck('s8',2);slideIn($('xar'),t,P-.1,-14,.25);popIn($('xpp'),t,P+.05,.25,.7);slideIn($('xl2'),t,ck('s8',3)+.15,10)},
+  ev:s=>[[s.t0,'slam',.35],[ck('s8',2)+.05,'pop2']]},
+ /* 7 · líbánky: let do Sydney, mezitím ho sesadili */
+ {id:'honey',from:'s9',cls:'lab',cap:1,year:2000,tr:'scan',
+  html:()=>`<div class="abs" style="inset:0;background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.16) 1px,transparent 1.4px) 0 0/14px 14px"></div>
+   <svg class="abs" width="540" height="420" style="left:0;top:220px;overflow:visible"><path id="hpath" d="M70 300 C 170 60, 380 60, 470 260" stroke="#fff" stroke-width="2.5" fill="none" stroke-dasharray="7 7"/><path id="hmask" d="M70 300 C 170 60, 380 60, 470 260" stroke="#05070A" stroke-width="6" fill="none" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="0"/>
+    <circle cx="70" cy="300" r="7" fill="#fff"/><circle cx="470" cy="260" r="7" fill="var(--red)"/></svg>
+   <div class="abs mono" style="left:44px;top:536px;font-size:13px">KALIFORNIE</div><div class="abs mono" style="left:410px;top:496px;font-size:13px">SYDNEY</div>
+   <div class="abs" id="hpl" style="left:0;top:0;font-size:34px;line-height:1">✈</div>
+   <div class="abs mono gc" style="left:74px;top:180px;font-size:14px">ZÁŘÍ 2000 · LÍBÁNKY</div>
+   <div class="card" id="hnot" style="left:46px;top:226px;width:448px;padding:16px 18px;display:flex;gap:14px;align-items:center;opacity:0"><div style="width:46px;height:46px;border-radius:12px;background:#fff;color:#000;font-family:BR;font-weight:800;font-size:30px;display:flex;align-items:center;justify-content:center;flex:none">X</div>
+    <div><div style="font-weight:800;font-size:17px">X.com · správní rada</div><div style="font-size:16px;color:#C9CDD2;margin-top:2px">CEO Elon Musk odvolán. Novým šéfem je Peter Thiel.</div></div><div class="mono gc" style="font-size:11px;align-self:flex-start">teď</div></div>`,
+  anim:(t,s)=>{const D=ck('s9',2),p=clamp((t-s.t0)/(D-s.t0+.2));$('hmask').style.strokeDashoffset=(-p).toFixed(4);
+    const pa=$('hpath'),L=pa.getTotalLength(),pt=pa.getPointAtLength(L*p),pt2=pa.getPointAtLength(Math.min(L,L*p+2));const ang=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)*180/Math.PI;
+    const pl=$('hpl');pl.style.transform=`translate(${(pt.x-17).toFixed(1)}px,${(pt.y+220-17).toFixed(1)}px) rotate(${(ang).toFixed(1)}deg)`;
+    const n=$('hnot'),q=e5((t-D)/.25);n.style.opacity=t>=D?1:0;n.style.transform=`translateY(${(-60*(1-q)).toFixed(1)}px)`},
+  ev:s=>[[s.t0,'jet',ck('s9',2)-s.t0],[ck('s9',2),'notif'],[ck('s9',2),'shk',5]]},
+ /* 8 · SpaceX 2002, cíl Mars */
+ {id:'spacex',from:'s10',cls:'space',cap:1,year:2002,tr:'flash',punch:1,
+  html:()=>`${stars(13,140)}<div class="abs" style="inset:0;background:${SUN_RED}"></div>
+   <div class="abs" id="smars" style="left:360px;top:190px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff8a5c,#c1351d 60%,#5c1209);box-shadow:0 0 40px rgba(227,80,40,.5)"></div>
+   <div class="abs mono" style="left:356px;top:312px;font-size:12px;width:120px;text-align:center">CÍL: MARS</div>
+   <div class="abs wide" id="ssx" style="left:0;right:0;top:390px;text-align:center;font-size:58px;letter-spacing:.34em;padding-left:.34em">SPACEX</div>
+   <div class="abs mono" id="sy" style="left:0;right:0;top:470px;text-align:center;font-size:16px;opacity:0">ZALOŽENO 2002</div>
+   <div class="abs" id="srk" style="left:96px;top:540px">${ROCKET(24)}</div>`,
+  anim:(t,s)=>{const u=t-s.t0;const p=e5(u/.4);$('ssx').style.opacity=p;$('ssx').style.letterSpacing=lerp(.6,.34,p).toFixed(3)+'em';slideIn($('sy'),t,s.t0+.25,8);
+    $('smars').style.transform=`translateY(${(-14*u).toFixed(1)}px)`;$('srk').style.transform=`translateY(${(-30*u*u).toFixed(1)}px)`},
+  ev:s=>[[s.t0,'rumble',1.2]]},
+ /* 9 · Tesla: nezaložil ji, přišel jako investor */
+ {id:'tesla',from:'s11',cls:'tes',cap:1,year:2004,tr:'scan',punch:1,
+  html:()=>`<div class="abs" id="tph" style="left:46px;top:176px;width:448px;height:300px;border-radius:18px;overflow:hidden"><img src="photos/tesla.jpg" style="width:448px;height:436px;display:block;margin-top:-40px"></div>
+   <div class="lcard" id="tcd" style="left:46px;top:404px;width:448px;padding:20px 22px 18px">
+    <div class="lbl" style="color:#777">Tesla Motors · zakladatelé 2003</div>
+    <div style="font-family:BR;font-weight:600;font-size:22px;margin-top:8px;line-height:1.25">Martin Eberhard<br>Marc Tarpenning</div>
+    <div id="tinv" style="margin-top:14px;padding-top:12px;border-top:1px solid #ddd;opacity:0"><span style="font-family:BR;font-weight:800;font-size:22px;color:var(--red)">2004 · Elon Musk</span><span style="font-family:BR;font-weight:500;font-size:17px;color:#444"> — hlavní investor, předseda</span></div></div>
+   <div class="abs mono gc" id="tfn" style="left:74px;top:640px;width:400px;font-size:10.5px;white-space:normal;line-height:1.5;opacity:0">ZA SPOLUZAKLADATELE SE SMÍ OZNAČOVAT OD DOHODY PO SPORU (2009)</div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('tph').style.transform=`scale(${(1.06-.06*e5(u/.8)).toFixed(4)})`;slideIn($('tcd'),t,ck('s11',1)-.05,30,.3);
+    const I=st('s12')-.02;const e=$('tinv'),p=e5((t-I)/.3);e.style.opacity=t>=I?p:0;e.style.transform=`translateX(${(30*(1-p)).toFixed(1)}px)`;$('tfn').style.opacity=clamp((t-I-.5)/.2)},
+  ev:s=>[[s.t0,'scanfx'],[ck('s11',1)-.05,'whoosh'],[st('s12')-.02,'blip',3]]},
+ /* 10 · rok 2008: alarm, Tesla krachuje, rakety padají */
+ {id:'y2008',from:'s13',cls:'alarm',cap:1,year:2008,tr:'glitch',
+  html:()=>`<div class="abs" id="aal" style="inset:0;background:radial-gradient(70% 50% at 50% 40%,rgba(227,25,55,.35),transparent 70%)"></div>
+   <div class="abs big red" id="a08" style="left:0;right:0;top:180px;text-align:center;font-size:250px">2008</div>
+   <div class="abs" id="apn" style="left:46px;top:420px;width:448px;display:flex;gap:14px;opacity:0">
+    <div class="card" style="position:relative;flex:1;padding:16px"><div class="lbl" style="color:#fff">Tesla · hotovost</div><div style="margin-top:12px;height:14px;background:#2a2a2a;border-radius:7px;overflow:hidden"><div id="acash" style="height:100%;width:100%;background:var(--red)"></div></div><div class="mono red" id="acl" style="font-size:13px;margin-top:10px">KRITICKÉ</div></div>
+    <div class="card" style="position:relative;flex:1;padding:16px"><div class="lbl" style="color:#fff">Falcon 1</div><div class="big red" style="font-size:44px;margin-top:8px;letter-spacing:.06em">✕ ✕ ✕</div><div class="mono gc" style="font-size:12px;margin-top:4px">2006 · 2007 · 2008</div></div></div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('a08').style.transform=slamT(u,1.25,6);$('a08').style.textShadow=rgbSplit(u,.3,8);
+    $('aal').style.opacity=(.55+.45*Math.sin(t*9)).toFixed(3);const P=st('s14')-.06;$('a08').style.opacity=t>=P?(1-.75*eo((t-P)/.3)).toFixed(3):1;
+    popIn($('apn'),t,P,.25,.85);$('acash').style.width=(100*lerp(1,.05,eo((t-P-.1)/1.4))).toFixed(1)+'%';$('acl').style.opacity=Math.floor(t*5)%2?.3:1},
+  ev:s=>[[s.t0,'slam',.5],[st('s14')-.06,'alarm',en('s14')-st('s14')+.2],[ck('s14',2),'boom',.6]]},
+ /* 11 · čtvrtý start vyšel: zelená telemetrie, oběžná dráha */
+ {id:'orbit',from:'s15',cls:'space',cap:1,year:2008,tr:'flash',
+  html:()=>`${stars(17,120)}
+   <div class="abs mono" style="left:74px;top:176px;font-size:13px;color:#fff">FALCON 1 · LET 4 · 28. 9. 2008</div>
+   <div class="abs" id="orr" style="left:258px;top:300px">${ROCKET(24)}<div class="abs" style="left:6px;top:118px">${FLAME(12)}</div></div>
+   ${gauge('og1','Rychlost','km/h').replace('class="abs"','class="abs" style="left:66px;top:430px"')}${gauge('og2','Výška','km').replace('class="abs"','class="abs" style="left:324px;top:430px"')}
+   <div class="abs big okc" id="ook" style="left:0;right:0;top:240px;text-align:center;font-size:84px;opacity:0">✓ NA ORBITĚ</div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('orr').style.transform=`translateY(${(-60*u-30*u*u).toFixed(1)}px)`;const p=eo(u/1.05);setGauge($('og1'),27000*p,30000);setGauge($('og2'),620*p,700);
+    const O=ck('s15',1);$('orr').style.opacity=(1-clamp((t-O)/.15)).toFixed(3);const e=$('ook');e.style.opacity=t>=O?1:0;if(t>=O)e.style.transform=slamT(t-O,1.3,4)},
+  ev:s=>[[s.t0,'rumble',.9],[ck('s15',1),'success']]},
+ /* 12 · NASA 1,6 mld. $ */
+ {id:'nasa',from:'s16',cls:'space',cap:1,year:2008,punch:1,
+  html:()=>`${stars(19,80)}
+   <div class="abs lbl" style="left:74px;top:186px;color:#fff">NASA · 23. 12. 2008</div>
+   <div class="abs big" id="ncn" style="left:0;right:0;top:300px;text-align:center;font-size:76px">$0</div>
+   <div class="abs mono gc" id="ncl" style="left:0;right:0;top:384px;text-align:center;font-size:14px;opacity:0">12 ZÁSOBOVACÍCH LETŮ K ISS</div>
+   <div class="abs" id="niss" style="left:170px;top:450px;width:200px;height:90px;opacity:0"><svg width="200" height="90" viewBox="0 0 200 90"><rect x="86" y="38" width="28" height="14" fill="#cfd3d8"/><rect x="40" y="43" width="120" height="4" fill="#cfd3d8"/>${[0,1,2,3].map(i=>`<rect x="${[8,40,128,160][i]}" y="14" width="30" height="62" fill="#1d3b6e" stroke="#9db4d8" stroke-width="1.5"/>`).join('')}</svg></div>`,
+  anim:(t,s)=>{const c=$('ncn');const a=ck('s16',2)-.15;c.textContent='$'+fmt(1.6e9*eo((t-a)/.8));c.style.opacity=t>=s.t0+.05?1:0;
+    $('ncl').style.opacity=clamp((t-a-.6)/.2);popIn($('niss'),t,s.t0+.15,.3,.7);$('niss').style.transform+=` translateX(${(10*Math.sin(t)).toFixed(1)}px)`},
+  ev:s=>[[ck('s16',2)-.15,'count',.8],[ck('s16',2)+.65,'coin']]},
+ /* 13 · šílená fakta: přistání rakety (2015) */
+ {id:'land',from:'s17',cls:'space',cap:1,year:2015,tr:'glitch',
+  html:()=>`${stars(23,90)}<div class="abs" style="left:0;right:0;top:610px;height:2px;background:rgba(255,255,255,.4)"></div>
+   <div class="abs" style="left:200px;top:596px;width:140px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.6)"></div>
+   <div class="abs" id="lbk" style="left:256px;top:0">${ROCKET(28)}<div class="abs lfl" style="left:7px;top:138px">${FLAME(14)}</div></div>
+   <div class="abs" id="ldust" style="left:150px;top:560px;width:240px;height:60px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,220,180,.6),transparent);opacity:0"></div>
+   <div class="abs" id="lch" style="left:74px;top:176px"><span class="chip" style="background:var(--red);border-color:var(--red)">Šílená fakta</span></div>
+   <div class="abs mono" style="left:74px;top:220px;font-size:13px">21. 12. 2015 · PRVNÍ PŘISTÁNÍ ORBITÁLNÍ RAKETY</div>`,
+  anim:(t,s)=>{const u=t-s.t0,L=ck('s17',1)+.15;const p=eo((t-s.t0)/(L-s.t0));const y=lerp(240,456,p);$('lbk').style.top=y.toFixed(1)+'px';
+    $('lbk').querySelector('.lfl').style.opacity=t<L+.1?(.7+.3*Math.sin(t*45)).toFixed(2):0;$('ldust').style.opacity=t>=L-.15?clamp(1-(t-L)/.8):0;popIn($('lch'),t,s.t0+.05,.2,.7)},
+  ev:s=>[[s.t0,'thrust',ck('s17',1)+.15-s.t0],[ck('s17',1)+.15,'touch']]},
+ /* 14 · auto ve vesmíru (2018) */
+ {id:'roadster',from:'s18',cls:'space',cap:1,year:2018,
+  html:()=>`${stars(29,150)}
+   <div class="abs" style="left:-140px;top:560px;width:820px;height:820px;border-radius:50%;background:radial-gradient(circle at 50% 30%,#3d7fd6,#1a3f78 55%,#0a1a33 75%);box-shadow:0 0 60px rgba(80,150,255,.45)"></div>
+   <div class="abs" id="rcar" style="left:150px;top:300px;width:240px;height:90px"><svg width="240" height="90" viewBox="0 0 240 90"><path d="M10 62 C 12 48, 40 44, 70 40 L 100 26 C 120 18, 160 18, 178 30 L 200 40 C 220 42, 232 50, 232 62 L 228 68 L 14 68 Z" fill="#D41F2E"/><path d="M104 30 L 120 24 C 140 22, 160 24, 172 32 L 150 40 L 100 40 Z" fill="#111"/>
+    <circle cx="60" cy="68" r="15" fill="#111"/><circle cx="60" cy="68" r="6" fill="#999"/><circle cx="186" cy="68" r="15" fill="#111"/><circle cx="186" cy="68" r="6" fill="#999"/><circle cx="128" cy="22" r="9" fill="#fff"/><rect x="122" y="28" width="12" height="14" rx="3" fill="#fff"/></svg></div>
+   <div class="abs mono" id="rdp" style="left:186px;top:260px;font-size:12px;background:#111;border:1px solid #555;padding:3px 8px;opacity:0">DON'T PANIC</div>
+   <div class="abs mono" style="left:74px;top:186px;font-size:13px;width:400px;white-space:normal;line-height:1.6">6. 2. 2018 · FALCON HEAVY · TESLA ROADSTER S FIGURÍNOU „STARMAN“</div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('rcar').style.transform=`translate(${(-20*u).toFixed(1)}px,${(-10*u).toFixed(1)}px) rotate(${(-8+14*u).toFixed(2)}deg)`;popIn($('rdp'),t,s.t0+.35,.2,.7)},
+  ev:s=>[[s.t0,'whoosh'],[s.t0+.35,'blip',4]]},
+ /* 15 · raketa chycená věží (2024) */
+ {id:'catch',from:'s19',cls:'space',cap:1,year:2024,
+  html:()=>`${stars(31,90)}
+   <div class="abs" style="left:150px;top:300px;width:34px;height:340px;background:repeating-linear-gradient(45deg,transparent 0 9px,rgba(255,255,255,.55) 9px 11px),repeating-linear-gradient(-45deg,transparent 0 9px,rgba(255,255,255,.55) 9px 11px);border-left:3px solid #ddd;border-right:3px solid #ddd"></div>
+   <div class="abs" id="carm1" style="left:184px;top:396px;width:140px;height:10px;background:#ddd;transform-origin:0 50%"></div><div class="abs" id="carm2" style="left:184px;top:420px;width:140px;height:10px;background:#ddd;transform-origin:0 50%"></div>
+   <div class="abs" id="cbk" style="left:250px;top:0">${ROCKET(30)}<div class="abs cfl" style="left:7px;top:148px">${FLAME(16)}</div></div>
+   <div class="abs mono" style="left:74px;top:186px;font-size:13px">13. 10. 2024 · STARSHIP · BOOSTER CHYCENÝ VĚŽÍ</div>`,
+  anim:(t,s)=>{const C=ck('s19',1)+.1;const p=eo((t-s.t0)/(C-s.t0));$('cbk').style.top=lerp(180,300,p).toFixed(1)+'px';$('cbk').querySelector('.cfl').style.opacity=t<C?(.7+.3*Math.sin(t*45)).toFixed(2):0;
+    const a=eo((t-C+.08)/.15);$('carm1').style.transform=`rotate(${lerp(-30,0,a).toFixed(2)}deg)`;$('carm2').style.transform=`rotate(${lerp(30,0,a).toFixed(2)}deg)`},
+  ev:s=>[[s.t0,'thrust',ck('s19',1)+.1-s.t0],[ck('s19',1)+.1,'clamp']]},
+ /* 16 · kontroverze: tweet „Funding secured“, pokuta SEC */
+ {id:'tweet',from:'s20',cls:'xbg',cap:1,year:2018,tr:'glitch',
+  html:()=>`<div class="abs" id="kch" style="left:74px;top:178px"><span class="chip" style="background:var(--red);border-color:var(--red)">Kontroverze</span></div>
+   <div class="post" id="kpo" style="left:40px;top:232px;width:460px"><div class="hd"><div class="av"></div><div><div class="nm">Elon Musk</div><div class="hn">@elonmusk</div></div></div>
+    <div class="tx">Am considering taking Tesla private at $420. Funding secured.</div><div class="dt">7. srpna 2018</div><div class="ic"><i></i><i></i><i></i><i></i></div></div>
+   <div class="abs mono gc" id="ktr" style="left:46px;top:500px;width:450px;font-size:12px;white-space:normal;line-height:1.5;opacity:0">„ZVAŽUJU STÁHNOUT TESLU Z BURZY ZA 420 $. FINANCOVÁNÍ ZAJIŠTĚNO.“</div>
+   <div class="abs" id="kst" style="left:106px;top:566px;transform:rotate(-6deg);opacity:0"><span class="stamp">SEC · POKUTA $20 MIL.</span></div>
+   <div class="abs mono" id="kst2" style="left:0;right:0;top:640px;text-align:center;font-size:12px;opacity:0">+ ODCHOD Z ČELA SPRÁVNÍ RADY TESLY</div>`,
+  anim:(t,s)=>{popIn($('kch'),t,s.t0+.02,.2,.7);slideIn($('kpo'),t,s.t0+.12,40,.3);$('ktr').style.opacity=clamp((t-s.t0-.5)/.2);
+    const F=ck('s20',2)-.05,e=$('kst');e.style.opacity=t>=F?1:0;if(t>=F)e.style.transform='rotate(-6deg) '+slamT(t-F,1.7,7);$('kst2').style.opacity=clamp((t-F-.3)/.2)},
+  ev:s=>[[s.t0+.12,'notif'],[ck('s20',2)-.05,'stamp',.5],[ck('s20',2)-.05,'shk',6]]},
+ /* 17 · Twitter za 44 mld. $ → X, −80 % lidí */
+ {id:'twitter',from:'s21',cls:'xbg',cap:1,year:2022,tr:'scan',punch:1,
+  html:()=>`<div class="abs big" id="wcn" style="left:0;right:0;top:186px;text-align:center;font-size:74px">$0</div>
+   <div class="abs mono gc" style="left:0;right:0;top:262px;text-align:center;font-size:13px">ŘÍJEN 2022 · NÁKUP TWITTERU</div>
+   <div class="abs" id="wtw" style="left:0;right:0;top:330px;text-align:center;font-family:BR;font-weight:800;font-size:96px;letter-spacing:-.02em">Twitter</div>
+   <div class="abs" id="wx" style="left:0;right:0;top:300px;text-align:center;font-family:BR;font-weight:800;font-size:200px;line-height:1;opacity:0">X</div>
+   <div class="abs" style="left:74px;top:540px;display:flex;gap:10px"><span class="chip" id="wc1" style="opacity:0">červenec 2023</span><span class="chip" id="wc2" style="opacity:0;border-color:var(--red);color:var(--red)">−80 % zaměstnanců</span></div>`,
+  anim:(t,s)=>{const c=$('wcn');const a=ck('s21',1)-.1;c.textContent='$'+fmt(44e9*eo((t-a)/.75));
+    const X=ck('s21',3)-.04,m=eio((t-X)/.18);const w=$('wtw');w.style.opacity=(1-m).toFixed(3);w.style.transform=`scale(${lerp(1,.6,m).toFixed(3)})`;w.style.filter=`blur(${(8*m).toFixed(1)}px)`;
+    const x=$('wx');x.style.opacity=t>=X?1:0;if(t>=X){x.style.transform=slamT(t-X,1.6,6);x.style.textShadow=rgbSplit(t-X,.25,8)}popIn($('wc1'),t,X+.15);popIn($('wc2'),t,X+.3)},
+  ev:s=>[[s.t0,'scanfx'],[ck('s21',1)-.1,'count',.75],[ck('s21',3)-.04,'slam',.55],[ck('s21',3)+.3,'blip',5]]},
+ /* 18 · DOGE 2025 a roztržka s Trumpem */
+ {id:'doge',from:'s22',cls:'xbg',cap:1,year:2025,tr:'glitch',
+  html:()=>`<div class="abs" id="dph" style="left:110px;top:180px;width:320px;height:320px;border-radius:18px;overflow:hidden"><img src="photos/oval.jpg" style="width:320px;height:320px;display:block"></div>
+   <div class="abs" id="dl" style="left:110px;top:180px;width:160px;height:320px;overflow:hidden;border-radius:18px 0 0 18px;opacity:0"><img src="photos/oval.jpg" style="width:320px;height:320px;display:block"></div>
+   <div class="abs" id="dr" style="left:270px;top:180px;width:160px;height:320px;overflow:hidden;border-radius:0 18px 18px 0;opacity:0"><img src="photos/oval.jpg" style="width:320px;height:320px;display:block;margin-left:-160px"></div>
+   <div class="abs" style="left:74px;top:520px;display:flex;gap:10px"><span class="chip" id="dc1" style="opacity:0">DOGE · 2025</span><span class="chip" id="dc2" style="opacity:0">škrty ve federálních výdajích</span></div>
+   <div class="abs" id="dc3" style="left:74px;top:568px;opacity:0"><span class="chip" style="border-color:var(--red);color:var(--red)">červen 2025 · veřejná roztržka</span></div>
+   <div class="abs credit" style="left:112px;top:504px">Oválná pracovna, únor 2025</div>`,
+  anim:(t,s)=>{slideIn($('dph'),t,s.t0,24,.3);popIn($('dc1'),t,s.t0+.2);popIn($('dc2'),t,ck('s22',2));
+    const B=ck('s23',1)-.05,m=eo((t-B)/.3),on=t>=B;$('dph').style.visibility=on?'hidden':'visible';
+    $('dl').style.opacity=on?1:0;$('dr').style.opacity=on?1:0;$('dl').style.transform=`translateX(${(-26*m).toFixed(1)}px) rotate(${(-3*m).toFixed(2)}deg)`;$('dr').style.transform=`translateX(${(26*m).toFixed(1)}px) rotate(${(3*m).toFixed(2)}deg)`;popIn($('dc3'),t,B+.15)},
+  ev:s=>[[s.t0+.2,'pop'],[ck('s22',2),'pop'],[ck('s23',1)-.05,'crack'],[ck('s23',1)-.05,'shk',8]]},
+ /* 19 · první bilionář (2026) */
+ {id:'trillion',from:'s24',cls:'space',cap:1,year:2026,tr:'flash',punch:1,
+  html:()=>`${stars(37,120)}<div class="abs" style="inset:0;background:radial-gradient(60% 40% at 50% 45%,rgba(255,212,0,.16),transparent 70%)"></div>
+   <div class="abs lbl" style="left:0;right:0;top:220px;text-align:center;color:#fff">Majetek · červen 2026</div>
+   <div class="abs big" id="tcn" style="left:0;right:0;top:300px;text-align:center;font-size:62px">$0</div>
+   <div class="abs big" id="tlb" style="left:0;right:0;top:380px;text-align:center;font-size:56px;color:var(--y);opacity:0">PRVNÍ BILIONÁŘ</div>
+   <div class="abs mono gc" id="tsr" style="left:0;right:0;top:450px;text-align:center;font-size:13px;opacity:0">PO VSTUPU SPACEX NA BURZU · FORBES / BLOOMBERG</div>`,
+  anim:(t,s)=>{const c=$('tcn'),a=s.t0+.05;c.textContent='$'+fmt(1e12*eo((t-a)/1.1));const B=ck('s24',1);popIn($('tlb'),t,B,.25,.6);$('tsr').style.opacity=clamp((t-B-.4)/.2)},
+  ev:s=>[[s.t0+.05,'count',1.1],[ck('s24',1),'slam',.5],[ck('s24',1),'coin']]},
+ /* 20 · Mars: „chce umřít na Marsu, jen ne při dopadu“ */
+ {id:'mars',from:'s25',cls:'space',cap:0,year:2026,tr:'scan',
+  html:()=>`<img class="abs" id="mph" src="photos/starship.jpg" style="left:0;top:0;width:540px;height:960px">
+   <div class="abs" style="inset:0;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.1) 32%,rgba(0,0,0,.8) 52%,rgba(0,0,0,.9) 100%)"></div>
+   <div class="abs" id="mmr" style="left:340px;top:150px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff8a5c,#c1351d 60%,#5c1209);box-shadow:0 0 50px rgba(227,80,40,.55)"></div>
+   <div class="abs is it" style="left:60px;width:420px;top:520px;font-family:IS;font-style:italic;font-size:54px;line-height:1.04"><span id="mq1" style="opacity:0">„Chci umřít na Marsu.</span> <span id="mq2" style="opacity:0;color:#FFB3A0">Jen ne při dopadu.“</span></div>
+   <div class="abs mono" id="mqs" style="left:62px;top:680px;font-size:12px;opacity:0">ELON MUSK · SXSW 2013</div>
+   <div class="abs credit" style="right:10px;top:430px;transform:rotate(-90deg);transform-origin:100% 0;opacity:.7">Foto: SpaceX</div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('mph').style.transform=`scale(${(1.08-.03*u/3).toFixed(4)}) translateY(${(-6*u).toFixed(1)}px)`;$('mmr').style.transform=`translateY(${(30-20*eo(u/2)).toFixed(1)}px)`;
+    slideIn($('mq1'),t,s.t0+.1,16,.4);const P=st('s26')-.05;slideIn($('mq2'),t,P,16,.35);$('mqs').style.opacity=clamp((t-P-.4)/.2)},
+  ev:s=>[[s.t0,'rumble',2.2],[st('s26')-.05,'thud']]},
+ /* 21 · další díl: anketa jako na X */
+ {id:'poll',from:'s27',cls:'xbg',cap:0,year:0,tr:'flash',
+  html:()=>`<div class="post" id="ppo" style="left:40px;top:200px;width:460px"><div class="hd"><div class="av" style="background:#FFD400;display:flex;align-items:center;justify-content:center">${uzel(9,'#111')}</div><div><div class="nm">Better Digital</div><div class="hn">Postavili to</div></div></div>
+    <div class="tx" style="font-size:25px;font-weight:700">Koho chceš v dalším díle?</div>
+    ${['Bill Gates','Steve Wozniak','Jeff Bezos'].map((n,i)=>`<div class="opt" id="po${i}"><div class="f"></div><span>${n}</span></div>`).join('')}
+    <div class="dt">Napiš to do komentářů 👇</div></div>
+   <div class="abs" id="ptap" style="left:0;top:0;width:44px;height:44px;border-radius:50%;border:3px solid #fff;opacity:0"></div>`,
+  anim:(t,s)=>{slideIn($('ppo'),t,s.t0+.05,30,.3);const P=[0,1,2].map(i=>ck('s28',i)-.02);let sel=-1;P.forEach((p,i)=>{if(t>=p)sel=i});
+    [0,1,2].forEach(i=>{const o=$('po'+i);o.classList.toggle('on',i===sel);o.querySelector('.f').style.width=i===sel?(100*eo((t-P[i])/.25)).toFixed(1)+'%':'0%'});
+    const tp=$('ptap');if(sel>=0){const v=t-P[sel];tp.style.opacity=clamp(1-v/.4);const y=348+62*sel;tp.style.transform=`translate(${(90-22).toFixed(0)}px,${(y-22).toFixed(0)}px) scale(${lerp(.4,1.4,eo(v/.4)).toFixed(3)})`}else tp.style.opacity=0},
+  ev:s=>[[s.t0+.05,'whoosh'],...[0,1,2].map(i=>[ck('s28',i)-.02,'tap',i])]},
+ /* 22 · výzva: komentář */
+ {id:'cta',from:'s29',cls:'xbg',cap:0,year:0,
+  html:()=>`<div class="abs" style="left:74px;top:176px"><span class="badge">POSTAVILI TO <b>#02 · ELON MUSK</b></span></div>
+   <div class="abs" style="left:74px;width:430px;top:236px;font-weight:850;font-size:50px;letter-spacing:-.035em;line-height:1.02;white-space:nowrap">Napiš to<br>do komentářů 👇</div>
+   <div class="abs" style="left:46px;top:400px;width:448px;display:flex;align-items:center;gap:12px;background:#16181C;border:1px solid var(--line);border-radius:28px;padding:10px 10px 10px 16px;height:60px">
+    <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#5a5a5e,#2a2a2c);flex:none"></div><div style="flex:1;font-size:20px;font-weight:600"><span id="cty"></span><span id="ccar" style="display:inline-block;width:2px;height:22px;background:var(--blue);vertical-align:-4px;margin-left:1px"></span></div>
+    <div id="csend" style="background:#E7E9EA;color:#000;font-weight:800;font-size:16px;border-radius:20px;padding:9px 16px">Odeslat</div></div>
+   <div class="abs" style="left:0;right:0;top:640px;display:flex;justify-content:center;align-items:center;gap:10px;color:#fff;font-size:17px;font-weight:800">— ${uzel(15,'#fff')}<span>Better Digital</span></div>`,
+  anim:(t,s)=>{const C0=s.t0+.4,txt=Array.from('Jeff Bezos! 🚀');const k=clamp(Math.floor((t-C0)*14)+1,0,txt.length);$('cty').textContent=txt.slice(0,k).join('');
+    $('ccar').style.visibility=Math.floor(t*3)%2===0?'visible':'hidden';const P=C0+txt.length/14+.35;$('csend').style.background=t>=P&&t<P+.15?'#1D9BF0':'#E7E9EA'},
+  ev:s=>{const C0=s.t0+.4;return [[C0,'type',14/14],[C0+14/14+.35,'tap',3]]}},
+];
+/* ------------------------------------------------------------ sestavení */
+const stage=$('stage');
+SCN.forEach((s,i)=>{s.t0=i?st(s.from)-.06:0;});
+SCN.forEach((s,i)=>{s.t1=i+1<SCN.length?SCN[i+1].t0:T.END;const el=document.createElement('div');el.className='sc '+s.cls;el.id='sc_'+s.id;
+  el.innerHTML=`<div class="cam">${s.html()}</div>`;stage.appendChild(el);s.el=el;s.cam=el.querySelector('.cam');
+  s.sids=[...new Set(T.chunks.filter(c=>c[3]>=s.t0-.01&&c[3]<s.t1).map(c=>c[0]))];if(s.init)s.init(s)});
+const TR=SCN.filter((s,i)=>i&&s.tr).map(s=>[s.t0,s.tr]);
+const EV=[];SCN.forEach(s=>{if(s.ev)EV.push(...s.ev(s))});
+TR.forEach(([t0,ty])=>{if(ty==='glitch')EV.push([t0-.05,'glitch',.25]);if(ty==='flash')EV.push([t0,'hit']);if(ty==='scan')EV.push([t0,'swish'])});
+EV.sort((a,b)=>a[0]-b[0]);window.EV=EV;
+const SHK=EV.filter(e=>e[1]==='shk');
+const YEARS=[1971,1984,1995,1999,2002,2004,2008,2015,2018,2022,2025,2026],Y0=1971,Y1=2026,yx=y=>(y-Y0)/(Y1-Y0)*392;
+$('tl').innerHTML='<div class="ln"></div><div class="pg"></div>'+YEARS.map(y=>`<i class="ev" data-y="${y}" style="left:${yx(y).toFixed(1)}px"></i>`).join('')+'<div class="cur"></div><div class="yr"></div>';
+const GC=$('grain').getContext('2d'),GI=GC.createImageData(180,320);
+function grain(f){const r=rng(7000+f),d=GI.data;for(let i=0;i<d.length;i+=4){const v=r()*255|0;d[i]=d[i+1]=d[i+2]=v;d[i+3]=14}GC.putImageData(GI,0,0)}
+let CUR_=null;
+window.render=function(t){
+  let k=SCN.length-1;for(let i=0;i<SCN.length;i++)if(t<SCN[i].t1){k=i;break}
+  const s=SCN[k],u=t-s.t0,d=s.t1-s.t0;const prev=k>0?SCN[k-1]:null;
+  /* přechod „scan“: nová scéna se odkryje bílou linkou shora dolů přes předchozí */
+  const scan=s.tr==='scan'&&prev&&u<.28;
+  SCN.forEach(q=>{const on=q===s||(scan&&q===prev);q.el.style.display=on?'block':'none';q.el.style.zIndex=q===s?2:1;q.el.style.clipPath='none'});
+  if(scan){const p=eio(u/.28);s.el.style.clipPath=`inset(0 0 ${(100*(1-p)).toFixed(2)}% 0)`;prev.anim&&prev.anim(t,prev);$('scanl').style.display='block';$('scanl').style.top=(960*p-1).toFixed(1)+'px'}else $('scanl').style.display='none';
+  let sc=1;if(s.punch){sc=1+.02*u/Math.max(d,.5);let tc=-1;for(const c of T.chunks)if(s.sids.includes(c[0])&&c[3]<=t&&c[3]>s.t0+.15)tc=c[3];if(tc>0)sc+=.03*Math.exp(-(t-tc)/.09)}
+  s.cam.style.transform=`scale(${sc.toFixed(4)})`;
+  s.anim&&s.anim(t,s);
+  let sx=0,sy=0;for(const [a,,amp] of SHK)if(t>=a&&t<a+.6){const e=amp*Math.exp(-(t-a)/.12);sx+=e*Math.sin((t-a)*95+a);sy+=e*.7*Math.sin((t-a)*83+a*2)}
+  stage.style.transform=sx||sy?`translate(${sx.toFixed(2)}px,${sy.toFixed(2)}px)`:'none';
+  /* glitch přechod: barevné pruhy + RGB posun celé scény */
+  const g=$('gl');let gh='';for(const [a,ty] of TR)if(ty==='glitch'&&t>=a-.08&&t<a+.14){const r=rng(400+Math.floor(t*FPS));for(let i=0;i<9;i++){const y=r()*960,h=3+r()*30;gh+=`<i style="position:absolute;left:${(-60+r()*120).toFixed(0)}px;top:${y.toFixed(0)}px;width:${(300+r()*400).toFixed(0)}px;height:${h.toFixed(1)}px;background:${['#fff','#E31937','#00C8FF'][Math.floor(r()*3)]};opacity:${(.35+r()*.5).toFixed(2)}"></i>`}
+    stage.style.filter=`drop-shadow(${(6*(r()-.5)).toFixed(1)}px 0 0 rgba(255,30,60,.8)) drop-shadow(${(6*(r()-.5)).toFixed(1)}px 0 0 rgba(0,200,255,.8))`}
+  g.innerHTML=gh;if(!gh)stage.style.filter='none';
+  /* titulky */
+  const cap=$('cap');let html='';if(s.cap){for(const [cs,i,txt,a,b] of T.chunks){if(t>=a-(cs==='s1'&&i===0?1:0)&&t<b+.02&&t>=s.t0-.01){html=txt.replace(/\*(.+?)\*/g,'<b>$1</b>');break}}}
+  cap.innerHTML=html?`<span>${html}</span>`:'';cap.style.top=(s.capY||664)+'px';
+  /* časová osa */
+  const tl=$('tl');const py=k>0?SCN[k-1].year:s.year;const yy=s.year?lerp(py||s.year,s.year,eio(u/.35)):0;tl.style.opacity=s.year?1:0;
+  if(s.year){const x=yx(yy);tl.querySelector('.pg').style.width=x.toFixed(1)+'px';tl.querySelector('.cur').style.left=x.toFixed(1)+'px';const yr=tl.querySelector('.yr');yr.style.left=clamp(x,16,376).toFixed(1)+'px';yr.textContent=Math.round(yy);
+    tl.querySelectorAll('.ev').forEach(e=>e.classList.toggle('p',+e.dataset.y<=yy+.01))}
+  let fl=0;for(const [a,ty] of TR)if(ty==='flash'&&t>=a&&t<a+.14)fl=Math.max(fl,.55*(1-(t-a)/.14));
+  if(!s.tr&&k>0&&u<.08)fl=Math.max(fl,.15*(1-u/.08));$('flash').style.opacity=fl.toFixed(3);
+  grain(Math.floor(t*FPS+1e-6));
+};
+const FL=['italic 400 20px IS','300 20px BR','500 20px BR','600 20px BR','800 20px BR','600 20px BC','800 20px BC','850 20px IT','800 20px IT','600 20px IT','20px JB','20px VT'];
+Promise.all(FL.map(f=>document.fonts.load(f,'ěščřžýáíéúůťďňĚŠČŘŽ„“…—·−✕✓')))
+ .then(()=>Promise.all([...document.images].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r}))))
+ .then(()=>document.fonts.ready).then(()=>{window.READY=true;render(0)});
+</script></body></html>
