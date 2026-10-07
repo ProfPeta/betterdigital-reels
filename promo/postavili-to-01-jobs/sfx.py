@@ -1,10 +1,10 @@
 """POSTAVILI TO #01 – Steve Jobs: hudba, zvuky a hlas. Časy z timeline.json (voice/timeline.py), stejné jako v reel.html.
-Dokumentární podkres v d moll / F dur, 92 BPM. Úvod: dron a tep, úder na „vyhodili“, odhalení jména (činel, akord, závěrka).
-Mládí: zvědavý klavírní motiv, škrábání pera (kaligrafie), cvaknutí při každé změně písma. Apple: rytmus se rozjíždí,
-tikání počítadla, náběh. „A pak ho vyhodili“: ticho a úder. NeXT/Pixar: nadějný puls, promítačka u Toy Story.
-1997: VHS šum, rozladěný bas, glitch, páska. iMac/iPod/iPhone: tři stoupající údery, pak drop (F–C–Dm–B♭) a #1.
-Smrt: jen klavír. Citát: teplé smyčce. Stay hungry: rozřešení. Konec: lehký groove a psaní komentáře.
-Hudba uhýbá hlasu (~−8 dB), hlas ~9 dB nad hudbou. Bez voice/voice.wav vznikne jen podkres (náhled).
+Dokumentární podkres v d moll / F dur, 92 BPM (úvod s tepem, mládí s klavírem, Apple groove, ticho po vyhazovu,
+nadějný puls NeXT/Pixar, VHS krize 1997, drop po iPhonu, klavír u smrti, smyčce u citátu, rozřešení Stay hungry).
+Zvuky k animacím (retro verze): fx.json = události z reel.html (export_ev.py) – kliknutí myši, 8bit blipy oken
+a dialogů, „zoom“ při otevírání oken, pípnutí dialogu, duhové přechody, pixelové rozpuštění, VHS šum, psaní na
+klávesnici, vrata garáže, počítadla, konfety. Hudba uhýbá hlasu (~−8 dB), hlas ~9 dB nad hudbou.
+Bez voice/voice.wav vznikne jen podkres (náhled).
 usage: python3 sfx.py out.wav [PRE]"""
 import sys, wave, json, os
 import numpy as np, soundfile as sf
@@ -185,6 +185,60 @@ def strings(at, notes, d, g=1.0, a=.9, r=.9, fc=1900):
     s = lp(s, fc, 2) / (len(notes) * 1.7) * np.clip(t / a, 0, 1) * np.clip((d - t) / r, 0, 1)
     put(M, Mw, s, at, g * K_PAD, 0, .9)
 
+# ---------------------------------------------------------------- retro (8bit) zvuky k animacím
+def sqw(f, t): return np.sign(np.sin(2 * np.pi * f * t))
+def blip(at, k=0, g=.1):
+    f = [880, 988, 1175, 1319, 1568, 1760][int(k) % 6]; d = .075; t = T(d)
+    put(X, Xw, lp(sqw(f, t) * .5 * env(d, .001, .028), 5000), at, g, (k % 3 - 1) * .15, .15)
+def pop2(at, g=.14): blip(at, 0, g); blip(at + .055, 3, g * .75)
+def alert(at, g=.15, lo=False):
+    for o, f in ((0, 440 if lo else 660), (.12, 330 if lo else 880)):
+        d = .13; t = T(d); s = (sqw(f, t) * .6 + np.sin(2 * np.pi * f * t) * .4) * env(d, .002, .07) * np.clip((d - t) / .01, 0, 1)
+        put(X, Xw, lp(s, 4500), at + o, g, 0, .2)
+def glide(at, f0, f1, d, g, w=.15, pan=0.0):
+    t = T(d); f = f0 * (f1 / f0) ** (t / d)
+    s = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * .5 * np.minimum(1, t / .004) * np.clip((d - t) / .03, 0, 1)
+    put(X, Xw, lp(s, 4000), at, g, pan, w)
+def thunk(at, g=1.0):
+    d = .25; t = T(d); f = 95 + 70 * np.exp(-t / .02)
+    s = np.sin(2 * np.pi * np.cumsum(f) / SR) * env(d, .001, .06) + lp(noise(d), 900) * env(d, .001, .02) * .6
+    put(X, Xw, s, at, .3 * g, 0, .15)
+def roll(at, d, g=.12):
+    t = T(d); rat = (np.sin(2 * np.pi * 21 * t) > .7).astype(float)
+    s = lp(noise(d), 260) * 1.3 + bp(noise(d) * rat, 1200, 5000) * .6
+    put(X, Xw, s * np.clip(t / .08, 0, 1) * np.clip((d - t) / .12, 0, 1), at, g, 0, .2)
+def typerun(at, d, rate=17, g=.09):
+    r = np.random.default_rng(int(at * 1000))
+    for i in range(max(1, int(d * rate))): click(at + i / rate + r.uniform(-.006, .006), g * r.uniform(.7, 1.1), r.uniform(-.25, .25))
+def crush(at, d=.3, g=.12):
+    n = int(d * SR); s = noise(d); h = int(SR / 2600); s = np.repeat(s[::h], h)[:n]; s = np.round(s * 3) / 3
+    put(X, Xw, lp(s * np.sin(np.pi * np.arange(n) / n) ** 1.5, 6500), at, g, 0, .1)
+def staticb(at, d=.26, g=.12): put(X, Xw, hp(noise(d), 1500) * np.sin(np.pi * T(d) / d), at, g, 0, .05)
+def rewind(at, g=.07):
+    for i in range(9): glide(at + i * .034, 2600, 900, .03, g, 0)
+def sparkle(at, g=.045):
+    r = np.random.default_rng(int(at * 100))
+    for i in range(10): bell(at + i * .042 + r.uniform(0, .02), 84 + int(r.integers(0, 12)), g * r.uniform(.5, 1), .7, r.uniform(-.5, .5))
+def coin(at, g=.1): ding(at, g); bell(at + .02, 96, g * .5, 1.2); bell(at + .1, 100, g * .45, 1.4)
+def ticks_eo(at, d, n=26, g=.05, f0=2400):
+    for i in range(n): tick(at + d * (1 - (1 - i / n) ** (1 / 3)), g, f0 + 40 * i)
+def blips(at, d, n=14, g=.05):
+    r = np.random.default_rng(3)
+    for i in range(n): blip(at + r.uniform(0, d), int(r.integers(0, 6)), g * r.uniform(.6, 1))
+def drip(at, g=.08): pop(at, 1500, g); pop(at + .13, 1150, g * .7)
+def chatter(at, d, g=.035):
+    r = np.random.default_rng(11); t = at
+    while t < at + d: glide(t, r.uniform(500, 2500), r.uniform(500, 2500), .025, g, 0, r.uniform(-.3, .3)); t += .03 + r.uniform(0, .03)
+def coinrain(at, g=.05):
+    r = np.random.default_rng(5)
+    for i in range(10): bell(at + i * .07 + r.uniform(0, .03), 88 + int(r.integers(0, 8)), g * r.uniform(.5, 1), .5, r.uniform(-.6, .6))
+def power(at, g=.14):
+    d = .26; t = T(d); f = 90 * (2200 / 90) ** (t / d) ** 1.4
+    s = (np.sin(2 * np.pi * np.cumsum(f) / SR) * .6 + hp(noise(d), 2500) * .3) * (t / d) ** 2
+    put(X, Xw, s * np.clip((d - t) / .01, 0, 1), at, g, 0, .4)
+def shimmer(at, g=.06):
+    for i, n in enumerate((77, 81, 84, 89)): bell(at + i * .07, n, g * (1 - i * .12), 1.6, (i - 1.5) * .25)
+
 CH = dict(Dm=[62, 65, 69], Bb=[58, 62, 65], F=[60, 65, 69], C=[60, 64, 67], Gm=[55, 58, 62], Am=[57, 60, 64])
 BS = dict(Dm=38, Bb=34, F=41, C=36, Gm=43, Am=33)
 def bars(t0, t1, prog, fn):
@@ -206,9 +260,9 @@ def groove(at, ch, d, k, light=False, kick_g=.75):
 drone(0, st('s3') + .3, [38, 45, 50], .14)
 t = 0.0
 while t < st('s2') - .3: heartbeat(t, .35 + .25 * t / max(1, st('s2'))); t += .75
-th = ck('s1', 1) + .12; impact(th, .75, 1.2, .15); stamp(th, .6); glitch(th + .02, .25, .12)
-rev(st('s2') - .03, .7, .22)
-impact(st('s2') - .03, .45, 1.4, .25); shutter(st('s2') + .05, .3)
+th = ck('s1', 1) + .1; impact(th, .75, 1.2, .15); glitch(th + .02, .22, .1)            # dialog VYHOZEN.
+rev(st('s2') - .03, .7, .2)
+impact(st('s2') - .03, .42, 1.4, .25)                                                  # duhový pás + jméno
 pad(st('s2'), CH['Dm'] + [74], st('s3') - st('s2') + .6, .08, a=.05, r=.5, fc=2400)
 bell(st('s2') + .05, 74, .06); bell(st('s2') + .35, 81, .04)
 
@@ -217,28 +271,17 @@ def youth(at, ch, d, k):
     pad(at, CH[ch], d + .05, .05, a=.3, r=.3, fc=1500); arp(at, ch, d, .055, 12, 3200)
     piano(at, BS[ch] + 12, .09, min(d + .3, 2.6))
 bars(st('s3') - .06, st('s6') - .06, ['Dm', 'Bb', 'F', 'C'], youth)
-s3a = st('s3') - .06; d3 = st('s4') - st('s3')
-for i in range(6): swish(s3a + .15 + i * (d3 * .55 / 6), .1)
-stamp(ck('s3', 1), .3); paper(ck('s3', 1), .12)
-pen(st('s4') - .06, (st('s5') - st('s4')) * .7, .14)
-s5a = st('s5') - .06; k = 1
-while True:
-    u = (k / 7.5) ** (1 / 1.25)
-    if s5a + u >= st('s6') - .1: break
-    click(s5a + u, .1, (k % 3 - 1) * .2); k += 1
 
 # ---------------------------------------------------------------- C: Apple (garáž, dvě miliardy)
 def apple(at, ch, d, k):
     pad(at, CH[ch] + [CH[ch][0] + 12], d + .05, .07, a=.08, r=.2, fc=2800); arp(at, ch, d, .07, 12, 4200)
     groove(at, ch, d, k, light=k == 0)
 bars(st('s6') - .06, st('s8') - .06, ['F', 'C', 'Dm', 'Bb'], apple)
-impact(st('s6') - .06, .35, .6, .08); paper(st('s6') + .2, .14)
-tm = ck('s7', 2) - .1
-for i in range(26): tick(tm + i * .035, .05 + .002 * i, 2400 + 50 * i)
+impact(st('s6') - .06, .35, .6, .08)
 riser(st('s8') - .03, 1.2, .1, 200, 2200)
 
 # ---------------------------------------------------------------- D: vyhazov, „Nevzdal to.“
-tf = ck('s8', 1) + .08; impact(tf, 1.0, 1.8, .25); stamp(tf, .9); glitch(tf + .02, .35, .2)
+tf = ck('s8', 1) + .04; impact(tf, 1.0, 1.8, .25)
 for n in (50, 57, 62): piano(st('s9') - .02, n, .1, 2.6)
 
 # ---------------------------------------------------------------- E: NeXT, Pixar, Toy Story
@@ -246,23 +289,19 @@ def hope(at, ch, d, k):
     pad(at, CH[ch], d + .05, .07, a=.15, r=.2, fc=2600); arp(at, ch, d, .065, 12, 3800)
     groove(at, ch, d, k, light=True, kick_g=.6)
 bars(st('s10') - .06, st('s12') - .06, ['F', 'C', 'Dm', 'Bb'], hope)
-whoosh(st('s10') + .2, .4, .12, 400, 4000); paper(st('s10') + .3, .12)
-tp = ck('s10', 3); stamp(tp, .45); paper(tp, .18)
-projector(st('s11') - .06, st('s12') - st('s11'), .07); impact(ck('s11', 1), .45, .8, .1)
+impact(st('s10') - .06, .4, .9, .12)                                                   # restart (bílý záblesk)
+projector(st('s11') - .06, st('s12') - st('s11'), .07)
 
 # ---------------------------------------------------------------- F: 1997 a Michael Dell
 c0, c1 = st('s12') - .06, st('s14') - .06
 vhs(c0, c1 - c0, .05)
 drone(c0, c1 - c0, [26, 27, 38], .15)                              # rozladěné basy (D1, Eb1)
-for o in (.3, 1.1, 1.9, 2.7): glitch(c0 + o, .15, .08)
+for o in (.3, 1.1, 1.9): glitch(c0 + o, .15, .07)
 whoosh(c0 + .5, 1.6, .12, 3000, 200, .2)
-rip(ck('s12', 3), .25); stamp(ck('s12', 3), .4)
 strings(st('s13') - .06, [38, 45, 51], c1 - st('s13') + .3, .085, a=1.0, r=.3, fc=1200)
-t = st('s13')
-while t < c1 - .1: tick(t, .04, 1800); t += .5
 
 # ---------------------------------------------------------------- G: iMac, iPod, iPhone, #1
-for i, tt in enumerate([ck('s14', 1), st('s15') - .06, st('s16') - .06]):
+for i, tt in enumerate([ck('s14', 1), st('s15') - .02, st('s16') - .02]):
     impact(tt, .5 + .1 * i, .7, .12); ch = ['F', 'C', 'Dm'][i]
     for n in CH[ch]: pluck(tt, n + 12, .1, .6, 0, 5000, .25)
     bell(tt, CH[ch][0] + 24, .05)
@@ -273,8 +312,7 @@ def top(at, ch, d, k):
     for s16 in range(1, 16, 2):
         if s16 * ST < d - .05: hat(at + s16 * ST, .05, pan=.3)
 bars(st('s17') - .06, st('s18') - .06, ['F', 'C', 'Dm', 'Bb'], top)
-t1h = ck('s17', 2); impact(t1h, .8, 1.4, .3); bell(t1h, 81, .07); bell(t1h + .3, 84, .05)
-for i in range(20): tick(t1h + .2 + i * .035, .04, 2600 + 40 * i)
+t1h = ck('s17', 2); bell(t1h, 81, .07); bell(t1h + .3, 84, .05)
 
 # ---------------------------------------------------------------- H: smrt, citát
 for o, n in ((0, 62), (.9, 65), (1.8, 69), (2.7, 74)): piano(st('s18') - .06 + o, n, .09, 3.2)
@@ -294,10 +332,50 @@ def outro(at, ch, d, k):
     pad(at, CH[ch], d + .05, .05, a=.1, r=.3, fc=2000); arp(at, ch, d, .05, 12, 3000)
     groove(at, ch, d, k, light=True, kick_g=.45)
 bars(st('s22') - .06, DUR, ['F', 'C', 'Dm', 'Bb'], outro)
-for i in range(3): pop(ck('s23', i) - .05, 800 + 120 * i, .14)
-TXT = 'Bill Gates! 🙌'; c0 = st('s24') - .06 + .5
-for i in range(len(TXT)): click(c0 + i / 14, .1, (i % 3 - 1) * .1)
-pop(c0 + len(TXT) / 14 + .05, 1050, .14)
+
+# ---------------------------------------------------------------- K: zvuky k animacím (fx.json z reel.html)
+FX = json.load(open(os.path.join(HERE, 'fx.json')))['events']
+def P(e, i, d): return e[i] if len(e) > i else d
+for e in FX:
+    at, ty = e[0], e[1]
+    if ty in ('inv', 'shk'): continue                                # jen obraz
+    elif ty == 'click': mouse(at, .24)
+    elif ty == 'tick': tick(at, .07)
+    elif ty == 'blip': blip(at, P(e, 2, 0), .1)
+    elif ty == 'pop': pop(at, 950, .15)
+    elif ty == 'pop2': pop2(at, .13)
+    elif ty == 'zoom': glide(at, 320, 1250, .13, .045)
+    elif ty == 'zoomout': glide(at, 1150, 300, .13, .045)
+    elif ty == 'alert': alert(at, .15)
+    elif ty == 'alert2': alert(at, .17, lo=True)
+    elif ty == 'slam': impact(at, P(e, 2, .4), .8, .1)
+    elif ty == 'stamp': stamp(at, P(e, 2, .4))
+    elif ty == 'glitch': glitch(at, P(e, 2, .3), .14)
+    elif ty == 'swish': swish(at, .13)
+    elif ty == 'swoosh': whoosh(at + .12, .36, .14, 500, 5500, .4)
+    elif ty == 'wipe': whoosh(at + .2, .42, .17, 300, 5200, .5); whoosh(at + .44, .3, .1, 5200, 900, .3)
+    elif ty == 'hit': impact(at, .22, .45, .05)
+    elif ty == 'thunk': thunk(at, P(e, 2, 1))
+    elif ty == 'roll': roll(at, P(e, 2, .8), .13)
+    elif ty == 'type': typerun(at, P(e, 2, .5))
+    elif ty == 'pen': pen(at, P(e, 2, 1.0), .15)
+    elif ty == 'drip': drip(at)
+    elif ty == 'dis': crush(at, .32, .13)
+    elif ty == 'static': staticb(at, .26, .14)
+    elif ty == 'rew': rewind(at)
+    elif ty == 'rip': rip(at, .25)
+    elif ty == 'sparkle': sparkle(at)
+    elif ty == 'shimmer': shimmer(at)
+    elif ty == 'coin': coin(at, .1)
+    elif ty == 'count': ticks_eo(at, P(e, 2, .7))
+    elif ty == 'race': ticks_eo(at, P(e, 2, 1.2), 30, .045, 1800)
+    elif ty == 'blips': blips(at, P(e, 2, .5))
+    elif ty == 'flip': paper(at, .2)
+    elif ty == 'load': chatter(at, P(e, 2, .8))
+    elif ty == 'coins': coinrain(at)
+    elif ty == 'power': power(at)
+    elif ty == 'ding': ding(at, .12)
+    else: print('POZOR: neznámá událost', ty)
 
 # ---------------------------------------------------------------- mix
 def ir(seed, d=2.2, tau=.55):
