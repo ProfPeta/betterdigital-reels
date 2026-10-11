@@ -56,22 +56,13 @@
       "keyword": "REPORTY",
       "publishAt": "2026-10-14T09:00:00+02:00",
       "status": "scheduled",
-      "teaserNext": "Díl 4: onboarding klienta",
+      "teaserNext": null,
       "metricool": {
         "id": "388296988",
         "uuid": "-4926849616555589296",
         "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-4926849616555589296"
       }
-    },
-    {
-      "n": 4,
-      "slug": "dil-04-onboarding",
-      "title": "Onboarding klienta",
-      "keyword": "ONBOARDING",
-      "publishAt": "2026-10-21T09:00:00+02:00",
-      "status": "planned",
-      "teaserNext": "Díl 5: objednávky z e-mailu",
-      "metricool": null
     }
-  ]
+  ],
+  "status": "ukončeno po dílu 3 (rozhodnutí Petra 11. 10. 2026) – další díly se nevyrábí"
 }
