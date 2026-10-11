@@ -1,0 +1,23 @@
+{
+  "platform": "tiktok+instagram",
+  "series": "POSTAVILI TO · Česká edice",
+  "episode": 1,
+  "text": "Antivirus, který dnes chrání stovky milionů lidí, začal na počítači, kterému šéfové říkali hračka. 🇨🇿\n\nDisketa s virem Vienna → družstvo v listopadu 89 → odmítnutý McAfee → antivirus zadarmo → 40 milionů uživatelů a pořád jen 38 zaměstnanců → AVG → burza → skandál Jumpshot → Norton za víc než 8 miliard dolarů.\n\nPOSTAVILI TO · Česká edice #1: Avast 🛡️\n\nKterou českou firmu chceš v dalším díle? Rohlík, Kiwi.com, Mews, nebo Seznam? 👇\n\n#avast #podnikani #ceskefirmy #pribeh #technologie",
+  "firstComment": "Zdroje: historie firmy od Avastu (2018), Wikipedia (Avast, Pavel Baudiš), ČT24 (2021), FTC / Dark Reading (2024), Gen Digital (2022), Forbes (2024). Historky o „hračce“ a prvním e-shopu pochází z Avastovy vlastní historie.",
+  "coverMs": 5600,
+  "settings": {
+    "instagramData": {
+      "type": "REEL",
+      "showReelOnFeed": true,
+      "isAiGenerated": true
+    },
+    "tiktokData": {
+      "privacyOption": "PUBLIC_TO_EVERYONE",
+      "commercialContentOwnBrand": false,
+      "isAigc": true,
+      "note": "Příběh bez prodeje, štítek AI kvůli hlasu z ElevenLabs."
+    }
+  },
+  "rightsNote": "Fotky zakladatelů, Olivetti M24 a loga (Avast, AVG, McAfee, Norton) nahrál Petr, licence neověřené; loga jsou ochranné známky svých vlastníků (použita zpravodajsky). Ve veřejném repu nejsou.",
+  "status": "ready – zatím neplánováno"
+}

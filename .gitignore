@@ -11,3 +11,8 @@ promo/jedna-veta-01-porada/app_frames/
 promo/jedna-veta-01-porada/qa*/
 promo/jedna-veta-01-porada/cap.log
 promo/jedna-veta-01-porada/cap_done
+# POSTAVILI TO · Česká edice #1 (Avast): fotky a loga od Petra bez ověřené licence – jen lokálně (zdroje i zpracované verze)
+promo/postavili-to-cz-01-avast/photos/src/
+promo/postavili-to-cz-01-avast/photos/*.png
+promo/postavili-to-cz-01-avast/photos/*.jpg
+promo/postavili-to-cz-01-avast/qa*/

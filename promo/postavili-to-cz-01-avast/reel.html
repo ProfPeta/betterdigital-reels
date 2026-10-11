@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8"><title>POSTAVILI TO · Česká edice #1 – Avast</title>
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+@font-face{font-family:VT;src:url(../../engine/fonts/vt323-latin-ext-400-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:VT;src:url(../../engine/fonts/vt323-latin-400-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026}
+:root{--or:#FF7800;--navy:#10131C;--grn:#3BFF7E;--red:#E5322D;--y:#FFD400;--g:#9AA3B5}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden;background:#000}
+body{font-family:IT,'Noto Color Emoji',sans-serif;-webkit-font-smoothing:antialiased;position:relative;color:#fff}
+.abs{position:absolute}
+#stage{position:absolute;left:0;top:0;width:540px;height:960px;z-index:0}
+.sc{position:absolute;inset:0;overflow:hidden;display:none}
+.cam{position:absolute;inset:0;transform-origin:50% 45%}
+.navy{background:var(--navy)}.crt{background:#030805}.paper{background:#ECECE8;color:#111}.white{background:#fff;color:#111}
+.dred{background:#140405}.orange{background:var(--or)}.teal{background:#0d7a7a}.board{background:#0B0B0B}.warm{background:#150e08}.dark{background:#08090c}
+.mono{font-family:JB,monospace;letter-spacing:.06em;white-space:nowrap}
+.vt{font-family:VT,monospace;line-height:1}
+.lbl{font-family:JB;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--g);white-space:nowrap}
+.big{font-weight:900;letter-spacing:-.045em;line-height:.95;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:10px;background:var(--y);color:#0E0E0E;font-weight:900;font-size:19px;letter-spacing:-.01em;padding:6px 12px 6px;border-radius:6px}
+.badge b{font-family:JB;font-size:11px;font-weight:500;letter-spacing:.12em}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 14px 5px;font-family:JB;font-size:13px;letter-spacing:.08em;white-space:nowrap}
+.stamp{display:inline-block;font-weight:900;font-size:50px;color:var(--red);border:6px solid var(--red);padding:2px 18px 4px;letter-spacing:.02em;line-height:1.05;white-space:nowrap;border-radius:6px}
+.stamp.bl{color:#3438A8;border-color:#3438A8}
+.card{position:absolute;background:#fff;color:#111;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.oscr{position:absolute;background:radial-gradient(120% 120% at 50% 40%,#0f4a24,#03140a);box-shadow:0 0 22px rgba(59,255,126,.45),inset 0 0 14px rgba(0,0,0,.85);border-radius:8px;overflow:hidden;color:var(--grn);font-family:VT}
+.scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.32) 0 1px,transparent 1px 3px);pointer-events:none}
+.glow{text-shadow:0 0 18px rgba(59,255,126,.65)}
+/* titulky */
+#cap{position:absolute;left:40px;right:40px;text-align:center;pointer-events:none;z-index:3}
+#cap span{display:inline;background:rgba(10,10,10,.84);color:#fff;font-weight:850;font-size:30px;letter-spacing:-.02em;line-height:1.5;padding:4px 12px;box-decoration-break:clone;-webkit-box-decoration-break:clone;border-radius:5px}
+#cap b{font-weight:850;background:var(--or);color:#fff;padding:0 6px;border-radius:3px}
+/* časová osa 1988–2026 */
+#tl{position:absolute;left:74px;width:392px;top:122px;height:36px;pointer-events:none;z-index:2}
+#tl .ln{position:absolute;left:0;right:0;top:24px;height:1.5px;background:rgba(255,255,255,.35)}
+#tl .pg{position:absolute;left:0;top:24px;height:1.5px;background:#fff}
+#tl .ev{position:absolute;top:20px;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);background:#000}
+#tl .ev.p{background:#fff;border-color:#fff}
+#tl .cur{position:absolute;top:17px;width:15px;height:15px;margin-left:-7.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,120,0,.55),0 0 14px rgba(255,255,255,.7)}
+#tl .yr{position:absolute;top:0;transform:translateX(-50%);font-family:JB;font-size:13px;letter-spacing:.1em;color:#fff;white-space:nowrap}
+#tl.dk .ln{background:rgba(0,0,0,.25)}#tl.dk .pg{background:#111}#tl.dk .ev{border-color:rgba(0,0,0,.45);background:#fff}#tl.dk .ev.p{background:#111;border-color:#111}
+#tl.dk .cur{background:#111;box-shadow:0 0 0 4px rgba(255,120,0,.55)}#tl.dk .yr{color:#111}
+#gl{position:absolute;inset:0;pointer-events:none;z-index:4}
+#scanl{position:absolute;left:0;width:540px;height:3px;background:#fff;box-shadow:0 0 18px 4px rgba(255,255,255,.8);display:none;pointer-events:none;z-index:4}
+#grain{position:absolute;left:0;top:0;width:540px;height:960px;pointer-events:none;z-index:5}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:6}
+</style></head><body>
+<div id="stage"></div>
+<div id="tl"></div>
+<div id="cap"></div>
+<div id="gl"></div><div id="scanl"></div>
+<canvas id="grain" width="180" height="320"></canvas>
+<div id="flash"></div>
+<script src="timeline.js"></script>
+<script>
+const FPS=30;const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3),e5=x=>1-Math.pow(1-clamp(x),5);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,p)=>a+(b-a)*p;const $=id=>document.getElementById(id);
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const fmt=n=>Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
+const FLAG=w=>`<svg width="${w}" height="${w*2/3}" viewBox="0 0 24 16" style="display:block;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)"><rect width="24" height="16" fill="#fff"/><rect y="8" width="24" height="8" fill="#D7141A"/><path d="M0 0 L12 8 L0 16Z" fill="#11457E"/></svg>`;
+const FLAG_IT=w=>`<svg width="${w}" height="${w*2/3}" viewBox="0 0 24 16" style="display:block;border-radius:2px"><rect width="8" height="16" fill="#009246"/><rect x="8" width="8" height="16" fill="#fff"/><rect x="16" width="8" height="16" fill="#CE2B37"/></svg>`;
+const T=window.TL;const st=s=>T.S[s][0],en=s=>T.S[s][1];
+const CK={};T.chunks.forEach(([s,i,txt,a,b])=>{(CK[s]=CK[s]||[])[i]=[a,b,txt]});
+const ck=(s,i)=>CK[s][i][0];
+window.DURATION=T.END;
+function slamT(u,s0=1.35,amp=7){const p=e5(u/.1),k=Math.exp(-Math.max(0,u)/.13);
+  return `translate(${(amp*k*Math.sin(u*97+1.1)).toFixed(2)}px,${(amp*.7*k*Math.sin(u*83+.3)).toFixed(2)}px) scale(${lerp(s0,1,p).toFixed(4)})`}
+function rgbSplit(u,d=.2,px=6){const r=u>=0&&u<d?px*(1-u/d):0;return r>0?`${r.toFixed(2)}px 0 rgba(255,30,60,.85),${(-r).toFixed(2)}px 0 rgba(0,200,255,.85)`:'none'}
+const popIn=(e,t,a,d=.22,s0=.6)=>{e.style.opacity=t>=a?1:0;e.style.transform=`scale(${lerp(s0,1,back((t-a)/d)).toFixed(4)})`};
+const slideIn=(e,t,a,dy=24,d=.3)=>{const p=e5((t-a)/d);e.style.opacity=t>=a?p:0;e.style.transform=`translateY(${(dy*(1-p)).toFixed(1)}px)`};
+const slideX=(e,t,a,dx=60,d=.35)=>{const p=e5((t-a)/d);e.style.opacity=t>=a?p:0;e.style.transform=`translateX(${(dx*(1-p)).toFixed(1)}px)`};
+const stampIn=(e,t,a,rot=-8,s0=1.8)=>{e.style.opacity=t>=a?1:0;if(t>=a)e.style.transform=`rotate(${rot}deg) `+slamT(t-a,s0,6)};
+const fade=(e,t,a,d=.25)=>{e.style.opacity=clamp((t-a)/d).toFixed(3)};
+const fadeOut=(e,t,a,d=.25)=>{const o=1-clamp((t-a)/d);e.style.opacity=o.toFixed(3);return o};
+/* Olivetti M24 (fotka od Petra) se zelenou obrazovkou: obrazovka = 35,7 % / 7,6 % / 28,9 % × 27 % výřezu */
+function OLI(w,id,scr=''){const h=w*555/700;return `<div class="abs" id="${id}" style="width:${w}px;height:${h.toFixed(0)}px"><img src="photos/olivetti_cut.png" style="width:${w}px;height:${h.toFixed(0)}px;display:block">
+  <div class="oscr" style="left:${(w*.357).toFixed(1)}px;top:${(h*.0757).toFixed(1)}px;width:${(w*.289).toFixed(1)}px;height:${(h*.27).toFixed(1)}px;font-size:${(w*.05).toFixed(1)}px;padding:${(w*.012).toFixed(1)}px ${(w*.016).toFixed(1)}px">${scr}<div class="scan"></div></div></div>`}
+const FLOPPY=`<svg width="250" height="250" viewBox="0 0 250 250"><rect x="2" y="2" width="246" height="246" rx="10" fill="#151515" stroke="#2c2c2c" stroke-width="3"/>
+  <circle cx="125" cy="125" r="38" fill="#2a2a2a"/><circle cx="125" cy="125" r="16" fill="#030805"/><rect x="113" y="168" width="24" height="70" rx="12" fill="#030805"/><circle cx="168" cy="110" r="5" fill="#030805"/>
+  <rect x="30" y="16" width="190" height="66" rx="4" fill="#F2F2F0"/><line x1="40" y1="44" x2="210" y2="44" stroke="#c9c9c9"/><line x1="40" y1="62" x2="210" y2="62" stroke="#c9c9c9"/>
+  <text x="125" y="58" text-anchor="middle" font-family="VT" font-size="40" fill="#C8102E" id="flab">VIENNA</text></svg>`;
+const BOSS=`<svg width="150" height="210" viewBox="0 0 150 210"><circle cx="75" cy="52" r="38" fill="#2B3247"/><path d="M8 210 C 10 130, 40 104, 75 104 C 110 104, 140 130, 142 210 Z" fill="#2B3247"/><path d="M75 106 L64 124 L75 186 L86 124 Z" fill="#C8102E"/></svg>`;
+const KEYS=`<svg width="220" height="190" viewBox="0 0 220 190"><circle cx="110" cy="34" r="26" fill="none" stroke="#d9d9d9" stroke-width="7"/>
+  <g transform="translate(110 58) rotate(-24)"><rect x="-7" y="0" width="14" height="96" rx="4" fill="#E6C25C"/><rect x="-7" y="70" width="30" height="10" fill="#E6C25C"/><rect x="-7" y="86" width="22" height="8" fill="#E6C25C"/><circle cx="0" cy="0" r="16" fill="#E6C25C"/></g>
+  <g transform="translate(110 58) rotate(8)"><rect x="-6" y="0" width="12" height="104" rx="4" fill="#cfd4da"/><rect x="-6" y="78" width="26" height="10" fill="#cfd4da"/><rect x="-6" y="94" width="18" height="8" fill="#cfd4da"/><circle cx="0" cy="0" r="15" fill="#cfd4da"/></g>
+  <g transform="translate(110 58) rotate(34)"><rect x="-6" y="0" width="12" height="88" rx="4" fill="#b98b5a"/><rect x="-6" y="64" width="24" height="9" fill="#b98b5a"/><circle cx="0" cy="0" r="14" fill="#b98b5a"/></g></svg>`;
+const STAR=`<svg width="200" height="190" viewBox="0 0 200 190"><path d="M100 0 L123 70 L198 72 L138 116 L160 188 L100 145 L40 188 L62 116 L2 72 L77 70 Z" fill="#C8102E"/></svg>`;
+const PERSON=c=>`<svg width="30" height="40" viewBox="0 0 30 40"><circle cx="15" cy="9" r="8" fill="${c}"/><path d="M1 40 C 2 24, 8 19, 15 19 C 22 19, 28 24, 29 40 Z" fill="${c}"/></svg>`;
+const hex=(r,n)=>Array.from({length:n},()=>Math.floor(r()*256).toString(16).toUpperCase().padStart(2,'0'));
+
+/* ------------------------------------------------------------ scény */
+const SCN=[
+ /* 1 · háček: stovky milionů lidí – a počítač, kterému říkali hračka */
+ {id:'hook',from:'s1',cls:'navy',cap:1,
+  html:()=>`<div class="abs" style="inset:0;background:radial-gradient(80% 45% at 50% 100%,rgba(255,120,0,.30),transparent 70%)"></div>
+   <div class="abs" style="left:74px;top:132px"><span class="badge">POSTAVILI TO <b>ČESKÁ EDICE</b>${FLAG(20)}</span></div>
+   <div class="abs mono" style="left:76px;top:186px;font-size:12px;color:var(--g)">CHRÁNÍ UŽIVATELŮ · 2021</div>
+   <div class="abs" id="hcnt" style="left:72px;top:204px;font-size:64px;font-weight:900;letter-spacing:-.04em;color:var(--or);font-variant-numeric:tabular-nums">0</div>
+   <div class="abs" id="hol" style="left:80px;top:300px;transform-origin:50% 60%">${OLI(380,'holi','<div style="line-height:1.1">C:\\&gt;<span id="hcur">_</span></div>')}</div>
+   <div class="abs" id="hst" style="left:122px;top:410px;opacity:0"><span class="stamp" style="font-size:58px">HRAČKA</span></div>`,
+  anim:(t,s)=>{$('hcnt').textContent=fmt(lerp(300e6,435e6,eo(t/1.6)));$('hcur').style.visibility=Math.floor(t*2.5)%2?'hidden':'visible';
+    const P=ck('s1',3);$('hol').style.transform=`scale(${(1+.025*t+.05*eo((t-P)/.5)).toFixed(4)})`;stampIn($('hst'),t,ck('s1',5)+.33,-9,2)},
+  ev:s=>[[0,'hum',ck('s1',5)],[0,'count',1.6],[ck('s1',5)+.33,'stamp',.55],[ck('s1',5)+.33,'shk',7]]},
+
+ /* 2 · rok 1988, VÚMS v Praze, první počítač z Itálie */
+ {id:'y1988',from:'s2',cls:'crt',capS:['s3'],year:1988,tr:'glitch',
+  html:()=>`<div class="abs vt glow" id="y88" style="left:0;right:0;top:250px;text-align:center;font-size:240px;color:var(--grn);transform-origin:50% 0">1988</div>
+   <div class="abs vt" id="y88l" style="left:0;right:0;top:486px;text-align:center;font-size:32px;color:var(--grn);letter-spacing:.12em">PRAHA · VÚMS</div>
+   <div class="abs" id="y88o" style="left:120px;top:300px;opacity:0">${OLI(300,'y88oi','<div style="line-height:1.15">OLIVETTI<br>M24 OK</div>')}</div>
+   <div class="abs" id="y88c" style="left:0;right:0;top:560px;display:flex;justify-content:center;opacity:0"><span class="chip" style="color:var(--grn);border-color:rgba(59,255,126,.5)">OLIVETTI M24 · ITÁLIE ${FLAG_IT(20)}</span></div>
+   <div class="scan"></div>`,
+  anim:(t,s)=>{const u=t-s.t0,S=st('s3')-.05,m=eio((t-S)/.4);const y=$('y88');y.style.transform=`translateY(${(-80*m).toFixed(1)}px) scale(${lerp(1,.42,m).toFixed(4)})`;y.style.opacity=(t<s.t0+.08?clamp(u/.08):1)*(1-.45*m);
+    y.style.textShadow=rgbSplit(u,.25,7)+(u>.25?'':'');$('y88l').style.opacity=(clamp((u-.25)/.2)*(1-m)).toFixed(3);
+    slideX($('y88o'),t,ck('s3',1),380,.5);popIn($('y88c'),t,ck('s3',3)-.05)},
+  ev:s=>[[s.t0,'type',.6],[st('s3')-.05,'whoosh'],[ck('s3',1),'swish'],[ck('s3',3)-.05,'pop2']]},
+
+ /* 3 · „To je hračka.“ → skončí na stole Pavla Baudiše */
+ {id:'toy',from:'s4',cls:'navy',cap:1,year:1988,tr:'scan',
+  html:()=>`<div class="abs" id="tbs" style="left:66px;top:300px">${BOSS}</div>
+   <div class="abs" id="tbb" style="left:214px;top:262px;width:256px;opacity:0"><div style="background:#fff;color:#111;border-radius:22px;padding:18px 20px;font-weight:850;font-size:32px;letter-spacing:-.03em;line-height:1.05">To je jen <span id="tbw">hračka.</span></div>
+    <svg width="40" height="30" style="position:absolute;left:-18px;top:56px"><path d="M40 0 L0 18 L40 26 Z" fill="#fff"/></svg><div class="mono" style="font-size:11px;color:var(--g);margin-top:10px">VEDENÍ ÚSTAVU</div></div>
+   <div class="abs" id="tdk" style="left:0;top:0;width:540px;height:960px;opacity:0">
+    <div class="abs" style="left:150px;top:200px;width:240px;height:380px;background:radial-gradient(50% 45% at 50% 20%,rgba(255,214,120,.28),transparent 70%)"></div>
+    <div class="abs" id="tol" style="left:120px;top:322px">${OLI(300,'toli','<div style="line-height:1.15">C:\\&gt; _</div>')}</div>
+    <div class="abs" style="left:36px;top:556px;width:468px;height:14px;border-radius:4px;background:linear-gradient(#6b4a2e,#4a321e)"></div>
+    <div class="card" id="tnc" style="left:74px;top:190px;padding:12px 18px 12px;opacity:0"><div style="font-weight:900;font-size:30px;letter-spacing:-.03em">Pavel Baudiš</div><div class="mono" style="font-size:12px;color:#555;margin-top:4px">28 LET · GRAFIK · VÚMS</div></div></div>`,
+  anim:(t,s)=>{const B=s.t0+.2;slideIn($('tbb'),t,B,20,.3);const H=ck('s4',1)+.2;const w=$('tbw');w.style.color=t>=H?'#E5322D':'#111';$('tbb').style.transform+=t>=H&&t<H+.4?` translateX(${(5*Math.sin((t-H)*80)*Math.exp(-(t-H)/.12)).toFixed(2)}px)`:'';
+    const D=st('s5')-.05,m=eio((t-D)/.35);$('tbs').style.opacity=(1-m).toFixed(3);$('tbb').style.opacity=t>=B?(e5((t-B)/.3)*(1-m)).toFixed(3):0;
+    const dk=$('tdk');dk.style.opacity=m.toFixed(3);$('tol').style.transform=`translateY(${(-40*(1-e5((t-D)/.45))).toFixed(1)}px)`;slideX($('tnc'),t,ck('s5',3),-40,.35)},
+  ev:s=>[[s.t0+.2,'pop'],[ck('s4',1)+.2,'scratch'],[st('s5')-.05,'whoosh'],[st('s5')+.4,'thud'],[ck('s5',3),'pop2']]},
+
+ /* 4 · disketa s virem Vienna → rozebrat do posledního bajtu → zničit */
+ {id:'virus',from:'s6',cls:'crt',cap:1,year:1988,tr:'glitch',
+  html:()=>{const r=rng(88);let rows='';for(let i=0;i<12;i++){const b=hex(r,8);rows+=`<div class="hxr" style="display:flex;gap:9px"><span style="opacity:.55">${(i*8).toString(16).toUpperCase().padStart(4,'0')}:</span>${b.map((x,j)=>`<span class="hb" data-k="${i*8+j}">${x}</span>`).join('')}</div>`}
+   return `<div class="abs" id="vfl" style="left:145px;top:250px;opacity:0">${FLOPPY}</div>
+   <div class="abs vt" id="vvir" style="left:0;right:0;top:520px;text-align:center;font-size:44px;color:#FF4D5E;opacity:0">⚠ VIRUS · VIENNA</div>
+   <div class="abs vt glow" id="vhx" style="left:58px;top:224px;width:424px;font-size:25px;line-height:1.2;color:var(--grn);opacity:0">${rows}</div>
+   <div class="abs vt glow" id="vpr" style="left:58px;top:224px;width:424px;font-size:27px;line-height:1.3;color:var(--grn);opacity:0;white-space:pre"></div>
+   <div class="abs vt glow" id="vok" style="left:0;right:0;top:450px;text-align:center;font-size:62px;color:var(--grn);opacity:0">✓ VIRUS ODSTRANĚN</div>
+   <div class="scan"></div>`},
+  anim:(t,s)=>{const F=ck('s6',2)-.1;const fl=$('vfl');const S7=st('s7')-.05,m=eio((t-S7)/.35);
+    fl.style.opacity=t>=F?1:0;fl.style.transform=`translate(${(190*m).toFixed(1)}px,${(-110*m+90*(1-e5((t-F)/.4))).toFixed(1)}px) scale(${lerp(1,.34,m).toFixed(4)})`;
+    const V=ck('s6',4);const vv=$('vvir');vv.style.opacity=t>=V&&t<S7?1:0;vv.style.textShadow=rgbSplit(t-V,.3,8);$('flab').setAttribute('fill',t>=V&&Math.floor(t*8)%2?'#FF4D5E':'#C8102E');
+    const hx=$('vhx'),P=ck('s7',2);hx.style.opacity=(clamp((t-S7-.15)/.2)*(1-clamp((t-P)/.15))).toFixed(3);
+    const k=Math.floor(clamp((t-S7-.2)/(P-S7-.2))*96);hx.querySelectorAll('.hb').forEach(e=>{const i=+e.dataset.k;const sig=i%13===5||i%17===3;e.style.background=i===k?'#3BFF7E':'transparent';e.style.color=i===k?'#030805':(i<k&&sig?'#FF4D5E':'')});
+    const L=['> SCAN.COM','> HLEDÁM: VIENNA ...','> NALEZENO: 1','> ODSTRAŇUJI ...'];const pr=$('vpr');const Z=ck('s7',4);
+    let txt='';const nch=Math.floor((t-P)*38);let c=0;for(const l of L){if(c>=nch)break;txt+=l.slice(0,Math.max(0,nch-c))+'\n';c+=l.length+1}pr.textContent=txt;pr.style.opacity=t>=P?(1-.6*clamp((t-Z)/.2)):0;
+    const ok=$('vok');ok.style.opacity=t>=Z?1:0;if(t>=Z)ok.style.transform=slamT(t-Z,1.3,5)},
+  ev:s=>[[ck('s6',2)-.1,'floppy'],[ck('s6',4),'glitch',.3],[ck('s6',4),'alert'],[st('s7')-.05,'drive',ck('s7',2)-st('s7')],[ck('s7',2),'type',ck('s7',4)-ck('s7',2)-.1],[ck('s7',4),'success'],[ck('s7',4),'hit']]},
+
+ /* 5 · za komunismu podnikat nesmělo → jediná cesta: družstvo */
+ {id:'coop',from:'s8',cls:'paper',cap:1,year:1989,dk:1,tr:'flash',
+  html:()=>`<div class="abs" id="cf" style="left:56px;top:196px;width:428px;height:404px;background:#fff;box-shadow:0 18px 50px rgba(0,0,0,.18);padding:26px 26px;border-top:8px solid #3438A8">
+    <div class="mono" style="font-size:12px;color:#666">ČSSR · 1989 · FORMULÁŘ Č. 17</div>
+    <div style="font-weight:900;font-size:34px;letter-spacing:-.035em;margin-top:8px;color:#111">Žádost o podnikání</div>
+    <div style="margin-top:34px;display:flex;align-items:center;gap:14px;font-size:24px;font-weight:700;color:#222"><span style="width:28px;height:28px;border:3px solid #222;display:inline-block"></span>Soukromá firma</div>
+    <div style="margin-top:26px;display:flex;align-items:center;gap:14px;font-size:24px;font-weight:700;color:#222"><span id="ccb" style="width:28px;height:28px;border:3px solid #222;display:inline-flex;align-items:center;justify-content:center;font-size:26px;color:#3438A8;font-weight:900"></span>Družstvo</div>
+    <div style="margin-top:44px;border-top:1.5px dashed #bbb;padding-top:12px" class="mono"><span style="font-size:11px;color:#777">PODPIS · RAZÍTKO</span></div></div>
+   <div class="abs" id="cs1" style="left:140px;top:300px;opacity:0"><span class="stamp" style="font-size:44px">ZAKÁZÁNO</span></div>
+   <div class="abs" id="cs2" style="left:222px;top:470px;opacity:0"><span class="stamp bl" style="font-size:38px">SCHVÁLENO</span></div>`,
+  anim:(t,s)=>{slideIn($('cf'),t,s.t0,30,.35);stampIn($('cs1'),t,ck('s8',1)+.3,-10,1.9);const D=ck('s8',3)+.15;stampIn($('cs2'),t,D,6,1.7);$('ccb').textContent=t>=D?'✓':''},
+  ev:s=>[[s.t0,'paper'],[ck('s8',1)+.3,'stamp',.5],[ck('s8',1)+.3,'shk',6],[ck('s8',3)+.15,'stamp',.4]]},
+
+ /* 6 · zakladatelé: Pavel Baudiš a Eduard Kučera, listopad 1989 */
+ {id:'founders',from:'s9',cls:'navy',cap:1,year:1989,tr:'scan',
+  html:()=>`<div class="abs" style="inset:0;background:radial-gradient(70% 40% at 50% 70%,rgba(255,120,0,.18),transparent 70%)"></div>
+   <div class="abs" id="fca" style="left:74px;top:182px;opacity:0;display:flex;align-items:center;gap:12px"><div style="background:#fff;border-radius:10px;overflow:hidden;width:96px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4)"><div style="background:#C8102E;color:#fff;font-family:JB;font-size:11px;letter-spacing:.14em;padding:4px 0">LISTOPAD</div><div style="color:#111;font-weight:900;font-size:40px;line-height:1.1;padding:2px 0 4px">1989</div></div><div class="mono" style="font-size:13px;color:#fff;line-height:1.5">ZALOŽENÍ<br>DRUŽSTVA ALWIL</div></div>
+   <img class="abs" id="fb" src="photos/baudis_cut.png" style="left:22px;top:318px;width:270px;-webkit-mask-image:linear-gradient(#000 82%,transparent 100%);opacity:0">
+   <img class="abs" id="fk" src="photos/kucera_cut.png" style="left:270px;top:268px;width:250px;-webkit-mask-image:linear-gradient(#000 82%,transparent 100%);opacity:0">
+   <div class="abs" id="fbn" style="left:60px;top:580px;opacity:0"><div style="font-weight:900;font-size:24px;letter-spacing:-.03em">Pavel Baudiš</div><div class="mono" style="font-size:11px;color:var(--g)">*1960 · foto dnes</div></div>
+   <div class="abs" id="fkn" style="left:300px;top:580px;opacity:0"><div style="font-weight:900;font-size:24px;letter-spacing:-.03em">Eduard Kučera</div><div class="mono" style="font-size:11px;color:var(--g)">*1953 · foto dnes</div></div>`,
+  anim:(t,s)=>{slideX($('fb'),t,s.t0+.05,-50,.4);slideIn($('fbn'),t,s.t0+.25,12);const K=ck('s9',2)-.05;slideX($('fk'),t,K,50,.4);slideIn($('fkn'),t,K+.2,12);popIn($('fca'),t,ck('s9',3)+.1,.25,.7)},
+  ev:s=>[[s.t0+.05,'whoosh'],[ck('s9',2)-.05,'whoosh'],[ck('s9',3)+.1,'pop2']]},
+
+ /* 7 · ve stejném měsíci padne režim */
+ {id:'revo',from:'s10',cls:'dark',cap:1,year:1989,tr:'flash',
+  html:()=>`<div class="abs" style="left:-40px;top:-60px;width:620px;height:120px;transform:rotate(-6deg);background:linear-gradient(#fff 0 33%,#D7141A 33% 66%,#11457E 66%);opacity:.9"></div>
+   <div class="abs mono" style="left:74px;top:186px;font-size:13px;color:#fff">17. LISTOPADU 1989</div>
+   <div class="abs" id="rv1" style="left:74px;top:212px;font-weight:900;font-size:50px;letter-spacing:-.04em;line-height:1">Sametová<br>revoluce</div>
+   <div class="abs" id="rky" style="left:160px;top:340px;transform-origin:110px 34px">${KEYS}</div>
+   <div class="abs" id="rst" style="left:170px;top:360px;width:200px;height:190px;opacity:0"><div class="abs" id="rsl" style="left:0;top:0;width:100px;height:190px;overflow:hidden">${STAR}</div><div class="abs" id="rsr" style="left:100px;top:0;width:100px;height:190px;overflow:hidden"><div style="margin-left:-100px">${STAR}</div></div></div>`,
+  anim:(t,s)=>{const u=t-s.t0;slideIn($('rv1'),t,s.t0+.05,16,.35);const P=ck('s10',1);$('rky').style.transform=`rotate(${(14*Math.sin(u*13)*Math.exp(-Math.max(0,u-1.2)/.8)).toFixed(2)}deg)`;$('rky').style.opacity=(1-clamp((t-P+.1)/.2)).toFixed(3);
+    const rs=$('rst');rs.style.opacity=t>=P-.1?1:0;const f=eo((t-P-.15)/.6);$('rsl').style.transform=`translate(${(-40*f).toFixed(1)}px,${(260*f*f).toFixed(1)}px) rotate(${(-25*f).toFixed(1)}deg)`;$('rsr').style.transform=`translate(${(40*f).toFixed(1)}px,${(260*f*f).toFixed(1)}px) rotate(${(25*f).toFixed(1)}deg)`},
+  ev:s=>[[s.t0+.05,'keys',ck('s10',1)-s.t0],[ck('s10',1)+.15,'crack'],[ck('s10',1)+.15,'shk',6]]},
+
+ /* 8 · jméno: AntiVirus Advanced SeT */
+ {id:'name',from:'s11',cls:'white',cap:1,tr:'flash',
+  html:()=>`<img class="abs" id="nlg" src="photos/logo_avast.png" style="left:96px;top:236px;width:348px;opacity:0">
+   <div class="abs" id="nac" style="left:0;right:0;top:420px;text-align:center;font-size:34px;font-weight:700;color:#9a9a9a;letter-spacing:-.02em;opacity:0">${'AntiVirus Advanced SeT'.split('').map((c,i)=>/[AVST]/.test(c)&&[0,4,10,19,21].includes(i)?`<span style="color:var(--or);font-weight:900">${c}</span>`:c).join('')}</div>
+   <div class="abs" id="nav" style="left:0;right:0;top:478px;display:flex;justify-content:center;gap:6px;font-size:76px;font-weight:900;color:var(--or);letter-spacing:-.02em">${'AVAST'.split('').map(c=>`<span class="nl" style="display:inline-block;opacity:0">${c}</span>`).join('')}</div>`,
+  anim:(t,s)=>{popIn($('nlg'),t,ck('s11',1)+.1,.3,.6);const A=ck('s11',3)-.05;slideIn($('nac'),t,A,14,.3);s.el.querySelectorAll('.nl').forEach((e,i)=>popIn(e,t,A+.55+i*.09,.2,.3))},
+  ev:s=>[[ck('s11',1)+.1,'pop2'],[ck('s11',3)-.05,'swish'],...[0,1,2,3,4].map(i=>[ck('s11',3)+.5+i*.09,'blip',i])]},
+
+ /* 9 · volá McAfee, chce firmu koupit → odmítnou, prodají jen licenci */
+ {id:'mcafee',from:'s12',cls:'navy',cap:1,year:1996,tr:'scan',
+  html:()=>`<div class="card" id="mcc" style="left:56px;top:196px;width:428px;height:330px;padding:20px 22px;text-align:center">
+    <div class="mono" style="font-size:12px;color:#777">PŘÍCHOZÍ HOVOR · USA · 1996</div>
+    <img src="photos/logo_mcafee.png" style="width:300px;margin-top:34px">
+    <div id="mcring" class="abs" style="left:186px;top:150px;width:56px;height:56px;border-radius:50%;border:3px solid #C8102E;opacity:0"></div>
+    <div class="abs" style="left:24px;right:24px;bottom:22px;display:flex;justify-content:space-between">
+     <div id="mcd" style="width:170px;height:56px;border-radius:28px;background:#E5322D;color:#fff;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center">Odmítnout</div>
+     <div style="width:170px;height:56px;border-radius:28px;background:#2BB673;color:#fff;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center">Přijmout</div></div></div>
+   <div class="abs" id="mco" style="left:74px;top:546px;opacity:0"><span class="chip" style="background:#fff;color:#111;border-color:#fff">NABÍDKA: KOUPIT FIRMU</span></div>
+   <div class="abs" id="mcs" style="left:110px;top:300px;opacity:0"><span class="stamp" style="font-size:52px;background:rgba(255,255,255,.85)">ODMÍTNUTO</span></div>
+   <div class="card" id="mcl" style="left:120px;top:478px;width:300px;padding:14px 18px;opacity:0"><div class="mono" style="font-size:11px;color:#777">LICENČNÍ SMLOUVA</div><div style="font-weight:900;font-size:24px;letter-spacing:-.03em;margin-top:4px">jádro avast! → McAfee</div>
+    <svg width="120" height="26" style="margin-top:6px"><path d="M2 18 C 18 2, 26 26, 40 12 S 64 4, 76 16 S 100 22, 118 8" fill="none" stroke="#3438A8" stroke-width="2.5"/></svg></div>`,
+  anim:(t,s)=>{const u=t-s.t0;const D=st('s13');const c=$('mcc');slideIn(c,t,s.t0,30,.3);if(t<D)c.style.transform+=` rotate(${(1.2*Math.sin(u*40)*(Math.floor(u*2.2)%2)).toFixed(2)}deg)`;
+    const r=$('mcring'),ph=(u*1.6)%1;r.style.opacity=t<D?(1-ph).toFixed(3):0;r.style.transform=`scale(${(1+ph*1.8).toFixed(3)})`;
+    popIn($('mco'),t,ck('s12',4),.25,.7);if(t>=D)$('mco').style.opacity=(1-clamp((t-D)/.2)).toFixed(3);
+    $('mcd').style.transform=t>=D&&t<D+.25?'scale(.92)':'none';if(t>=D){c.style.opacity=(1-.45*clamp((t-D-.1)/.25)).toFixed(3)}
+    stampIn($('mcs'),t,D+.25,-8,1.8);slideIn($('mcl'),t,ck('s13',2)-.05,40,.35)},
+  ev:s=>[[s.t0+.05,'ring',st('s13')-s.t0-.1],[st('s13'),'tap',0],[st('s13')+.25,'stamp',.5],[ck('s13',2)-.05,'paper']]},
+
+ /* 10 · kolem roku 2000 na pokraji krachu */
+ {id:'crash',from:'s14',cls:'dred',cap:1,year:2000,tr:'glitch',
+  html:()=>`<div class="abs" id="kal" style="inset:0;background:radial-gradient(70% 50% at 50% 45%,rgba(229,50,45,.32),transparent 70%)"></div>
+   <div class="abs mono" style="left:74px;top:188px;font-size:13px;color:#fff">ALWIL SOFTWARE · HOSPODAŘENÍ</div>
+   <svg class="abs" id="ksv" width="420" height="330" style="left:60px;top:220px;overflow:visible"><line x1="0" y1="320" x2="420" y2="320" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+    <path id="kln" d="M0 210 L60 170 L120 150 L170 120 L210 140 L250 110 L290 170 L330 230 L370 290 L410 318" fill="none" stroke="#E5322D" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/>
+    <circle id="kdot" cx="410" cy="318" r="9" fill="#E5322D" opacity="0"/></svg>
+   <div class="abs big" id="kw" style="left:0;right:0;top:300px;text-align:center;font-size:58px;color:#fff;opacity:0">NA POKRAJI<br><span style="color:#E5322D">KRACHU</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('kln').style.strokeDashoffset=(1-eo(u/1.3)).toFixed(4);$('kdot').setAttribute('opacity',u>1.25?(Math.floor(t*6)%2?.3:1):0);
+    $('kal').style.opacity=(.6+.4*Math.sin(t*8)).toFixed(3);const W=ck('s14',2);$('ksv').style.opacity=(1-.65*clamp((t-W)/.2)).toFixed(3);const w=$('kw');w.style.opacity=t>=W?1:0;if(t>=W){w.style.transform=slamT(t-W,1.3,6);w.style.textShadow=rgbSplit(t-W,.25,7)}},
+  ev:s=>[[s.t0,'drop',1.3],[ck('s14',2),'slam',.5],[ck('s14',2),'shk',6]]},
+
+ /* 11 · šílenství: antivirus zadarmo */
+ {id:'free',from:'s15',cls:'orange',cap:1,year:2001,tr:'flash',
+  html:()=>`<div class="abs big" id="fq" style="left:0;right:0;top:220px;text-align:center;font-size:76px;color:#fff;opacity:0">ŠÍLENSTVÍ?</div>
+   <div class="abs" id="ftag" style="left:140px;top:300px;width:260px;height:150px;transform-origin:30px 20px;opacity:0"><svg width="260" height="150" viewBox="0 0 260 150"><path d="M40 10 L250 10 L250 140 L40 140 L4 75 Z" fill="#fff"/><circle cx="44" cy="75" r="9" fill="#FF7800"/>
+    <text x="150" y="102" text-anchor="middle" font-family="IT" font-weight="900" font-size="72" fill="#111" letter-spacing="-2">0 Kč</text></svg></div>
+   <div class="abs big" id="fz" style="left:0;right:0;top:500px;text-align:center;font-size:80px;color:#fff;opacity:0">ZADARMO</div>`,
+  anim:(t,s)=>{const Q=ck('s15',2);const q=$('fq');q.style.opacity=t>=Q&&t<st('s16')+.1?1:0;if(t>=Q)q.style.transform=slamT(t-Q,1.4,6);
+    const S=st('s16')-.05,tg=$('ftag');tg.style.opacity=t>=S?1:0;tg.style.transform=`translateY(${(-80*(1-e5((t-S)/.4))).toFixed(1)}px) rotate(${(10*Math.sin((t-S)*5)*Math.exp(-(t-S)/1.2)).toFixed(2)}deg)`;
+    const Z=ck('s16',2);const z=$('fz');z.style.opacity=t>=Z?1:0;if(t>=Z)z.style.transform=slamT(t-Z,1.5,7)},
+  ev:s=>[[ck('s15',2),'slam',.4],[st('s16')-.05,'whoosh'],[ck('s16',2),'slam',.55],[ck('s16',2),'coin']]},
+
+ /* 12 · první e-shop devět dní neprodá nic */
+ {id:'eshop',from:'s17',cls:'teal',cap:1,year:2001,tr:'scan',
+  html:()=>`<div class="abs" id="ew" style="left:46px;top:206px;width:448px;height:340px;background:#C0C0C0;box-shadow:inset -2px -2px 0 #404040,inset 2px 2px 0 #fff,0 18px 40px rgba(0,0,0,.35);padding:4px">
+    <div style="height:30px;background:linear-gradient(90deg,#000080,#1084d0);display:flex;align-items:center;justify-content:space-between;padding:0 6px;font-family:JB;font-size:12px;color:#fff;letter-spacing:.02em"><span>avast! e-shop – Internet Explorer</span><span style="display:flex;gap:3px">${'_□×'.split('').map(c=>`<i style="font-style:normal;width:20px;height:18px;background:#C0C0C0;color:#000;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:inset -1px -1px 0 #404040,inset 1px 1px 0 #fff">${c}</i>`).join('')}</span></div>
+    <div style="margin-top:4px;height:288px;background:#fff;color:#111;padding:20px 22px;box-shadow:inset 2px 2px 0 #808080">
+     <div style="font-family:JB;font-size:13px;color:#555">OBJEDNÁVKY</div><div id="eo" style="font-weight:900;font-size:120px;line-height:1;color:#C8102E;margin-top:6px">0</div>
+     <div style="display:flex;align-items:baseline;gap:12px;margin-top:18px"><span style="font-family:JB;font-size:13px;color:#555">DEN</span><span id="ed" style="font-weight:900;font-size:44px;letter-spacing:-.02em">1 / 9</span></div>
+     <div style="margin-top:14px;height:14px;background:#e6e6e6"><div id="edb" style="height:14px;background:#000080;width:0"></div></div></div></div>`,
+  anim:(t,s)=>{slideIn($('ew'),t,s.t0,24,.3);const a=ck('s17',1),b=en('s17')-.1;const d=Math.max(1,Math.min(9,1+Math.floor(clamp((t-a)/(b-a))*9)));$('ed').textContent=`${d} / 9`;$('edb').style.width=(100*d/9).toFixed(1)+'%';
+    $('eo').style.opacity=t>=b?(Math.floor(t*4)%2?.4:1):1},
+  ev:s=>{const a=ck('s17',1),b=en('s17')-.1;const E=[[s.t0,'crickets',en('s17')-s.t0+.4]];for(let d=1;d<9;d++)E.push([a+d*(b-a)/9,'tick2']);return E}},
+
+ /* 13 · zlom: 1 → 20 → 40 milionů uživatelů, firma má 38 lidí */
+ {id:'boom',from:'s18',cls:'navy',cap:1,year:2006,tr:'flash',
+  html:()=>`<svg class="abs" id="bcr" width="540" height="960" style="left:0;top:0;opacity:0"><path id="bcp" d="M0 420 L90 400 L140 450 L210 380 L280 430 L340 360 L410 410 L470 350 L540 370" fill="none" stroke="#fff" stroke-width="7" style="filter:drop-shadow(0 0 10px rgba(255,255,255,.8))" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/></svg>
+   <div class="abs" id="bup" style="left:0;right:0;top:250px;text-align:center;font-size:120px;font-weight:900;color:var(--or);opacity:0">↗</div>
+   <div class="abs" id="bn" style="left:0;right:0;top:210px;text-align:center;font-size:84px;font-weight:900;letter-spacing:-.045em;color:var(--or);font-variant-numeric:tabular-nums;opacity:0">0</div>
+   <div class="abs mono" id="bnl" style="left:0;right:0;top:302px;text-align:center;font-size:15px;color:#fff;opacity:0">UŽIVATELŮ</div>
+   <div class="abs" id="bpp" style="left:74px;top:360px;width:392px;display:flex;flex-wrap:wrap;gap:6px 6px">${Array.from({length:38},()=>`<span class="bp" style="opacity:0;display:block">${PERSON('#fff')}</span>`).join('')}</div>
+   <div class="abs" id="b38" style="left:0;right:0;top:560px;text-align:center;font-size:40px;font-weight:900;letter-spacing:-.03em;opacity:0"><span style="color:var(--or)">38</span> zaměstnanců</div>`,
+  anim:(t,s)=>{const Z=ck('s18',1);$('bcr').style.opacity=t>=Z-.1&&t<st('s19')+.2?1:0;$('bcp').style.strokeDashoffset=(1-eo((t-Z+.1)/.25)).toFixed(3);const up=$('bup');popIn(up,t,Z+.15,.25,.4);if(t>=st('s19')-.05)up.style.opacity=0;
+    const A=ck('s19',1),B=ck('s19',2),C=ck('s20',1);let v=0;if(t>=A)v=1e6;if(t>=B)v=lerp(1e6,20e6,eo((t-B)/.6));if(t>=C)v=lerp(20e6,40e6,eo((t-C)/.6));
+    const n=$('bn');n.textContent=fmt(v);n.style.opacity=t>=A?1:0;if(t>=A)n.style.transform=slamT(t-[A,B,C].filter(x=>t>=x).pop(),1.15,3);fade($('bnl'),t,A);
+    const P=ck('s20',2);s.el.querySelectorAll('.bp').forEach((e,i)=>popIn(e,t,P+i*.028,.18,.2));popIn($('b38'),t,ck('s20',4)-.05,.25,.7)},
+  ev:s=>[[ck('s18',1)-.1,'crack'],[ck('s18',1)+.15,'power'],[ck('s19',1),'pop2'],[ck('s19',2),'count',.6],[ck('s20',1),'count',.6],[ck('s20',2),'blips',38*.028],[ck('s20',4)-.05,'pop2']]},
+
+ /* 14 · koupí AVG za 1,3 mld. $ */
+ {id:'avg',from:'s21',cls:'white',cap:1,year:2016,dk:1,tr:'flash',
+  html:()=>`<div class="card" id="aa" style="left:46px;top:236px;width:210px;height:150px;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 40px rgba(0,0,0,.14)"><img src="photos/logo_avast.png" style="width:170px"></div>
+   <div class="abs" id="ap" style="left:255px;top:282px;width:30px;text-align:center;font-size:44px;font-weight:900;color:#111;opacity:0">+</div>
+   <div class="card" id="ag" style="left:284px;top:236px;width:210px;height:150px;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 40px rgba(0,0,0,.14)"><img src="photos/logo_avg.png" style="height:112px"></div>
+   <div class="abs big" id="am" style="left:0;right:0;top:432px;text-align:center;font-size:96px;color:#111;opacity:0">$1,3 mld.</div>
+   <div class="abs mono" id="aml" style="left:0;right:0;top:530px;text-align:center;font-size:13px;color:#555;opacity:0">2016 · AVAST KUPUJE KONKURENTA AVG</div>`,
+  anim:(t,s)=>{slideX($('aa'),t,s.t0,-60,.35);slideX($('ag'),t,ck('s21',1)-.05,60,.35);popIn($('ap'),t,ck('s21',1)+.15,.2,.4);const M=ck('s21',2);const m=$('am');m.style.opacity=t>=M?1:0;if(t>=M)m.style.transform=slamT(t-M,1.4,5);fade($('aml'),t,M+.3)},
+  ev:s=>[[s.t0,'whoosh'],[ck('s21',1)-.05,'whoosh'],[ck('s21',2),'slam',.45],[ck('s21',2)+.05,'coin']]},
+
+ /* 15 · londýnská burza, největší evropský tech vstup roku 2018 */
+ {id:'ipo',from:'s22',cls:'board',cap:1,year:2018,tr:'scan',
+  html:()=>`<div class="abs" style="left:40px;top:196px;width:460px;height:330px;background:#121212;border:2px solid #2a2a2a;border-radius:14px;overflow:hidden">
+    <div style="background:#1b1b1b;padding:12px 16px;font-family:JB;font-size:13px;color:#ffb347;letter-spacing:.14em">LONDON STOCK EXCHANGE · KVĚTEN 2018</div>
+    <div id="itk" style="position:relative;height:42px;overflow:hidden;border-bottom:1px solid #2a2a2a"><div id="itr" class="mono" style="position:absolute;top:10px;left:0;font-size:18px;color:#3BFF7E;white-space:nowrap">${'AVST ▲ NOVÁ EMISE    '.repeat(6)}</div></div>
+    <div style="padding:22px 18px 0"><div class="mono" style="font-size:12px;color:#888">HODNOTA PŘI VSTUPU NA BURZU</div><div id="iv" style="font-weight:900;font-size:86px;letter-spacing:-.045em;color:#fff;line-height:1.05;margin-top:6px">£0</div></div></div>
+   <div class="abs" id="ib" style="left:0;right:0;top:548px;display:flex;justify-content:center;opacity:0"><span class="badge" style="font-size:18px;background:var(--or);color:#fff">NEJVĚTŠÍ TECH IPO V EVROPĚ ROKU 2018</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('itr').style.transform=`translateX(${(-60*u).toFixed(1)}px)`;$('iv').textContent='£'+(2.4*eo((u-.2)/1.2)).toFixed(1).replace('.',',')+' mld.';popIn($('ib'),t,ck('s22',2)-.05,.25,.7)},
+  ev:s=>[[s.t0,'scanfx'],[s.t0+.2,'count',1.2],[ck('s22',2)-.05,'pop2'],[ck('s22',2)+.1,'coin']]},
+
+ /* 16 · kontroverze: Jumpshot prodával data, konec a pokuta FTC */
+ {id:'scandal',from:'s23',cls:'dred',cap:1,year:2020,tr:'glitch',
+  html:()=>`<div class="abs" id="xch" style="left:74px;top:186px;opacity:0"><span class="chip" style="background:var(--red);border-color:var(--red)">KONTROVERZE</span></div>
+   <div class="abs big" id="xsk" style="left:0;right:0;top:300px;text-align:center;font-size:96px;color:#fff;opacity:0">SKANDÁL</div>
+   <div class="abs" id="xbox" style="left:276px;top:296px;width:176px;height:150px;border:3px solid #fff;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0">
+    <div style="font-weight:900;font-size:28px;letter-spacing:-.02em">JUMPSHOT</div><div class="mono" style="font-size:10.5px;color:#ffb3ad;margin-top:6px">DCEŘINÁ FIRMA</div></div>
+   ${['hledání','nákupy','videa','navštívené weby'].map((w,i)=>`<div class="abs xp" data-i="${i}" style="left:60px;top:${300+i*40}px;opacity:0"><span class="chip" style="background:#fff;color:#111;border-color:#fff;font-size:12px">${w}</span></div>`).join('')}
+   ${[0,1,2].map(i=>`<div class="abs xd" data-i="${i}" style="left:452px;top:${330+i*34}px;font-size:28px;font-weight:900;color:#2BB673;opacity:0">$</div>`).join('')}
+   <div class="abs" id="xend" style="left:236px;top:344px;opacity:0"><span class="stamp" style="font-size:26px;padding:2px 10px 3px;border-width:4px;background:rgba(20,4,5,.85)">UKONČENO 2020</span></div>
+   <div class="card" id="xft" style="left:74px;top:484px;width:392px;padding:14px 18px;opacity:0"><div class="mono" style="font-size:11px;color:#777">FTC (USA) · ÚNOR 2024</div><div style="font-weight:900;font-size:34px;letter-spacing:-.03em;color:#C8102E;margin-top:4px">pokuta $16 500 000</div></div>`,
+  anim:(t,s)=>{popIn($('xch'),t,s.t0+.02,.2,.7);const K=ck('s23',1);const k=$('xsk');const S24=st('s24')-.05;k.style.opacity=t>=K?(1-clamp((t-S24)/.2)).toFixed(3):0;if(t>=K){k.style.transform=slamT(t-K,1.4,7);k.style.textShadow=rgbSplit(t-K,.3,9)}
+    const bx=$('xbox');popIn(bx,t,S24+.1,.25,.7);const J=ck('s24',2);
+    s.el.querySelectorAll('.xp').forEach(e=>{const i=+e.dataset.i,a=J+i*.38,p=eio((t-a)/.55);e.style.opacity=t>=a-.3?(t<a?clamp((t-a+.3)/.2):(1-clamp((p-.8)/.2))).toFixed(3):0;e.style.transform=`translate(${(222*p).toFixed(1)}px,${(lerp(0,(1.5-i)*40+20,p)).toFixed(1)}px) scale(${lerp(1,.5,p).toFixed(3)})`});
+    s.el.querySelectorAll('.xd').forEach(e=>{const i=+e.dataset.i,a=J+.5+i*.38,p=eo((t-a)/.5);e.style.opacity=t>=a?(1-p).toFixed(3):0;e.style.transform=`translate(${(40*p).toFixed(1)}px,${(-20*p).toFixed(1)}px)`});
+    stampIn($('xend'),t,ck('s25',0)+.25,-7,1.8);slideIn($('xft'),t,ck('s25',4)-.1,30,.3)},
+  ev:s=>[[s.t0,'glitch',.3],[ck('s23',1),'slam',.5],[ck('s23',1),'shk',7],[st('s24')+.05,'pop'],...[0,1,2,3].map(i=>[ck('s24',2)+i*.38,'swish']),[ck('s25',0)+.25,'stamp',.5],[ck('s25',4)-.1,'thud']]},
+
+ /* 17 · spojení s Nortonem za víc než 8 mld. $ */
+ {id:'norton',from:'s26',cls:'white',cap:1,year:2022,dk:1,tr:'flash',
+  html:()=>`<div class="card" id="na" style="left:46px;top:226px;width:210px;height:140px;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 40px rgba(0,0,0,.14)"><img src="photos/logo_avast.png" style="width:170px"></div>
+   <div class="abs" id="np" style="left:255px;top:266px;width:30px;text-align:center;font-size:44px;font-weight:900;color:#111;opacity:0">+</div>
+   <div class="card" id="nn" style="left:284px;top:226px;width:210px;height:140px;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 40px rgba(0,0,0,.14)"><img src="photos/logo_norton.png" style="width:180px"></div>
+   <div class="abs mono" id="nml" style="left:0;right:0;top:412px;text-align:center;font-size:14px;color:#555;opacity:0">VÍC NEŽ</div>
+   <div class="abs big" id="nm" style="left:0;right:0;top:440px;text-align:center;font-size:54px;color:#111;font-variant-numeric:tabular-nums;opacity:0">$0</div>
+   <div class="abs mono" id="nmy" style="left:0;right:0;top:518px;text-align:center;font-size:13px;color:#555;opacity:0">ZÁŘÍ 2022 · VZNIKÁ GEN DIGITAL</div>`,
+  anim:(t,s)=>{slideX($('na'),t,s.t0,-60,.35);slideX($('nn'),t,ck('s26',2)-.05,60,.35);popIn($('np'),t,ck('s26',2)+.15,.2,.4);const C=ck('s26',3)-.05;fade($('nml'),t,C);
+    const m=$('nm');m.style.opacity=t>=C?1:0;m.textContent='$'+fmt(8e9*eo((t-C)/.8));if(t>=C+.8)m.style.transform=slamT(t-C-.8,1.15,3);fade($('nmy'),t,C+.9)},
+  ev:s=>[[s.t0,'whoosh'],[ck('s26',2)-.05,'whoosh'],[ck('s26',3)-.05,'count',.8],[ck('s26',3)+.75,'slam',.45],[ck('s26',3)+.8,'coin']]},
+
+ /* 18 · Pavel Baudiš je dnes miliardář */
+ {id:'billion',from:'s27',cls:'navy',cap:1,year:2024,tr:'scan',
+  html:()=>`<div class="abs" style="inset:0;background:radial-gradient(60% 40% at 50% 60%,rgba(255,212,0,.16),transparent 70%)"></div>
+   <img class="abs" id="bbp" src="photos/baudis_cut.png" style="left:70px;top:330px;width:400px;-webkit-mask-image:linear-gradient(#000 80%,transparent 100%)">
+   <div class="abs" id="bbt" style="left:74px;top:190px"><div style="font-weight:900;font-size:40px;letter-spacing:-.04em;line-height:1">Pavel Baudiš</div><div class="mono" style="font-size:12px;color:var(--g);margin-top:8px">FORBES · 2024</div></div>
+   <div class="abs" id="bbm" style="left:74px;top:262px;font-weight:900;font-size:48px;letter-spacing:-.04em;color:var(--y);opacity:0;font-variant-numeric:tabular-nums">$0</div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('bbp').style.transform=`translateY(${(30*(1-e5(u/.5))).toFixed(1)}px) scale(${(1.03-.03*e5(u/.8)).toFixed(4)})`;$('bbp').style.opacity=clamp(u/.15);slideIn($('bbt'),t,s.t0+.1,14);
+    const M=ck('s27',3)-.1;const m=$('bbm');m.style.opacity=t>=M?1:0;m.textContent='$'+(2.3*eo((t-M)/.7)).toFixed(1).replace('.',',')+' mld.'},
+  ev:s=>[[s.t0,'scanfx'],[ck('s27',3)-.1,'count',.7],[ck('s27',3)+.6,'coin']]},
+
+ /* 19 · nadace: skoro 400 mil. Kč */
+ {id:'nadace',from:'s28',cls:'warm',cap:1,year:2025,tr:'flash',
+  html:()=>`<div class="abs" style="inset:0;background:radial-gradient(70% 45% at 50% 35%,rgba(255,170,80,.24),transparent 70%)"></div>
+   <div class="abs" id="ndp" style="left:46px;top:190px;width:448px;height:252px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5)"><img src="photos/duo.jpg" style="width:448px;height:252px;display:block"></div>
+   <div class="abs mono" id="ndl" style="left:74px;top:460px;font-size:12px;color:#ffcf9a;opacity:0">NADACE ABAKUS · OD ROKU 2020</div>
+   <div class="abs" id="ndm" style="left:72px;top:486px;font-weight:900;font-size:54px;letter-spacing:-.045em;color:var(--or);font-variant-numeric:tabular-nums;opacity:0">0 Kč</div>
+   <div class="abs mono" id="ndt" style="left:74px;top:560px;font-size:12px;color:#ddd;opacity:0">PALIATIVNÍ PÉČE · LIDÉ S POSTIŽENÍM</div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('ndp').style.transform=`scale(${(1.04-.04*e5(u/1)).toFixed(4)})`;$('ndp').style.opacity=clamp(u/.2);fade($('ndl'),t,ck('s28',2));
+    const M=ck('s28',4)-.1;const m=$('ndm');m.style.opacity=t>=M?1:0;m.textContent=fmt(400e6*eo((t-M)/.9))+' Kč';fade($('ndt'),t,ck('s28',6))},
+  ev:s=>[[ck('s28',4)-.1,'count',.9],[ck('s28',4)+.8,'chime']]},
+
+ /* 20 · od hračky na stole k miliardám */
+ {id:'outro',from:'s29',cls:'navy',cap:1,tr:'scan',
+  html:()=>`<div class="abs" id="oo" style="left:160px;top:190px">${OLI(220,'ooi','<div>C:\\&gt;_</div>')}</div>
+   <div class="abs" id="ost" style="left:176px;top:240px;opacity:0"><span class="stamp" style="font-size:30px;border-width:4px;padding:1px 10px 2px">HRAČKA</span></div>
+   <div class="abs" id="oar" style="left:0;right:0;top:372px;text-align:center;font-size:58px;font-weight:900;opacity:0">↓</div>
+   <div class="abs big" id="om" style="left:0;right:0;top:452px;text-align:center;font-size:88px;color:var(--or);opacity:0">8 mld. $</div>`,
+  anim:(t,s)=>{slideIn($('oo'),t,s.t0,20,.3);stampIn($('ost'),t,s.t0+.35,-9,1.6);slideIn($('oar'),t,ck('s29',1)-.15,-20,.25);popIn($('om'),t,ck('s29',1)+.05,.28,.5)},
+  ev:s=>[[s.t0+.35,'stamp',.3],[ck('s29',1)+.05,'slam',.4]]},
+
+ /* 21 · výzva: kterou českou firmu chceš? */
+ {id:'cta',from:'s30',cls:'white',cap:0,tr:'flash',
+  html:()=>`<div class="abs" style="left:74px;top:136px"><span class="badge">POSTAVILI TO <b>ČESKÁ EDICE</b>${FLAG(20)}</span></div>
+   <div class="abs" id="cq" style="left:74px;top:186px;width:400px;font-weight:900;font-size:42px;letter-spacing:-.04em;line-height:1.04;color:#111">Kterou českou firmu chceš v dalším díle?</div>
+   ${['Rohlík','Kiwi.com','Mews','Seznam'].map((n,i)=>`<div class="abs co" data-i="${i}" style="left:74px;top:${350+i*58}px;width:392px;height:50px;border:2.5px solid #111;border-radius:14px;display:flex;align-items:center;padding:0 18px;font-weight:800;font-size:22px;color:#111;opacity:0">${n}</div>`).join('')}
+   <div class="abs" id="cc" style="left:74px;top:592px;width:392px;height:54px;border-radius:999px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:21px;opacity:0">Napiš to do komentářů 👇</div>
+   <div class="abs" id="csg" style="left:74px;top:672px;display:flex;align-items:center;gap:12px;opacity:0"><div style="background:#111;border-radius:8px;padding:8px 11px;display:flex">${uzel(18,'#fff')}</div><div style="font-weight:800;font-size:19px;color:#111;letter-spacing:-.03em">Better Digital</div></div>`,
+  anim:(t,s)=>{slideIn($('cq'),t,s.t0+.05,16,.3);s.el.querySelectorAll('.co').forEach(e=>slideX(e,t,ck('s30',2)+.05+(+e.dataset.i)*.12,-40,.3));popIn($('cc'),t,st('s31')+.05,.25,.7);slideIn($('csg'),t,st('s31')+.5,10)},
+  ev:s=>[[s.t0+.05,'whoosh'],...[0,1,2,3].map(i=>[ck('s30',2)+.05+i*.12,'pop',i]),[st('s31')+.05,'notif']]},
+];
+/* ------------------------------------------------------------ sestavení */
+const stage=$('stage');
+SCN.forEach((s,i)=>{s.t0=i?st(s.from)-.06:0;});
+SCN.forEach((s,i)=>{s.t1=i+1<SCN.length?SCN[i+1].t0:T.END;const el=document.createElement('div');el.className='sc '+s.cls;el.id='sc_'+s.id;
+  el.innerHTML=`<div class="cam">${s.html()}</div>`;stage.appendChild(el);s.el=el;s.cam=el.querySelector('.cam')});
+const TR=SCN.filter((s,i)=>i&&s.tr).map(s=>[s.t0,s.tr]);
+const EV=[];SCN.forEach(s=>{if(s.ev)EV.push(...s.ev(s))});
+TR.forEach(([t0,ty])=>{if(ty==='glitch')EV.push([t0-.05,'glitch',.25]);if(ty==='flash')EV.push([t0,'hit']);if(ty==='scan')EV.push([t0,'swish'])});
+EV.sort((a,b)=>a[0]-b[0]);window.EV=EV;
+const SHK=EV.filter(e=>e[1]==='shk');
+const YEARS=[1988,1989,1996,2000,2001,2006,2016,2018,2020,2022,2024,2026],Y0=1988,Y1=2026,yx=y=>(y-Y0)/(Y1-Y0)*392;
+$('tl').innerHTML='<div class="ln"></div><div class="pg"></div>'+YEARS.map(y=>`<i class="ev" data-y="${y}" style="left:${yx(y).toFixed(1)}px"></i>`).join('')+'<div class="cur"></div><div class="yr"></div>';
+const GC=$('grain').getContext('2d'),GI=GC.createImageData(180,320);
+function grain(f){const r=rng(7000+f),d=GI.data;for(let i=0;i<d.length;i+=4){const v=r()*255|0;d[i]=d[i+1]=d[i+2]=v;d[i+3]=12}GC.putImageData(GI,0,0)}
+window.render=function(t){
+  let k=SCN.length-1;for(let i=0;i<SCN.length;i++)if(t<SCN[i].t1){k=i;break}
+  const s=SCN[k],u=t-s.t0;const prev=k>0?SCN[k-1]:null;
+  const scan=s.tr==='scan'&&prev&&u<.28;
+  SCN.forEach(q=>{const on=q===s||(scan&&q===prev);q.el.style.display=on?'block':'none';q.el.style.zIndex=q===s?2:1;q.el.style.clipPath='none'});
+  if(scan){const p=eio(u/.28);s.el.style.clipPath=`inset(0 0 ${(100*(1-p)).toFixed(2)}% 0)`;prev.anim&&prev.anim(t,prev);$('scanl').style.display='block';$('scanl').style.top=(960*p-1).toFixed(1)+'px'}else $('scanl').style.display='none';
+  s.cam.style.transform=`scale(${(1+.012*Math.min(u,6)/6).toFixed(4)})`;
+  s.anim&&s.anim(t,s);
+  let sx=0,sy=0;for(const [a,,amp] of SHK)if(t>=a&&t<a+.6){const e=amp*Math.exp(-(t-a)/.12);sx+=e*Math.sin((t-a)*95+a);sy+=e*.7*Math.sin((t-a)*83+a*2)}
+  stage.style.transform=sx||sy?`translate(${sx.toFixed(2)}px,${sy.toFixed(2)}px)`:'none';
+  const g=$('gl');let gh='';for(const [a,ty] of TR)if(ty==='glitch'&&t>=a-.08&&t<a+.14){const r=rng(400+Math.floor(t*FPS));for(let i=0;i<9;i++){const y=r()*960,h=3+r()*30;gh+=`<i style="position:absolute;left:${(-60+r()*120).toFixed(0)}px;top:${y.toFixed(0)}px;width:${(300+r()*400).toFixed(0)}px;height:${h.toFixed(1)}px;background:${['#fff','#FF7800','#3BFF7E'][Math.floor(r()*3)]};opacity:${(.35+r()*.5).toFixed(2)}"></i>`}
+    stage.style.filter=`drop-shadow(${(6*(r()-.5)).toFixed(1)}px 0 0 rgba(255,30,60,.8)) drop-shadow(${(6*(r()-.5)).toFixed(1)}px 0 0 rgba(0,200,255,.8))`}
+  g.innerHTML=gh;if(!gh)stage.style.filter='none';
+  /* titulky */
+  const cap=$('cap');let html='';const capOn=s.cap||s.capS;if(capOn){for(const [cs,i,txt,a,b] of T.chunks){if((!s.capS||s.capS.includes(cs))&&t>=a-(cs==='s1'&&i===0?1:0)&&t<b+.02&&t>=s.t0-.01){html=txt.replace(/\*(.+?)\*/g,'<b>$1</b>');break}}}
+  cap.innerHTML=html?`<span>${html}</span>`:'';cap.style.top=(s.capY||664)+'px';
+  /* časová osa */
+  const tl=$('tl');tl.className=s.dk?'dk':'';const py=k>0&&SCN[k-1].year?SCN[k-1].year:s.year;const yy=s.year?lerp(py||s.year,s.year,eio(u/.35)):0;tl.style.opacity=s.year?1:0;
+  if(s.year){const x=yx(yy);tl.querySelector('.pg').style.width=x.toFixed(1)+'px';tl.querySelector('.cur').style.left=x.toFixed(1)+'px';const yr=tl.querySelector('.yr');yr.style.left=clamp(x,18,374).toFixed(1)+'px';yr.textContent=Math.round(yy);
+    tl.querySelectorAll('.ev').forEach(e=>e.classList.toggle('p',+e.dataset.y<=yy+.01))}
+  let fl=0;for(const [a,ty] of TR)if(ty==='flash'&&t>=a&&t<a+.14)fl=Math.max(fl,.55*(1-(t-a)/.14));
+  if(!s.tr&&k>0&&u<.08)fl=Math.max(fl,.15*(1-u/.08));$('flash').style.opacity=fl.toFixed(3);
+  grain(Math.floor(t*FPS+1e-6));
+};
+const FL=['900 20px IT','850 20px IT','800 20px IT','700 20px IT','20px JB','20px VT'];
+Promise.all(FL.map(f=>document.fonts.load(f,'ěščřžýáíéúůťďňĚŠČŘŽ„“…—·−✕✓⚠↗→▲□×')))
+ .then(()=>Promise.all([...document.images].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r}))))
+ .then(()=>document.fonts.ready).then(()=>{window.READY=true;render(0)});
+</script></body></html>
