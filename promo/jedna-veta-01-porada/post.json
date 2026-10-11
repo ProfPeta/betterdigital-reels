@@ -18,5 +18,11 @@
       "note": "Štítek AI kvůli hlasu z ElevenLabs. Bez prodeje, stejně jako POSTAVILI TO."
     }
   },
-  "status": "zveřejní Petr ručně 12. 10. 2026 v 10:00"
+  "status": "scheduled",
+  "publishAt": "2026-10-12T10:00:00+02:00",
+  "metricool": {
+    "id": "393492239",
+    "uuid": "6267452616128547969",
+    "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=6267452616128547969"
+  }
 }
