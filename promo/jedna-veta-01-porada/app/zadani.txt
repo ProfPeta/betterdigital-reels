@@ -1,0 +1,1 @@
+Udělej kalkulačku, která v reálném čase ukáže, kolik stojí porada.

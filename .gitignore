@@ -6,3 +6,8 @@ promo/postavili-to-01-jobs/photos/src/apple_logo_1977.*
 promo/postavili-to-02-musk/photos/src/
 promo/postavili-to-02-musk/photos/*.png
 promo/postavili-to-02-musk/photos/*.jpg
+# JEDNA VĚTA #01: snímky záznamu aplikace a QA – dají se kdykoli znovu vyrobit (app_capture.py, engine/render.py stills)
+promo/jedna-veta-01-porada/app_frames/
+promo/jedna-veta-01-porada/qa*/
+promo/jedna-veta-01-porada/cap.log
+promo/jedna-veta-01-porada/cap_done

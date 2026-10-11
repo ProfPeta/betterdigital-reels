@@ -1,0 +1,22 @@
+{
+  "platform": "tiktok+instagram",
+  "series": "JEDNA VĚTA",
+  "episode": 1,
+  "text": "Jedna věta → hotová aplikace. AI ji postavila za 3 minuty 44 sekund. ⏱️\n\nKalkulačka, která v reálném čase ukáže, kolik stojí porada. 8 lidí, mzda 50 000 Kč: jedna hodina porady = 3 088 Kč. Bez jediného řádku kódu od nás.\n\nPošli to tomu, kdo svolává zbytečné porady. A napiš, co máme postavit příště 👇\n\n#ai #umelainteligence #porady #produktivita #podnikani",
+  "firstComment": "Celé zadání: „Udělej kalkulačku, která v reálném čase ukáže, kolik stojí porada.“ Čas stavby 3 min 44 s (psaní kódu + spuštění). Výpočet: hrubá mzda ÷ 173,3 h, s odvody zaměstnavatele × 1,338. Záznam aplikace je ve videu zrychlený.",
+  "coverMs": 1700,
+  "settings": {
+    "instagramData": {
+      "type": "REEL",
+      "showReelOnFeed": true,
+      "isAiGenerated": true
+    },
+    "tiktokData": {
+      "privacyOption": "PUBLIC_TO_EVERYONE",
+      "commercialContentOwnBrand": false,
+      "isAigc": true,
+      "note": "Štítek AI kvůli hlasu z ElevenLabs. Bez prodeje, stejně jako POSTAVILI TO."
+    }
+  },
+  "status": "ready – zatím neplánováno"
+}

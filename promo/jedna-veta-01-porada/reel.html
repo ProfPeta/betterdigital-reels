@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8"><title>JEDNA VĚTA #01 – Kalkulačka porad</title>
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+:root{--y:#FFD400;--k:#0B0B0B;--g:#8C8C8C}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden;background:#fff}
+body{font-family:IT,'Noto Color Emoji',sans-serif;-webkit-font-smoothing:antialiased;position:relative;color:var(--k)}
+.abs{position:absolute}
+.mono{font-family:JB,monospace;letter-spacing:.04em;white-space:nowrap}
+#stage{position:absolute;left:0;top:0;width:540px;height:960px;z-index:0}
+.sc{position:absolute;inset:0;display:none;overflow:hidden}
+.fg{position:absolute;inset:0;display:none}
+#emb{position:absolute;left:0;top:0;width:540px;height:960px;z-index:1;pointer-events:none}
+#phone{position:absolute;left:0;top:0;width:418px;height:872px;z-index:2;transform-origin:0 0;border-radius:64px;background:#0B0B0B;padding:14px;display:none;
+  box-shadow:0 0 0 2px #2b2b30 inset,0 34px 80px rgba(0,0,0,.30)}
+#phone .scr{width:390px;height:844px;border-radius:50px;overflow:hidden;background:#0e0e10;position:relative}
+#phone img{width:390px;height:844px;display:block}
+#over{position:absolute;left:0;top:0;width:540px;height:960px;z-index:3;pointer-events:none}
+#tap{position:absolute;left:0;top:0;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;border:4px solid var(--y);background:rgba(255,212,0,.28);z-index:4;display:none;
+  box-shadow:0 0 0 2px rgba(11,11,11,.55)}
+#cap{position:absolute;left:40px;right:40px;text-align:center;z-index:5;pointer-events:none}
+#cap span{display:inline;font-weight:850;font-size:30px;letter-spacing:-.02em;line-height:1.5;padding:4px 12px;box-decoration-break:clone;-webkit-box-decoration-break:clone;border-radius:5px}
+#cap.dark span{background:rgba(11,11,11,.88);color:#fff}
+#cap.light span{background:#fff;color:var(--k)}
+#cap b{font-weight:850;background:var(--y);color:var(--k);padding:0 6px;border-radius:3px}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:6;pointer-events:none}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--k);color:var(--y);font-family:JB;font-size:13px;letter-spacing:.12em;padding:7px 12px 6px;border-radius:7px;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:10px;border-radius:999px;font-weight:800;white-space:nowrap}
+/* editor */
+.ed{position:absolute;left:46px;top:194px;width:448px;height:420px;background:#141414;border:1px solid #2a2a2a;border-radius:16px;overflow:hidden;transform-origin:50% 40%}
+.ed .tb{height:36px;border-bottom:1px solid #262626;display:flex;align-items:center;gap:7px;padding:0 14px}
+.ed .tb i{width:10px;height:10px;border-radius:50%;background:#3a3a3a;display:block}
+.ed .tb span{margin-left:10px;font-family:JB;font-size:12px;color:#d6d6d6;background:#1d1d1d;border:1px solid #2c2c2c;border-bottom:0;padding:6px 12px;border-radius:7px 7px 0 0;margin-top:10px}
+.ed .code{position:absolute;left:0;right:0;top:44px;bottom:30px;overflow:hidden}
+.ed .ln{height:16px;display:flex;font-family:JB;font-size:11px;line-height:16px;white-space:pre;color:#e8e8e8}
+.ed .ln u{text-decoration:none;width:34px;flex:none;text-align:right;padding-right:10px;color:#555}
+.ed .ln.cur{background:#1f1f1f;box-shadow:inset 3px 0 0 var(--y)}
+.ed .sb{position:absolute;left:0;right:0;bottom:0;height:30px;border-top:1px solid #262626;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-family:JB;font-size:11px;color:#9a9a9a}
+.k{color:#FFD400}.s{color:#9FE0A8}.n{color:#FF9E64}.c{color:#6b6b6b}.p{color:#8EC8FF}
+.pal{position:absolute;right:16px;top:52px;background:#1d1d1d;border:1px solid #333;border-radius:12px;padding:10px 12px 9px;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.pal .t{font-family:JB;font-size:10px;letter-spacing:.14em;color:#9a9a9a;text-transform:uppercase}
+.pal .r{display:flex;gap:10px;margin-top:8px}
+.pal .w{display:flex;flex-direction:column;align-items:center;gap:5px}
+.pal .w b{width:30px;height:30px;border-radius:50%;display:block;border:1.5px solid #3a3a3a}
+.pal .w em{font-style:normal;font-family:JB;font-size:9px;color:#cfcfcf}
+</style></head><body>
+<div id="stage"></div>
+<canvas id="emb" width="1080" height="1920"></canvas>
+<div id="phone"><div class="scr"><img id="appimg" alt=""></div></div>
+<div id="over"></div>
+<div id="tap"></div>
+<div id="cap"></div>
+<div id="flash"></div>
+<script src="timeline.js"></script>
+<script src="app_data.js"></script>
+<script>
+const FPS=30;const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3),e5=x=>1-Math.pow(1-clamp(x),5);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,p)=>a+(b-a)*p;const $=id=>document.getElementById(id);
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
+const T=window.TL,A=window.APP;const st=s=>T.S[s][0],en=s=>T.S[s][1];
+const CK={};T.chunks.forEach(([s,i,txt,a,b])=>{(CK[s]=CK[s]||[])[i]=[a,b,txt]});
+const ck=(s,i)=>CK[s][i][0],cke=(s,i)=>CK[s][i][1];
+window.DURATION=T.END;
+
+/* ------------------------------------------------------------ časy */
+const HOOK_END=st('s3')-.06,PROMPT_END=st('s5')-.06,BUILD_END=st('s6')-.06,ZERO_END=st('s7')-.06,DEMO_END=st('s10')-.06,SHARE_END=st('s11')-.06,END=T.END;
+const V0=A.v0,GO=A.go,FF0=A.ff0,FF1=A.ff1,HOOK_V=FF1-.25;
+const CODE0=st('s5')+.12,CODE1=ck('s5',2)+.55,DONE=CODE1+.1,PAL=ck('s5',1)+.05;
+const SEND=en('s4')+.06;
+const ZSLAM=ck('s6',1)+.02,DARK=GO+.08;
+const PLANE=ck('s10',2)+.05;
+const LINES=A.code.split('\n');if(LINES[LINES.length-1]==='')LINES.pop();
+const NL=LINES.length;
+const PROMPT=A.prompt,WORDS=PROMPT.split(/\s+/).length,CHARS=[...PROMPT].length;
+/* psaní zadání: kousky věty s4 se píšou v čase, kdy je hlas říká */
+const TYPE=[];{let pos=0;CK.s4.forEach(([a,b,txt],i)=>{const s=txt+(i<CK.s4.length-1?' ':'');const n=[...s].length;for(let j=0;j<n;j++)TYPE.push(a+.04+(b-a)*.9*j/n);pos+=n});}
+const typed=t=>{let k=0;while(k<TYPE.length&&TYPE[k]<=t)k++;return [...PROMPT].slice(0,k).join('')};
+
+/* ------------------------------------------------------------ zvýraznění kódu (jednoduché, pro vizuál) */
+const KW=new Set(['const','let','var','function','return','if','else','for','of','new','true','false','null','document','state']);
+function hl(line){
+  const re=/(\/\*.*?\*\/|\/\/.*$)|("[^"]*"|'[^']*'|`[^`]*`)|(<\/?[a-zA-Z][a-zA-Z0-9-]*|\/?>)|(#[0-9a-fA-F]{3,6}\b|\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$-]*)(?=\s*[:=(])|([A-Za-z_$][\w$-]*)|(\s+|.)/g;
+  let out='',m;while((m=re.exec(line))){const [x,c,s,tg,n,pk,id]=m;
+    if(c)out+=`<span class="c">${esc(c)}</span>`;else if(s)out+=`<span class="s">${esc(s)}</span>`;else if(tg)out+=`<span class="k">${esc(tg)}</span>`;
+    else if(n)out+=`<span class="n">${esc(n)}</span>`;else if(pk)out+=KW.has(pk)?`<span class="k">${esc(pk)}</span>`:`<span class="p">${esc(pk)}</span>`;
+    else if(id)out+=KW.has(id)?`<span class="k">${esc(id)}</span>`:esc(id);else out+=esc(x)}
+  return out}
+const HL=LINES.map(hl);
+const PALETTE=[...A.code.matchAll(/--(bg|card|fire|fire2|text):\s*(#[0-9a-fA-F]{6})/g)].map(m=>[m[1],m[2]]);
+
+/* ------------------------------------------------------------ telefon s nahrávkou aplikace */
+const PH=418,PV=872,BZ=14,L=A.layout;
+const ctr=k=>[L[k][0]+L[k][2]/2,L[k][1]+L[k][3]/2];
+const [CX,CY]=ctr('cost');
+const place=(s,sx,sy,ax,ay)=>({x:sx-(BZ+ax)*s,y:sy-(BZ+ay)*s,s});
+const centered=(s,top)=>({x:270-PH*s/2,y:top,s});
+function phoneAt(t){
+  if(t<HOOK_END){const p=e5(t/.42);return {on:1,...centered(.6,392+34*(1-p)),rot:-4+1.5*p,v:HOOK_V+t}}
+  if(t>=V0&&t<BUILD_END){const s=lerp(.40,.52,back((t-V0)/.34));const c=200+PV*.52/2;return {on:1,x:270-PH*s/2,y:c-PV*s/2,s,rot:0,v:t,op:clamp((t-V0)/.12)}}
+  if(t>=ZERO_END&&t<SHARE_END){
+    const a=centered(.62,205),z=place(.95,270,422,CX,CY),w=place(.95,270,492,CX,CY);
+    let q=a;const p1=eio((t-FF0)/.6);if(t>=FF0)q={x:lerp(a.x,z.x,p1),y:lerp(a.y,z.y,p1),s:lerp(a.s,z.s,p1)};
+    if(t>=DEMO_END){const p2=eio((t-DEMO_END)/.45);q={x:lerp(z.x,w.x,p2),y:lerp(z.y,w.y,p2),s:z.s}}
+    const pin=t<ZERO_END+.4?e5((t-ZERO_END)/.4):1;
+    return {on:1,x:q.x,y:q.y+40*(1-pin),s:q.s,rot:0,v:t,op:pin}}
+  return {on:0}}
+const toStage=(ph,ax,ay)=>[ph.x+(BZ+ax)*ph.s,ph.y+(BZ+ay)*ph.s];
+let curIdx=-1;
+async function setFrame(v){const i=clamp(Math.round((v-V0)*A.fps),0,A.frames-1);if(i===curIdx)return;const img=$('appimg');img.src=`app_frames/f${String(i).padStart(4,'0')}.jpg`;await img.decode();curIdx=i}
+
+/* ------------------------------------------------------------ scény */
+const SCN=[
+ /* 1 · háček: výsledek hned v prvním snímku */
+ {id:'hook',t0:0,t1:HOOK_END,bg:'#FFD400',
+  fg:()=>`<div class="abs" style="left:74px;top:132px"><span class="chip">JEDNA VĚTA · #01</span></div>
+   <div class="abs" id="h1" style="left:74px;top:174px;font-size:62px;font-weight:850;letter-spacing:-.045em;line-height:1">Jedna věta.</div>
+   <div class="abs" id="h2" style="left:74px;top:246px;transform-origin:0 50%"><div style="display:inline-block;background:var(--k);color:#fff;font-size:58px;font-weight:850;letter-spacing:-.045em;line-height:1.04;padding:4px 14px 8px;border-radius:8px">Hotová<br>aplikace.</div></div>`,
+  anim:(t)=>{const a=st('s2');const h2=$('h2');h2.style.opacity=t>=a-.02?1:0;const u=t-a;
+    h2.style.transform=u>=0?`scale(${lerp(1.25,1,e5(u/.16)).toFixed(4)}) translate(${(5*Math.exp(-u/.1)*Math.sin(u*90)).toFixed(2)}px,0)`:'none'},
+  ev:()=>[[0,'hit'],[st('s2')-.02,'slam']]},
+
+ /* 2 · zadání: jediná věta se píše do pole, jak ji hlas čte */
+ {id:'prompt',t0:HOOK_END,t1:PROMPT_END,bg:'#fff',flash:1,
+  fg:()=>`<div class="abs" id="p1" style="left:74px;top:136px;font-size:28px;font-weight:700;color:var(--g);letter-spacing:-.02em">Napsali jsme AI</div>
+   <div class="abs" id="p2" style="left:74px;top:172px;font-size:58px;font-weight:850;letter-spacing:-.045em;line-height:1"><span style="background:linear-gradient(transparent 58%,var(--y) 58%,var(--y) 92%,transparent 92%);padding:0 2px">jediné</span> zadání:</div>
+   <div class="abs" id="pbox" style="left:74px;top:280px;width:392px;height:268px;border:2.5px solid var(--k);border-radius:22px;background:#fff;box-shadow:0 18px 40px rgba(0,0,0,.08)">
+     <div class="mono" style="position:absolute;left:20px;top:16px;font-size:11px;color:var(--g);letter-spacing:.14em">ZADÁNÍ PRO AI</div>
+     <div id="ptx" style="position:absolute;left:20px;right:20px;top:42px;font-size:28px;font-weight:650;line-height:1.3;letter-spacing:-.015em"></div>
+     <div id="psend" style="position:absolute;right:14px;bottom:14px;width:50px;height:50px;border-radius:50%;background:#d9d9d9;display:flex;align-items:center;justify-content:center">
+       <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 18V4M4.5 10.5 11 4l6.5 6.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+   <div class="abs mono" id="pmeta" style="left:74px;top:566px;font-size:14px;color:var(--k)">1 věta · ${WORDS} slov · ${CHARS} znaků</div>`,
+  anim:(t)=>{const a=ck('s3',0),b=ck('s3',1);
+    const p1=$('p1'),p2=$('p2');p1.style.opacity=e5((t-a+.1)/.25);p1.style.transform=`translateY(${(14*(1-e5((t-a+.1)/.25))).toFixed(1)}px)`;
+    p2.style.opacity=t>=b-.03?1:0;p2.style.transform=t>=b-.03?`scale(${lerp(1.12,1,e5((t-b+.03)/.18)).toFixed(4)})`:'none';p2.style.transformOrigin='0 50%';
+    const bx=$('pbox');const ip=e5((t-HOOK_END-.15)/.4);bx.style.opacity=ip;let ty=30*(1-ip);
+    const tx=typed(t);const blink=(TYPE.length&&t<TYPE[0])||t>TYPE[TYPE.length-1]+.05?(Math.floor(t*2.6)%2===0):true;
+    $('ptx').innerHTML=esc(tx)+`<span style="display:inline-block;width:3px;height:30px;background:var(--k);vertical-align:-5px;margin-left:2px;visibility:${blink&&t<SEND?'visible':'hidden'}"></span>`;
+    const full=tx.length>=PROMPT.length;const sd=$('psend');sd.style.background=t>=SEND?'#FFD400':full?'#0B0B0B':'#d9d9d9';
+    const ps=t>=SEND?lerp(.82,1,e5((t-SEND)/.16)):1;sd.style.transform=`scale(${ps.toFixed(3)})`;sd.querySelector('path').setAttribute('stroke',t>=SEND?'#0B0B0B':'#fff');
+    if(t>=SEND){const u=(t-SEND)/(PROMPT_END-SEND);ty-=26*eio(u)}bx.style.transform=`translateY(${ty.toFixed(1)}px)`;
+    const m=$('pmeta');const mp=e5((t-TYPE[TYPE.length-1]-.02)/.25);m.style.opacity=mp;m.style.transform=`translateY(${(10*(1-mp)).toFixed(1)}px)`},
+  ev:()=>[[HOOK_END,'whoosh'],[ck('s3',1)-.03,'pop'],...TYPE.map((x,i)=>[x,'key',i]),[SEND,'send']]},
+
+ /* 3 · stavba: skutečný kód aplikace (přehraný zrychleně), skutečný čas stavby */
+ {id:'build',t0:PROMPT_END,t1:BUILD_END,bg:'#0B0B0B',flash:1,cap:['s5'],capY:668,capStyle:'light',
+  fg:()=>`<div class="abs mono" id="bst" style="left:74px;top:138px;font-size:15px;color:#fff;display:flex;align-items:center;gap:9px"><i id="bdot" style="width:10px;height:10px;border-radius:50%;background:var(--y);display:block"></i><span id="bstt">AI píše kód</span></div>
+   <div class="abs mono" id="btim" style="right:74px;top:128px;font-size:30px;color:#fff;letter-spacing:.02em">00:00</div>
+   <div class="abs mono" id="bsub" style="left:74px;top:168px;font-size:10.5px;color:#8a8a8a;letter-spacing:.06em">skutečný čas stavby · záznam zrychlen</div>
+   <div class="ed" id="ed"><div class="tb"><i></i><i></i><i></i><span>index.html</span></div><div class="code" id="code"></div>
+     <div class="sb"><span id="bln">řádek 0 / ${NL}</span><span>HTML · CSS · JS</span></div>
+     <div class="pal" id="pal"><div class="t">design</div><div class="r">${PALETTE.map(([n,c],i)=>`<div class="w" data-i="${i}"><b style="background:${c}"></b><em>${c}</em></div>`).join('')}</div></div></div>
+   <div class="abs" id="brun" style="left:0;right:0;top:146px;text-align:center;opacity:0"><span class="pill" style="background:var(--y);color:var(--k);font-size:17px;padding:8px 16px">▶ Spuštěno v prohlížeči</span></div>`,
+  anim:(t)=>{const p=clamp((t-CODE0)/(CODE1-CODE0));const n=Math.min(NL,Math.floor(lerp(0,NL,p))+(t>=CODE0?1:0));
+    const V=21,s0=Math.max(0,n-V);let h='';for(let i=s0;i<n;i++)h+=`<div class="ln${i===n-1&&t<DONE?' cur':''}"><u>${i+1}</u>${HL[i]||' '}</div>`;$('code').innerHTML=h;
+    $('bln').textContent=`řádek ${n} / ${NL}`;const sec=Math.round(A.build_s*clamp((t-CODE0)/(DONE-CODE0)));
+    $('btim').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;$('btim').style.color=t>=DONE?'#FFD400':'#fff';
+    $('bstt').textContent=t>=DONE?'Hotovo · aplikace běží':'AI píše kód';$('bdot').style.opacity=t>=DONE?1:(.35+.65*(Math.floor(t*4)%2));
+    document.querySelectorAll('#pal .w').forEach(w=>{const a=PAL+.09*(+w.dataset.i);w.style.opacity=t>=a?1:0;w.style.transform=`scale(${t>=a?lerp(.5,1,back((t-a)/.22)).toFixed(3):.5})`});
+    $('pal').style.opacity=t>=PAL-.05?1:0;
+    const ed=$('ed'),q=eio((t-V0+.05)/.32);ed.style.opacity=1-q;ed.style.transform=`scale(${lerp(1,.86,q).toFixed(4)})`;
+    const r=$('brun');r.style.opacity=t>=V0+.1?e5((t-V0-.1)/.25):0;
+    ['bst','btim','bsub'].forEach(id=>$(id).style.opacity=1-q)},
+  ev:()=>[[PROMPT_END,'dark'],[CODE0,'code',CODE1-CODE0],...PALETTE.map((_,i)=>[PAL+.09*i,'pop',i]),[DONE,'success'],[V0,'launch']]},
+
+ /* 4 · bez jediného řádku od nás */
+ {id:'zero',t0:BUILD_END,t1:ZERO_END,bg:'#fff',flash:1,
+  fg:()=>`<div class="abs mono" style="left:74px;top:140px;font-size:13px;color:var(--g);letter-spacing:.16em">ŘÁDKY KÓDU</div>
+   <div class="abs" style="left:74px;top:176px;font-size:30px;font-weight:750;letter-spacing:-.02em">Napsala AI</div>
+   <div class="abs" style="left:70px;top:206px;display:flex;align-items:baseline;gap:12px"><span id="zn" style="font-size:150px;font-weight:850;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums">0</span><span style="font-size:26px;font-weight:700;color:var(--g)">řádků</span></div>
+   <div class="abs" style="left:74px;top:372px;width:392px;height:12px;border-radius:6px;background:#efefef"><div id="zbar" style="height:12px;border-radius:6px;background:var(--k);width:0"></div></div>
+   <div class="abs" style="left:74px;top:420px;font-size:30px;font-weight:750;letter-spacing:-.02em">Napsali jsme my</div>
+   <div class="abs" id="z0" style="left:70px;top:468px;display:flex;align-items:baseline;gap:12px;transform-origin:20% 60%"><span style="font-size:150px;font-weight:850;letter-spacing:-.05em;line-height:1;background:var(--y);padding:0 18px 4px;border-radius:10px">0</span><span style="font-size:26px;font-weight:700;color:var(--g)">řádků</span></div>
+   <div class="abs" style="left:74px;top:652px;width:392px;height:12px;border-radius:6px;background:#efefef"><div style="height:12px;width:10px;border-radius:6px;background:var(--y)"></div></div>`,
+  anim:(t)=>{const a=BUILD_END+.1,p=eo((t-a)/.85);$('zn').textContent=Math.round(NL*p);$('zbar').style.width=(392*p).toFixed(1)+'px';
+    const z=$('z0'),u=t-ZSLAM;z.style.opacity=u>=0?1:0;z.style.transform=u>=0?`scale(${lerp(1.5,1,e5(u/.14)).toFixed(4)}) translate(${(7*Math.exp(-u/.12)*Math.sin(u*95)).toFixed(2)}px,${(5*Math.exp(-u/.12)*Math.sin(u*80)).toFixed(2)}px)`:'none'},
+  ev:()=>[[BUILD_END,'hit'],[BUILD_END+.1,'count',.85],[ZSLAM,'stamp']]},
+
+ /* 5 · ukázka: zadáš lidi a mzdu, start, porada pálí peníze */
+ {id:'demo',t0:ZERO_END,t1:DEMO_END,bg:'#fff',flash:1,cap:['s7','s8','s9'],capY:128,capStyle:t=>t<DARK+.1?'dark':'light',
+  fg:()=>``,
+  bgAnim:(t,el)=>{const p=e5((t-DARK)/.28);el.style.background=`rgb(${Math.round(lerp(255,11,p))},${Math.round(lerp(255,11,p))},${Math.round(lerp(255,11,p))})`},
+  ev:()=>[[ZERO_END,'hit'],...A.taps.map(([k,a],i)=>[a,'tap',i]),[GO+.02,'power'],[DARK,'fire',SHARE_END-DARK],[FF0,'ff',FF1-FF0],[FF1,'cash']]},
+
+ /* 6 · pošli to tomu, kdo svolává zbytečné porady */
+ {id:'share',t0:DEMO_END,t1:SHARE_END,bg:'#0B0B0B',
+  fg:()=>`<div class="abs" style="left:74px;right:74px;top:132px;color:#fff;font-size:42px;font-weight:850;letter-spacing:-.04em;line-height:1.07">
+     <div id="s1">Pošli to tomu,</div><div id="s2">kdo svolává<br><span style="color:var(--y)">zbytečné porady.</span></div></div>
+   <svg class="abs" id="plane" width="540" height="960" viewBox="0 0 540 960" style="left:0;top:0;overflow:visible"><path id="ptrail" d="" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
+     <g id="pg"><path d="M0 0 L-30 -11 L-22 0 L-30 11 Z" fill="#fff"/><path d="M-22 0 L-30 11 L-14 3 Z" fill="#cfcfcf"/></g></svg>`,
+  anim:(t)=>{[['s1',ck('s10',0)],['s2',ck('s10',1)]].forEach(([id,a])=>{const e=$(id),p=e5((t-a+.04)/.22);e.style.opacity=t>=a-.04?p:0;e.style.transform=`translateY(${(16*(1-p)).toFixed(1)}px)`});
+    const u=(t-PLANE)/.75;const pt=k=>{const x=lerp(-20,580,k),y=820-640*k-120*Math.sin(Math.PI*k);return [x,y]};
+    if(u>=0&&u<=1.3){const k=eio(clamp(u));const [x,y]=pt(k);const [x2,y2]=pt(Math.min(1,k+.01));const ang=Math.atan2(y2-y,x2-x)*180/Math.PI;
+      $('pg').setAttribute('transform',`translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${ang.toFixed(1)}) scale(1.25)`);let d='';const k0=Math.max(0,k-.45);
+      for(let j=0;j<=24;j++){const kk=lerp(k0,k,j/24);const [a,b]=pt(kk);d+=(j?'L':'M')+a.toFixed(1)+' '+b.toFixed(1)}$('ptrail').setAttribute('d',d);$('plane').style.opacity=u<1?1:clamp(1-(u-1)/.3)}
+    else $('plane').style.opacity=0},
+  ev:()=>[[ck('s10',0)-.04,'pop'],[ck('s10',1)-.04,'pop',2],[PLANE,'plane']]},
+
+ /* 7 · výzva: co máme postavit příště */
+ {id:'end',t0:SHARE_END,t1:END,bg:'#fff',flash:1,
+  fg:()=>`<div class="abs" id="e0" style="left:74px;top:136px"><span class="chip">JEDNA VĚTA · #01</span></div>
+   <div class="abs" style="left:74px;top:184px;font-size:64px;font-weight:850;letter-spacing:-.05em;line-height:1">
+     <div id="e1">Co máme</div><div id="e2"><span style="background:var(--y);padding:0 10px 4px;border-radius:8px;margin-left:-4px">postavit</span></div><div id="e3">příště?</div></div>
+   <div class="abs" id="e4" style="left:74px;top:420px;width:392px;height:62px;border-radius:999px;border:2.5px solid var(--k);display:flex;align-items:center;padding:0 10px 0 22px;gap:10px;background:#fff">
+     <span style="flex:1;font-size:21px;font-weight:600;color:#9a9a9a">Napiš nápad do komentářů</span><span style="font-size:26px">👇</span></div>
+   <div class="abs mono" id="e5" style="left:74px;top:508px;font-size:13px;color:var(--k)">1 věta · ${Math.floor(A.build_s/60)} min ${Math.round(A.build_s%60)} s · 0 řádků od nás</div>
+   <div class="abs" id="e6" style="left:74px;top:640px;display:flex;align-items:center;gap:14px"><div style="background:var(--k);border-radius:9px;padding:10px 13px;display:flex">${uzel(22,'#fff')}</div>
+     <div><div style="font-size:21px;font-weight:800;letter-spacing:-.03em">Better Digital</div><div class="mono" style="font-size:11px;color:#6a6a6a;margin-top:3px">betterdigital.cz</div></div></div>`,
+  anim:(t)=>{const W=[['e0',SHARE_END+.05],['e1',ck('s11',0)+.25],['e2',ck('s11',1)-.02],['e3',ck('s11',1)+.36],['e4',en('s11')+.08],['e5',en('s11')+.4],['e6',en('s11')+.75]];
+    W.forEach(([id,a])=>{const e=$(id),p=e5((t-a)/.24);e.style.opacity=t>=a?p:0;e.style.transform=`translateY(${(18*(1-p)).toFixed(1)}px)`})},
+  ev:()=>[[SHARE_END+.05,'pop'],[ck('s11',0)+.25,'pop',1],[ck('s11',1)-.02,'slam2'],[ck('s11',1)+.36,'pop',3],[en('s11')+.08,'notif'],[en('s11')+.75,'pop',2]]},
+];
+
+/* ------------------------------------------------------------ sestavení */
+const stage=$('stage'),over=$('over');
+SCN.forEach(s=>{const b=document.createElement('div');b.className='sc';b.style.background=s.bg;stage.appendChild(b);s.bgEl=b;
+  const f=document.createElement('div');f.className='fg';f.innerHTML=s.fg();over.appendChild(f);s.fgEl=f});
+const EV=[];SCN.forEach(s=>{if(s.ev)EV.push(...s.ev(s))});
+SCN.forEach((s,i)=>{if(i&&s.flash)EV.push([s.t0,'flash'])});
+EV.sort((a,b)=>a[0]-b[0]);window.EV=EV;
+
+/* uhlíky (porada „pálí peníze“) */
+const EC=$('emb').getContext('2d');const ER=rng(77);const EMB=[...Array(90)].map(()=>({x:ER()*540,sp:70+ER()*170,ph:ER()*1200,r:1.2+ER()*3.2,w:ER()*6.28,hue:ER()}));
+function embers(t){EC.setTransform(2,0,0,2,0,0);EC.clearRect(0,0,540,960);if(t<DARK||t>=SHARE_END)return;
+  const ramp=clamp((t-DARK)/.6)*(1-clamp((t-SHARE_END+.25)/.25));const ff=clamp((t-FF0)/(FF1-FF0));const boost=1+1.6*Math.sin(Math.PI*ff)*(t<FF1+.1?1:0);
+  const g=EC.createRadialGradient(270,1000,40,270,1000,560);g.addColorStop(0,`rgba(255,90,31,${(.55*ramp*(.6+.4*Math.min(boost,1.6))).toFixed(3)})`);g.addColorStop(.5,`rgba(255,176,32,${(.16*ramp).toFixed(3)})`);g.addColorStop(1,'rgba(255,176,32,0)');
+  EC.fillStyle=g;EC.fillRect(0,0,540,960);
+  for(const e of EMB){const y=980-((t*e.sp*boost+e.ph)%1150);const x=e.x+14*Math.sin(t*1.7+e.w)+(y<500?(e.x-270)*.08:0);const a=ramp*clamp((y+30)/520)*(.55+.45*Math.sin(t*9+e.w*3));
+    EC.fillStyle=e.hue<.55?`rgba(255,${Math.round(150+80*e.hue)},40,${a.toFixed(3)})`:`rgba(255,212,0,${a.toFixed(3)})`;EC.beginPath();EC.arc(x,y,e.r,0,6.283);EC.fill()}}
+
+/* globální štítky: zrychlení a výsledek hodiny */
+const ffb=document.createElement('div');ffb.className='abs';ffb.style.cssText='left:0;right:0;top:676px;text-align:center;z-index:3';
+ffb.innerHTML=`<span class="pill" style="background:var(--y);color:var(--k);font-size:21px;padding:10px 18px">⏩ 1 hodina porady za 3 sekundy</span><div style="margin-top:8px"><span class="mono" style="font-size:11px;color:#d0d0d0;background:rgba(11,11,11,.85);padding:4px 9px;border-radius:5px">záznam aplikace · čas zrychlen</span></div>`;over.appendChild(ffb);
+const hr=document.createElement('div');hr.className='abs';hr.style.cssText='left:0;right:0;top:676px;text-align:center;z-index:3';
+const PH_TXT=A.final.perHour.replace(/ /g,' ');
+hr.innerHTML=`<span class="pill" style="background:#fff;color:var(--k);font-size:22px;padding:10px 18px">${A.final.people} lidí × 1 hodina = <span style="background:var(--y);padding:0 8px;border-radius:6px">${PH_TXT}</span></span>`;over.appendChild(hr);
+
+window.render=async function(t){
+  let k=SCN.length-1;for(let i=0;i<SCN.length;i++)if(t<SCN[i].t1){k=i;break}
+  const s=SCN[k];
+  SCN.forEach(q=>{const on=q===s;q.bgEl.style.display=on?'block':'none';q.fgEl.style.display=on?'block':'none'});
+  if(s.bgAnim)s.bgAnim(t,s.bgEl);
+  s.anim&&s.anim(t,s);
+  /* telefon */
+  const ph=phoneAt(t),P=$('phone');
+  if(ph.on){P.style.display='block';P.style.transform=`translate(${ph.x.toFixed(2)}px,${ph.y.toFixed(2)}px) scale(${ph.s.toFixed(4)}) rotate(${(ph.rot||0).toFixed(2)}deg)`;P.style.opacity=(ph.op??1).toFixed(3);
+    P.style.boxShadow=t>=DARK&&t<SHARE_END?'0 0 0 2px #2b2b30 inset,0 0 60px rgba(255,120,30,.35)':'0 0 0 2px #2b2b30 inset,0 34px 80px rgba(0,0,0,.30)';await setFrame(ph.v)}
+  else P.style.display='none';
+  /* ťuknutí */
+  const tp=$('tap');tp.style.display='none';
+  if(ph.on&&t>=ZERO_END&&t<DEMO_END)for(const [name,a] of A.taps){const u=t-a;if(u>=-.06&&u<.42){const [ax,ay]=ctr(name);const [x,y]=toStage(ph,ax,ay);
+    tp.style.display='block';tp.style.left=x.toFixed(1)+'px';tp.style.top=y.toFixed(1)+'px';const p=clamp((u+.06)/.48);tp.style.transform=`scale(${(u<0?1.25:lerp(.75,1.35,e5(u/.42))).toFixed(3)})`;tp.style.opacity=(u<0?.9:1-p*p).toFixed(3)}}
+  /* štítky zrychlení */
+  const fp=e5((t-FF0-.15)/.3),fo=1-clamp((t-FF1-.05)/.2);ffb.style.display=t>=FF0&&t<FF1+.3?'block':'none';ffb.style.opacity=(fp*fo).toFixed(3);ffb.style.transform=`translateY(${(14*(1-fp)).toFixed(1)}px)`;
+  const hp=back((t-FF1-.2)/.3);hr.style.display=t>=FF1+.2&&t<SHARE_END?'block':'none';hr.style.transform=`scale(${lerp(.7,1,hp).toFixed(3)})`;
+  embers(t);
+  /* titulky */
+  const cap=$('cap');let html='';if(s.cap){for(const [cs,i,txt,a,b] of T.chunks){if(s.cap.includes(cs)&&t>=a&&t<b+.02&&t>=s.t0-.01){html=txt.replace(/\*(.+?)\*/g,'<b>$1</b>');break}}}
+  cap.innerHTML=html?`<span>${html}</span>`:'';cap.style.top=(s.capY||664)+'px';cap.className=typeof s.capStyle==='function'?s.capStyle(t):(s.capStyle||'dark');
+  /* záblesk na střihu */
+  let fl=0;for(const q of SCN)if(q.flash&&t>=q.t0&&t<q.t0+.12)fl=Math.max(fl,.7*(1-(t-q.t0)/.12));$('flash').style.opacity=fl.toFixed(3);
+};
+const FL=['850 20px IT','800 20px IT','750 20px IT','700 20px IT','650 20px IT','600 20px IT','20px JB'];
+Promise.all(FL.map(f=>document.fonts.load(f,'ěščřžýáíéúůťďňĚŠČŘŽ„“…—·−✓▶⏩×')))
+ .then(()=>document.fonts.ready).then(()=>render(0)).then(()=>{window.READY=true});
+</script></body></html>

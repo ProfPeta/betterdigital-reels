@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kolik stojí tahle porada?</title>
+<style>
+  :root {
+    --bg: #0e0e10;
+    --card: #17171b;
+    --line: #26262c;
+    --text: #f4f4f5;
+    --muted: #8b8b94;
+    --fire: #ff5a1f;
+    --fire2: #ffb020;
+    --heat: 0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex; justify-content: center;
+  }
+  .glow {
+    position: fixed; inset: auto 0 0 0; height: 70vh; pointer-events: none;
+    background: radial-gradient(120% 80% at 50% 100%, rgba(255, 90, 31, .55), rgba(255, 176, 32, .12) 45%, transparent 70%);
+    opacity: calc(var(--heat) * .9); transition: opacity .6s;
+  }
+  main { position: relative; width: 100%; max-width: 460px; padding: 28px 20px 32px; }
+  .eyebrow { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  h1 { font-size: 26px; line-height: 1.15; margin: 6px 0 22px; letter-spacing: -.02em; }
+
+  .meter { text-align: center; padding: 26px 12px 22px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); position: relative; overflow: hidden; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #55555d; }
+  .running .dot { background: var(--fire); box-shadow: 0 0 0 0 rgba(255, 90, 31, .7); animation: pulse 1.4s infinite; }
+  .running .status { color: var(--fire2); }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(255, 90, 31, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 90, 31, 0); } }
+  .cost {
+    font-size: clamp(44px, 14vw, 62px); font-weight: 800; letter-spacing: -.03em; line-height: 1; margin: 16px 0 10px;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+    color: color-mix(in srgb, var(--fire2) calc(var(--heat) * 100%), var(--text));
+  }
+  .time { font-size: 18px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .compare { margin-top: 12px; font-size: 14px; color: var(--muted); min-height: 1.3em; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 18px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 10px; }
+  .stat b { display: block; font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .stat span { font-size: 12px; color: var(--muted); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .row + .row { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  label { font-size: 15px; font-weight: 600; }
+  .hint { display: block; font-size: 12px; color: var(--muted); font-weight: 400; margin-top: 2px; }
+  .stepper { display: flex; align-items: center; gap: 4px; }
+  .stepper button { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--line); background: #202026; color: var(--text); font-size: 22px; cursor: pointer; }
+  .stepper output { min-width: 44px; text-align: center; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .money { display: flex; align-items: baseline; gap: 6px; background: #202026; border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+  .money input { width: 92px; background: none; border: 0; color: var(--text); font: inherit; font-size: 20px; font-weight: 700; text-align: right; outline: none; font-variant-numeric: tabular-nums; }
+  .money span { color: var(--muted); font-size: 13px; }
+  .chips { display: flex; gap: 6px; margin-top: 10px; }
+  .chips button { flex: 1; padding: 8px 0; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; }
+  .chips button.on { border-color: var(--fire); color: var(--text); }
+  .switch { position: relative; width: 48px; height: 28px; flex: none; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch i { position: absolute; inset: 0; border-radius: 99px; background: #33333a; transition: .2s; }
+  .switch i::after { content: ""; position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: .2s; }
+  .switch input:checked + i { background: var(--fire); }
+  .switch input:checked + i::after { transform: translateX(20px); }
+
+  .actions { display: flex; gap: 10px; margin-top: 18px; }
+  .go { flex: 1; height: 56px; border: 0; border-radius: 16px; font: inherit; font-size: 18px; font-weight: 800; cursor: pointer; color: #160800;
+        background: linear-gradient(135deg, var(--fire2), var(--fire)); }
+  .running .go { background: #f4f4f5; }
+  .reset { width: 120px; height: 56px; border-radius: 16px; border: 1px solid var(--line); background: transparent; color: var(--text); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .note { font-size: 11.5px; line-height: 1.5; color: #6d6d75; margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<main id="app">
+  <div class="eyebrow">Kalkulačka porad</div>
+  <h1>Kolik stojí tahle porada?</h1>
+
+  <section class="meter">
+    <div class="status"><span class="dot"></span><span id="status">Připraveno</span></div>
+    <div class="cost" id="cost">0,00 Kč</div>
+    <div class="time" id="time">00:00:00</div>
+    <div class="compare" id="compare">Spusť ji a sleduj, jak rostou náklady.</div>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><b id="perMin">0 Kč</b><span>za minutu</span></div>
+    <div class="stat"><b id="perHour">0 Kč</b><span>za hodinu</span></div>
+    <div class="stat"><b id="perHead">0 Kč</b><span>na osobu / h</span></div>
+  </div>
+
+  <section class="card">
+    <div class="row">
+      <label>Počet lidí<span class="hint">kolik jich sedí v místnosti</span></label>
+      <div class="stepper">
+        <button id="minus" aria-label="Ubrat">−</button>
+        <output id="people">6</output>
+        <button id="plus" aria-label="Přidat">+</button>
+      </div>
+    </div>
+    <div class="row" style="display:block">
+      <div class="row" style="margin:0;padding:0;border:0">
+        <label for="salary">Průměrná hrubá mzda<span class="hint">zhruba, na jednoho člověka</span></label>
+        <div class="money"><input id="salary" type="text" inputmode="numeric" value="45 000"><span>Kč/měs.</span></div>
+      </div>
+      <div class="chips" id="chips">
+        <button data-v="35000">35 tis.</button>
+        <button data-v="50000">50 tis.</button>
+        <button data-v="80000">80 tis.</button>
+      </div>
+    </div>
+    <div class="row">
+      <label for="levies">Odvody zaměstnavatele<span class="hint">sociální 24,8 % + zdravotní 9 %</span></label>
+      <span class="switch"><input id="levies" type="checkbox" checked><i></i></span>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="go" id="go">Spustit poradu</button>
+    <button class="reset" id="reset">Vynulovat</button>
+  </div>
+
+  <p class="note">Hodinová cena práce = hrubá mzda ÷ 173,3 hodiny (plný úvazek 40 h týdně), s odvody × 1,338. Káva počítaná za 65 Kč.</p>
+</main>
+
+<script>
+  const HOURS_PER_MONTH = 40 * 52 / 12;   // 173,3 h
+  const LEVIES = 1.338;                   // 24,8 % sociální + 9 % zdravotní
+  const COFFEE = 65;
+
+  const $ = id => document.getElementById(id);
+  const kc = (v, d = 2) => new Intl.NumberFormat('cs-CZ', { minimumFractionDigits: d, maximumFractionDigits: d }).format(v) + ' Kč';
+  const pad = n => String(Math.floor(n)).padStart(2, '0');
+
+  const state = { people: 6, salary: 45000, levies: true, running: false, cost: 0, elapsed: 0, since: 0 };
+
+  const perSecond = () => state.people * state.salary * (state.levies ? LEVIES : 1) / (HOURS_PER_MONTH * 3600);
+
+  // Náklady se sčítají po úsecích, takže změna počtu lidí nebo mzdy během porady nepřepočítá to, co už proběhlo.
+  function commit(now = Date.now()) {
+    if (!state.running) return;
+    const dt = (now - state.since) / 1000;
+    state.cost += dt * perSecond();
+    state.elapsed += dt;
+    state.since = now;
+  }
+
+  function current(now = Date.now()) {
+    if (!state.running) return { cost: state.cost, elapsed: state.elapsed };
+    const dt = (now - state.since) / 1000;
+    return { cost: state.cost + dt * perSecond(), elapsed: state.elapsed + dt };
+  }
+
+  function coffees(cost) {
+    const n = Math.floor(cost / COFFEE);
+    if (n < 1) return state.running ? 'Zatím ani na jedno kafe…' : 'Spusť ji a sleduj, jak rostou náklady.';
+    const word = n === 1 ? 'kafe' : 'kafí';
+    return `☕ To už je ${n} ${word}`;
+  }
+
+  function draw() {
+    const { cost, elapsed } = current();
+    $('cost').textContent = kc(cost);
+    $('time').textContent = `${pad(elapsed / 3600)}:${pad(elapsed / 60 % 60)}:${pad(elapsed % 60)}`;
+    $('compare').textContent = coffees(cost);
+    const ps = perSecond();
+    $('perMin').textContent = kc(ps * 60, 0);
+    $('perHour').textContent = kc(ps * 3600, 0);
+    $('perHead').textContent = kc(ps * 3600 / state.people, 0);
+    document.documentElement.style.setProperty('--heat', Math.min(1, cost / 5000).toFixed(3));
+    requestAnimationFrame(draw);
+  }
+
+  function setPeople(n) { commit(); state.people = Math.max(1, Math.min(200, n)); $('people').textContent = state.people; }
+  function setSalary(v) {
+    commit();
+    state.salary = Math.max(0, Math.min(1e7, Math.round(v) || 0));
+    $('salary').value = new Intl.NumberFormat('cs-CZ').format(state.salary);
+    document.querySelectorAll('#chips button').forEach(b => b.classList.toggle('on', +b.dataset.v === state.salary));
+  }
+
+  function toggle() {
+    const now = Date.now();
+    if (state.running) { commit(now); state.running = false; }
+    else { state.running = true; state.since = now; }
+    $('app').classList.toggle('running', state.running);
+    $('go').textContent = state.running ? 'Pozastavit' : (state.elapsed > 0 ? 'Pokračovat' : 'Spustit poradu');
+    $('status').textContent = state.running ? 'Porada běží' : (state.elapsed > 0 ? 'Pozastaveno' : 'Připraveno');
+  }
+
+  function reset() {
+    state.cost = 0; state.elapsed = 0; state.since = Date.now();
+    if (state.running) toggle();
+    $('go').textContent = 'Spustit poradu'; $('status').textContent = 'Připraveno';
+  }
+
+  $('minus').onclick = () => setPeople(state.people - 1);
+  $('plus').onclick = () => setPeople(state.people + 1);
+  $('salary').addEventListener('input', e => {
+    const digits = e.target.value.replace(/\D/g, '');
+    commit(); state.salary = Math.min(1e7, +digits || 0);
+    document.querySelectorAll('#chips button').forEach(b => b.classList.toggle('on', +b.dataset.v === state.salary));
+  });
+  $('salary').addEventListener('blur', () => setSalary(state.salary));
+  $('chips').addEventListener('click', e => { if (e.target.dataset.v) setSalary(+e.target.dataset.v); });
+  $('levies').addEventListener('change', e => { commit(); state.levies = e.target.checked; });
+  $('go').onclick = toggle;
+  $('reset').onclick = reset;
+  document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target.tagName !== 'INPUT') { e.preventDefault(); toggle(); } });
+
+  setSalary(state.salary);
+  requestAnimationFrame(draw);
+</script>
+</body>
+</html>
