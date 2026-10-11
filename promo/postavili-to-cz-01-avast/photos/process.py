@@ -1,6 +1,7 @@
 """Fotky a loga pro POSTAVILI TO · Česká edice #1 (Avast). Zdroje v photos/src/ nahrál Petr, licence neověřené –
 zdroje ani zpracované verze nejsou ve veřejném repu (.gitignore).
-  baudis_cut.png / kucera_cut.png   portréty zakladatelů, vyříznuté (rembg)
+  baudis_cut.png / kucera_cut.png   portréty zakladatelů, vyříznuté (rembg) – Baudiš je ten s pleší, Kučera s brýlemi
+  baudis_young.jpg                  mladý Pavel Baudiš u stolu s počítači (archivní fotka), mírně dorovnané barvy
   duo.jpg                           oba zakladatelé na vyhlídce nad Prahou, barevná úprava
   olivetti_cut.png                  Olivetti M24 bez růžového pozadí (rembg)
   logo_*.png                        loga Avast, AVG, McAfee, Norton na průhledném pozadí, oříznutá
@@ -51,6 +52,14 @@ def founders():
         save(cutout(im, w, 1.15, 1.05, .95), name, optimize=True)
 
 
+def young():
+    im = src('baudis_young*')
+    if im is None: return
+    im = ImageEnhance.Contrast(ImageEnhance.Color(im).enhance(.95)).enhance(1.06)
+    im = im.filter(ImageFilter.UnsharpMask(radius=1.4, percent=60, threshold=2))
+    save(im.resize((round(im.width * 900 / im.height), 900) if im.height < 900 else im.size, Image.LANCZOS), 'baudis_young.jpg', quality=92)
+
+
 def duo():
     im = src('duo*')
     if im is None: return
@@ -79,4 +88,4 @@ def logos():
 
 if __name__ == '__main__':
     import sys
-    for f in (sys.argv[1:] or ['founders', 'duo', 'olivetti', 'logos']): globals()[f]()
+    for f in (sys.argv[1:] or ['founders', 'young', 'duo', 'olivetti', 'logos']): globals()[f]()

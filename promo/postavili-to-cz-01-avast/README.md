@@ -61,7 +61,8 @@ Všechno nahrál Petr. Licence nejsou ověřené, proto zdroje ani zpracované v
 | Soubor v `photos/src/` | Použití |
 |---|---|
 | `olivetti_m24.jpg` | výřez počítače se zelenou obrazovkou (háček, 1988, závěr) |
-| `baudis.jpg`, `kucera.jpg` | zakladatelé (listopad 1989, s popiskem „foto dnes“), Baudiš i u „miliardáře“ |
+| `baudis.jpg` (s pleší), `kucera.jpg` (s brýlemi) | zakladatelé (listopad 1989, s popiskem „foto dnes“), Baudiš i u „miliardáře“ |
+| `baudis_young.webp` | mladý Pavel Baudiš u stolu s počítači („skončí na stole mladého grafika“), označené jako archivní foto |
 | `duo.webp` | nadace |
 | `logo_avast.webp`, `logo_avg.jpg`, `logo_mcafee.webp`, `logo_norton.jpg` | jméno, McAfee, AVG, Norton |
 
