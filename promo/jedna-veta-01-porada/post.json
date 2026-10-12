@@ -18,11 +18,15 @@
       "note": "Štítek AI kvůli hlasu z ElevenLabs. Bez prodeje, stejně jako POSTAVILI TO."
     }
   },
-  "status": "scheduled",
+  "status": "published",
   "publishAt": "2026-10-12T10:00:00+02:00",
   "metricool": {
     "id": "393492239",
     "uuid": "6267452616128547969",
     "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=6267452616128547969"
+  },
+  "published": {
+    "instagram": "https://www.instagram.com/reel/DeYwvK6jP8u/",
+    "tiktok": "https://www.tiktok.com/@betterdigital.cz/video/7695689155275132182"
   }
 }
