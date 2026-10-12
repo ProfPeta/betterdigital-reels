@@ -19,5 +19,11 @@
     }
   },
   "rightsNote": "Fotky zakladatelů, Olivetti M24 a loga (Avast, AVG, McAfee, Norton) nahrál Petr, licence neověřené; loga jsou ochranné známky svých vlastníků (použita zpravodajsky). Ve veřejném repu nejsou.",
-  "status": "ready – zatím neplánováno"
+  "status": "scheduled",
+  "publishAt": "2026-10-12T16:00:00+02:00",
+  "metricool": {
+    "id": "394038673",
+    "uuid": "-6573782085969492740",
+    "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-6573782085969492740"
+  }
 }
