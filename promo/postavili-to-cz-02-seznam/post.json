@@ -1,0 +1,13 @@
+{
+  "platform": "tiktok+instagram",
+  "series": "POSTAVILI TO · Česká edice",
+  "episode": 2,
+  "text": "Dva roky před Googlem spustil student z ložnice rodičů český vyhledávač. 🇨🇿\n\nStartovní kapitál 80 000 Kč, modem, který v noci budil tátu, rok bez platu. A Google ho tu roky nedokázal porazit.\n\nKterou českou firmu chceš v dalším díle? Napiš to do komentářů 👇\n\n#seznam #podnikani #startup #technologie #ceskyinternet",
+  "firstComment": "Zdroje: Forbes CZ (20 let Seznamu), Seznam Zprávy (30 let Seznamu), E15 (Ivo Lukačovič). Fotka psa je ilustrační.",
+  "coverMs": 10200,
+  "settings": {
+    "instagramData": {"type": "REEL", "showReelOnFeed": true, "isAiGenerated": true},
+    "tiktokData": {"privacyOption": "PUBLIC_TO_EVERYONE", "commercialContentOwnBrand": false, "isAigc": true, "note": "Štítek AI kvůli hlasu z ElevenLabs."}
+  },
+  "status": "draft"
+}

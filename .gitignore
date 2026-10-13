@@ -16,3 +16,13 @@ promo/postavili-to-cz-01-avast/photos/src/
 promo/postavili-to-cz-01-avast/photos/*.png
 promo/postavili-to-cz-01-avast/photos/*.jpg
 promo/postavili-to-cz-01-avast/qa*/
+# POSTAVILI TO · Česká edice #2 (Seznam): fotky a loga od Petra bez ověřené licence – jen lokálně
+promo/postavili-to-cz-02-seznam/photos/src/
+promo/postavili-to-cz-02-seznam/photos/*.png
+promo/postavili-to-cz-02-seznam/photos/*.jpg
+promo/postavili-to-cz-02-seznam/qa*/
+promo/postavili-to-cz-02-seznam/raw.mp4
+promo/postavili-to-cz-02-seznam/full.mp4
+promo/postavili-to-cz-02-seznam/audio.wav
+promo/postavili-to-cz-02-seznam/qa_sheet.jpg
+promo/postavili-to-cz-02-seznam/voice/prep.log

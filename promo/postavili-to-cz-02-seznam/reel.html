@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8"><title>POSTAVILI TO · Česká edice #2 – Seznam</title>
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+@font-face{font-family:VT;src:url(../../engine/fonts/vt323-latin-ext-400-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:VT;src:url(../../engine/fonts/vt323-latin-400-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026}
+@font-face{font-family:IS;src:url(../../engine/fonts/instrument-serif-latin-ext-400-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:IS;src:url(../../engine/fonts/instrument-serif-latin-400-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026}
+:root{--sz:#D0021B;--navy:#10131C;--grn:#2BB673;--red:#E5322D;--y:#FFD400;--g:#9AA3B5}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden;background:#000}
+body{font-family:IT,'Noto Color Emoji',sans-serif;-webkit-font-smoothing:antialiased;position:relative;color:#fff}
+.abs{position:absolute}
+#stage{position:absolute;left:0;top:0;width:540px;height:960px;z-index:0}
+.sc{position:absolute;inset:0;overflow:hidden;display:none}
+.cam{position:absolute;inset:0;transform-origin:50% 45%}
+.navy{background:var(--navy)}.paper{background:#EFEDE6;color:#111}.white{background:#fff;color:#111}.night{background:#070A18}
+.dred{background:#140405}.teal{background:#0d7a7a}.board{background:#0B0B0B}.dark{background:#0a0a0d}.forest{background:#08140e}.sky{background:#0c1830}.wine{background:#1a0306}
+.mono{font-family:JB,monospace;letter-spacing:.06em;white-space:nowrap}
+.vt{font-family:VT,monospace;line-height:1}
+.big{font-weight:900;letter-spacing:-.045em;line-height:.95;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:10px;background:var(--y);color:#0E0E0E;font-weight:900;font-size:19px;letter-spacing:-.01em;padding:6px 12px 6px;border-radius:6px}
+.badge b{font-family:JB;font-size:11px;font-weight:500;letter-spacing:.12em}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 14px 5px;font-family:JB;font-size:13px;letter-spacing:.08em;white-space:nowrap}
+.stamp{display:inline-block;font-weight:900;font-size:50px;color:var(--red);border:6px solid var(--red);padding:2px 18px 4px;letter-spacing:.02em;line-height:1.05;white-space:nowrap;border-radius:6px}
+.stamp.gr{color:#1f9d5c;border-color:#1f9d5c}
+.card{position:absolute;background:#fff;color:#111;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.win{position:absolute;background:#C0C0C0;box-shadow:inset -2px -2px 0 #404040,inset 2px 2px 0 #fff,0 18px 40px rgba(0,0,0,.35);padding:4px}
+.wtb{height:28px;background:linear-gradient(90deg,#000080,#1084d0);display:flex;align-items:center;justify-content:space-between;padding:0 6px;font-family:JB;font-size:12px;color:#fff;letter-spacing:.02em;white-space:nowrap}
+.wtb i{font-style:normal;width:20px;height:18px;background:#C0C0C0;color:#000;display:inline-flex;align-items:center;justify-content:center;font-size:12px;box-shadow:inset -1px -1px 0 #404040,inset 1px 1px 0 #fff;margin-left:3px}
+.wbody{margin-top:4px;background:#fff;color:#111;box-shadow:inset 2px 2px 0 #808080;overflow:hidden;position:relative}
+.lnk{color:#0000EE;text-decoration:underline;font-family:IS,serif;font-size:27px;line-height:1.25;white-space:nowrap}
+/* titulky */
+#cap{position:absolute;left:40px;right:40px;text-align:center;pointer-events:none;z-index:3}
+#cap span{display:inline;background:rgba(10,10,10,.84);color:#fff;font-weight:850;font-size:30px;letter-spacing:-.02em;line-height:1.5;padding:4px 12px;box-decoration-break:clone;-webkit-box-decoration-break:clone;border-radius:5px}
+#cap b{font-weight:850;background:var(--sz);color:#fff;padding:0 6px;border-radius:3px}
+/* časová osa 1996–2026 */
+#tl{position:absolute;left:74px;width:392px;top:122px;height:36px;pointer-events:none;z-index:2}
+#tl .ln{position:absolute;left:0;right:0;top:24px;height:1.5px;background:rgba(255,255,255,.35)}
+#tl .pg{position:absolute;left:0;top:24px;height:1.5px;background:#fff}
+#tl .ev{position:absolute;top:20px;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);background:#000}
+#tl .ev.p{background:#fff;border-color:#fff}
+#tl .cur{position:absolute;top:17px;width:15px;height:15px;margin-left:-7.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(208,2,27,.6),0 0 14px rgba(255,255,255,.7)}
+#tl .yr{position:absolute;top:0;transform:translateX(-50%);font-family:JB;font-size:13px;letter-spacing:.1em;color:#fff;white-space:nowrap}
+#tl.dk .ln{background:rgba(0,0,0,.25)}#tl.dk .pg{background:#111}#tl.dk .ev{border-color:rgba(0,0,0,.45);background:#fff}#tl.dk .ev.p{background:#111;border-color:#111}
+#tl.dk .cur{background:#111;box-shadow:0 0 0 4px rgba(208,2,27,.55)}#tl.dk .yr{color:#111}
+#gl{position:absolute;inset:0;pointer-events:none;z-index:4}
+#scanl{position:absolute;left:0;width:540px;height:3px;background:#fff;box-shadow:0 0 18px 4px rgba(255,255,255,.8);display:none;pointer-events:none;z-index:4}
+#grain{position:absolute;left:0;top:0;width:540px;height:960px;pointer-events:none;z-index:5}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:6}
+</style></head><body>
+<div id="stage"></div>
+<div id="tl"></div>
+<div id="cap"></div>
+<div id="gl"></div><div id="scanl"></div>
+<canvas id="grain" width="180" height="320"></canvas>
+<div id="flash"></div>
+<script src="timeline.js"></script>
+<script>
+const FPS=30;const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3),e5=x=>1-Math.pow(1-clamp(x),5);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,p)=>a+(b-a)*p;const $=id=>document.getElementById(id);
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const fmt=n=>Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
+const FLAG=w=>`<svg width="${w}" height="${w*2/3}" viewBox="0 0 24 16" style="display:block;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)"><rect width="24" height="16" fill="#fff"/><rect y="8" width="24" height="8" fill="#D7141A"/><path d="M0 0 L12 8 L0 16Z" fill="#11457E"/></svg>`;
+const T=window.TL;const st=s=>T.S[s][0],en=s=>T.S[s][1];
+const CK={};T.chunks.forEach(([s,i,txt,a,b])=>{(CK[s]=CK[s]||[])[i]=[a,b,txt]});
+const ck=(s,i)=>CK[s][i][0];
+window.DURATION=T.END;
+function slamT(u,s0=1.35,amp=7){const p=e5(u/.1),k=Math.exp(-Math.max(0,u)/.13);
+  return `translate(${(amp*k*Math.sin(u*97+1.1)).toFixed(2)}px,${(amp*.7*k*Math.sin(u*83+.3)).toFixed(2)}px) scale(${lerp(s0,1,p).toFixed(4)})`}
+function rgbSplit(u,d=.2,px=6){const r=u>=0&&u<d?px*(1-u/d):0;return r>0?`${r.toFixed(2)}px 0 rgba(255,30,60,.85),${(-r).toFixed(2)}px 0 rgba(0,200,255,.85)`:'none'}
+const popIn=(e,t,a,d=.22,s0=.6)=>{e.style.opacity=t>=a?1:0;e.style.transform=`scale(${lerp(s0,1,back((t-a)/d)).toFixed(4)})`};
+const slideIn=(e,t,a,dy=24,d=.3)=>{const p=e5((t-a)/d);e.style.opacity=t>=a?p:0;e.style.transform=`translateY(${(dy*(1-p)).toFixed(1)}px)`};
+const slideX=(e,t,a,dx=60,d=.35)=>{const p=e5((t-a)/d);e.style.opacity=t>=a?p:0;e.style.transform=`translateX(${(dx*(1-p)).toFixed(1)}px)`};
+const stampIn=(e,t,a,rot=-8,s0=1.8)=>{e.style.opacity=t>=a?1:0;if(t>=a)e.style.transform=`rotate(${rot}deg) `+slamT(t-a,s0,6)};
+const fade=(e,t,a,d=.25)=>{e.style.opacity=clamp((t-a)/d).toFixed(3)};
+const typeTo=(e,txt,t,a,cps=22)=>{const n=Math.max(0,Math.floor((t-a)*cps));e.textContent=t>=a?txt.slice(0,n):''};
+const WINB=`<span>${'_□×'.split('').map(c=>`<i>${c}</i>`).join('')}</span>`;
+const SLOGO=w=>`<img src="photos/logo_s.png" style="width:${w}px;height:${w}px;display:block;border-radius:50%;box-shadow:0 10px 30px rgba(0,0,0,.35)">`;
+const PERSON=c=>`<svg width="24" height="30" viewBox="0 0 30 38"><circle cx="15" cy="9" r="8" fill="${c}"/><path d="M1 38 C 2 23, 8 19, 15 19 C 22 19, 28 23, 29 38 Z" fill="${c}"/></svg>`;
+const PINE=(x,y,h,c)=>`<path d="M${x} ${y-h} L${x+h*.32} ${y-h*.45} L${x+h*.16} ${y-h*.45} L${x+h*.4} ${y} L${x-h*.4} ${y} L${x-h*.16} ${y-h*.45} L${x-h*.32} ${y-h*.45} Z" fill="${c}"/>`;
+const PLANE=`<svg width="120" height="60" viewBox="0 0 120 60"><path d="M6 30 C 30 24, 80 22, 110 26 C 118 27, 118 33, 110 34 C 80 38, 30 36, 6 30 Z" fill="#fff"/><path d="M52 27 L36 4 L46 4 L72 27 Z M52 33 L36 56 L46 56 L72 33 Z" fill="#e8e8e8"/><path d="M10 29 L4 14 L12 14 L22 28 Z" fill="#D0021B"/></svg>`;
+
+/* ------------------------------------------------------------ scény */
+const SCN=[
+ /* 1 · háček: dva roky před Googlem, student, ložnice rodičů */
+ {id:'hook',from:'s1',cls:'night',cap:1,
+  html:()=>`<div class="abs" style="inset:0;background:radial-gradient(70% 40% at 50% 70%,rgba(208,2,27,.28),transparent 70%)"></div>
+   <div class="abs" style="left:74px;top:132px"><span class="badge">POSTAVILI TO <b>ČESKÁ EDICE</b>${FLAG(20)}</span></div>
+   <div class="abs" id="hlt" style="left:74px;top:186px;width:392px;height:118px">
+    <div class="abs" style="left:20px;right:20px;top:62px;height:2px;background:rgba(255,255,255,.3)"></div>
+    <div class="abs" id="hd1" style="left:2px;top:0;width:150px;text-align:center"><div style="font-weight:900;font-size:40px;letter-spacing:-.04em;color:#fff">1996</div><div style="width:20px;height:20px;border-radius:50%;background:var(--sz);margin:6px auto 0;box-shadow:0 0 0 5px rgba(208,2,27,.35)"></div><div class="mono" style="font-size:13px;margin-top:8px;color:#fff">SEZNAM.CZ</div></div>
+    <div class="abs" id="hd2" style="left:240px;top:0;width:150px;text-align:center;opacity:0"><div style="font-weight:900;font-size:40px;letter-spacing:-.04em;color:#8a8f9c">1998</div><div style="width:20px;height:20px;border-radius:50%;background:#8a8f9c;margin:6px auto 0"></div><div class="mono" style="font-size:13px;margin-top:8px;color:#8a8f9c">GOOGLE</div></div>
+    <div class="abs" id="hd3" style="left:146px;top:30px;width:100px;text-align:center;opacity:0"><span class="chip" style="font-size:12px;padding:3px 9px;background:var(--sz);border-color:var(--sz);color:#fff">−2 ROKY</span></div></div>
+   <div class="abs" id="hroom" style="left:74px;top:330px;width:392px;height:300px;opacity:0">
+    <svg width="392" height="300" viewBox="0 0 392 300" style="display:block">
+     <rect width="392" height="300" rx="16" fill="#141a33"/><rect x="0" y="232" width="392" height="68" fill="#0d1124"/>
+     <rect x="250" y="34" width="100" height="84" rx="4" fill="#0a0e22" stroke="#2a3360" stroke-width="5"/><line x1="300" y1="34" x2="300" y2="118" stroke="#2a3360" stroke-width="4"/><circle cx="326" cy="62" r="13" fill="#f3e9b8"/><circle cx="332" cy="57" r="11" fill="#0a0e22"/>
+     <rect x="200" y="182" width="176" height="34" rx="8" fill="#5b3a8c"/><rect x="200" y="160" width="58" height="30" rx="10" fill="#e9e6f5"/><rect x="196" y="214" width="184" height="24" fill="#3b2763"/><rect x="200" y="238" width="10" height="26" fill="#3b2763"/><rect x="366" y="238" width="10" height="26" fill="#3b2763"/>
+     <rect x="20" y="190" width="160" height="12" fill="#6b4b2a"/><rect x="30" y="202" width="10" height="62" fill="#6b4b2a"/><rect x="160" y="202" width="10" height="62" fill="#6b4b2a"/>
+     <rect x="44" y="104" width="112" height="86" rx="8" fill="#d9d4c3"/><rect x="54" y="113" width="92" height="64" rx="4" fill="#fff" id="hscr"/>
+     <rect x="80" y="190" width="40" height="8" fill="#bdb7a4"/>
+     <text x="100" y="138" text-anchor="middle" font-family="IT" font-weight="900" font-size="17" fill="#D0021B" letter-spacing="-.5">Seznam</text>
+     <rect x="62" y="148" width="64" height="14" fill="#fff" stroke="#888" stroke-width="1.5"/><rect x="128" y="148" width="12" height="14" fill="#D0021B"/>
+     <text x="65" y="159" font-family="JB" font-size="9" fill="#111" id="hq"></text>
+     <ellipse cx="100" cy="146" rx="80" ry="54" fill="rgba(255,255,255,.08)" id="hglow"/></svg>
+    <div class="abs mono" style="left:16px;top:14px;font-size:11px;color:#8d96c4">LOŽNICE RODIČŮ · 1996</div></div>`,
+  anim:(t,s)=>{const D2=ck('s1',1)+.15;popIn($('hd2'),t,D2,.25,.6);popIn($('hd3'),t,D2+.35,.22,.5);$('hd1').style.transform=`scale(${lerp(1.3,1,e5(t/.25)).toFixed(4)})`;
+    slideIn($('hroom'),t,-.3,30,.4);$('hglow').setAttribute('opacity',(.6+.4*Math.sin(t*9)).toFixed(2));
+    const q='hledej…';$('hq').textContent=t>=ck('s1',4)?q.slice(0,Math.floor((t-ck('s1',4))*16)):''},
+  ev:s=>[[0,'slam',.35],[ck('s1',1)+.15,'pop2'],[ck('s1',1)+.5,'pop'],[ck('s1',4),'type',.5]]},
+
+ /* 2 · Google ho tady roky nedokázal porazit */
+ {id:'vs',from:'s2',cls:'dark',cap:1,tr:'glitch',
+  html:()=>`<div class="abs" style="inset:0;background:radial-gradient(60% 40% at 28% 45%,rgba(208,2,27,.3),transparent 70%)"></div>
+   <div class="abs mono" style="left:0;right:0;top:190px;text-align:center;font-size:13px;color:var(--g)">VYHLEDÁVÁNÍ V ČESKU</div>
+   <div class="abs" id="vsa" style="left:74px;top:250px;width:170px;text-align:center">${SLOGO(170)}<div style="font-weight:900;font-size:28px;letter-spacing:-.03em;margin-top:14px">Seznam</div></div>
+   <div class="abs big" id="vsv" style="left:0;right:0;top:310px;text-align:center;font-size:42px;color:#fff;opacity:0">VS</div>
+   <div class="abs" id="vsb" style="left:296px;top:250px;width:170px;text-align:center;opacity:0"><div style="width:170px;height:170px;border-radius:50%;background:#2a2d36;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:110px;color:#8a8f9c">G</div><div style="font-weight:900;font-size:28px;letter-spacing:-.03em;margin-top:14px;color:#8a8f9c">Google</div></div>
+   <div class="abs" id="vss" style="left:280px;top:420px;opacity:0"><span class="stamp" style="font-size:30px;border-width:4px;padding:1px 10px 2px;background:rgba(10,10,13,.8)">NEPORAZIL</span></div>
+   <div class="abs" id="vsc" style="left:74px;top:500px;width:170px;display:flex;justify-content:center;opacity:0"><span class="chip" style="background:var(--y);color:#111;border-color:var(--y);font-weight:500">👑 ČESKÁ JEDNIČKA</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('vsa').style.transform=`translateX(${(-50*(1-e5(u/.35))).toFixed(1)}px)`;slideX($('vsb'),t,s.t0+.15,50,.35);popIn($('vsv'),t,s.t0+.35,.2,.4);
+    const P=ck('s2',2)+.25;const b=$('vsb');if(t>=P){const q=eo((t-P)/.5);b.style.transform=`translate(${(8*q).toFixed(1)}px,${(26*q).toFixed(1)}px) rotate(${(9*q).toFixed(2)}deg)`;b.style.opacity=(1-.45*q).toFixed(3)}
+    stampIn($('vss'),t,P+.15,-10,1.8);popIn($('vsc'),t,P+.45,.25,.6)},
+  ev:s=>[[s.t0+.15,'whoosh'],[s.t0+.35,'pop2'],[ck('s2',2)+.25,'slam',.4],[ck('s2',2)+.4,'stamp',.45],[ck('s2',2)+.7,'pop']]},
+
+ /* 3 · Ivo Lukačovič, rok 1996 */
+ {id:'ivo',from:'s3',cls:'wine',capS:['s3','s4'],year:1996,tr:'flash',
+  html:()=>`<div class="abs" style="inset:0;background:radial-gradient(70% 45% at 50% 40%,rgba(208,2,27,.35),transparent 70%)"></div>
+   <div class="abs" id="iph" style="left:54px;top:190px;width:432px;padding:12px 12px 40px;background:#F4F4F2;box-shadow:0 26px 60px rgba(0,0,0,.55);transform-origin:50% 30%">
+    <img src="photos/ivo_mlady.jpg" style="display:block;width:408px;height:284px;object-fit:cover">
+    <div class="mono" style="position:absolute;left:16px;bottom:13px;font-size:11px;color:#555">IVO LUKAČOVIČ · ARCHIVNÍ FOTO</div></div>
+   <div class="card" id="inc" style="left:74px;top:520px;padding:12px 18px 12px;opacity:0"><div style="font-weight:900;font-size:32px;letter-spacing:-.03em">Ivo Lukačovič</div><div class="mono" style="font-size:12px;color:#555;margin-top:4px">*1974 · V ROCE 1996 STUDENT</div></div>
+   <div class="abs big" id="iy" style="right:74px;top:530px;font-size:60px;color:#fff;opacity:0">1996</div>`,
+  anim:(t,s)=>{const u=t-s.t0;const q=e5(u/.5);$('iph').style.transform=`translateY(${(-40*(1-q)).toFixed(1)}px) rotate(${lerp(-6,-2,q).toFixed(2)}deg) scale(${(1.03-.03*q+.01*u).toFixed(4)})`;$('iph').style.opacity=clamp(u/.12);
+    slideX($('inc'),t,s.t0+.25,-40,.35);const Y=ck('s4',0)+.35;const y=$('iy');y.style.opacity=t>=Y?1:0;if(t>=Y){y.style.transform=slamT(t-Y,1.5,6);y.style.textShadow=rgbSplit(t-Y,.25,6)}},
+  ev:s=>[[s.t0,'paper'],[s.t0+.25,'pop2'],[ck('s4',0)+.35,'slam',.45]]},
+
+ /* 4 · podle Yahoo katalog českých webů → Seznam */
+ {id:'yahoo',from:'s5',cls:'teal',cap:1,year:1996,tr:'scan',
+  html:()=>`<div class="abs" id="ych" style="left:74px;top:186px;opacity:0"><span class="chip" style="background:#fff;color:#111;border-color:#fff">INSPIRACE: YAHOO · USA</span></div>
+   <div class="win" id="yw" style="left:46px;top:232px;width:448px;height:396px">
+    <div class="wtb"><span id="ytt">Netscape – [Yahoo!]</span>${WINB}</div>
+    <div class="wbody" style="height:356px;padding:16px 20px">
+     <div id="yh1" style="position:absolute;left:20px;top:14px;font-family:IS,serif;font-size:46px;color:#5a2d91;font-weight:400">Yahoo!</div>
+     <div id="yh2" style="position:absolute;left:20px;top:10px;display:flex;align-items:center;gap:12px;opacity:0"><img src="photos/logo_s.png" style="width:56px;height:56px"><span style="font-weight:900;font-size:44px;letter-spacing:-.04em;color:#D0021B">Seznam</span></div>
+     <div style="position:absolute;left:20px;right:20px;top:76px;height:2px;background:#bbb"></div>
+     <div style="position:absolute;left:20px;top:88px;display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;width:400px">
+      ${['Auto-moto','Cestování','Počítače','Sport','Kultura','Zprávy','Obchod','Věda'].map((c,i)=>`<div class="lnk yc" data-i="${i}" style="opacity:0">${c}</div>`).join('')}</div>
+     <div class="mono" id="ycn" style="position:absolute;left:20px;bottom:12px;font-size:11px;color:#666;opacity:0">KATALOG ČESKÝCH WEBŮ</div></div></div>`,
+  anim:(t,s)=>{popIn($('ych'),t,s.t0+.1,.25,.7);slideIn($('yw'),t,s.t0,24,.3);const K=ck('s5',1);s.el.querySelectorAll('.yc').forEach(e=>slideX(e,t,K+(+e.dataset.i)*.2,-20,.2));fade($('ycn'),t,ck('s5',2));
+    const N=ck('s5',3)+.55;const sw=t>=N;$('yh1').style.opacity=sw?0:1;$('yh2').style.opacity=sw?1:0;if(sw)$('yh2').style.transform=slamT(t-N,1.25,4);$('ytt').textContent=sw?'Netscape – [Seznam]':'Netscape – [Yahoo!]';
+    if(sw)$('ych').style.opacity=(1-clamp((t-N)/.2)).toFixed(3)},
+  ev:s=>[[s.t0+.1,'pop'],...[0,1,2,3,4,5,6,7].map(i=>[ck('s5',1)+i*.2,'tick2']),[ck('s5',3)+.55,'slam',.4],[ck('s5',3)+.6,'pop2']]},
+
+ /* 5 · startovní kapitál 80 000 Kč: úspory, půjčka od táty, kupónová knížka */
+ {id:'money',from:'s6',cls:'dark',cap:1,year:1996,tr:'flash',
+  html:()=>`<div class="abs mono" id="ml" style="left:74px;top:190px;font-size:13px;color:var(--g)">STARTOVNÍ KAPITÁL · 1996</div>
+   <div class="abs big" id="mq" style="left:74px;top:214px;font-size:84px;color:#fff;opacity:0">?</div>
+   <div class="abs big" id="mn" style="left:74px;top:214px;font-size:80px;color:#fff;font-variant-numeric:tabular-nums;opacity:0">0 Kč</div>
+   <div class="abs" id="mbar" style="left:74px;top:322px;width:392px;height:26px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden;opacity:0">
+    <div class="abs mb" data-i="0" style="left:0;top:0;height:26px;width:0;background:#D0021B"></div><div class="abs mb" data-i="1" style="left:245px;top:0;height:26px;width:0;background:#ff6b6b"></div><div class="abs mb" data-i="2" style="left:318.5px;top:0;height:26px;width:0;background:#FFD400"></div></div>
+   ${[['Úspory','50 000 Kč','#D0021B'],['Půjčka od táty','15 000 Kč','#ff6b6b'],['Kupónová knížka','15 000 Kč','#FFD400']].map(([a,b,c],i)=>`<div class="abs mr" data-i="${i}" style="left:74px;top:${376+i*70}px;width:392px;height:58px;border-radius:12px;background:#17171c;display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 16px;opacity:0"><span style="display:flex;align-items:center;gap:12px;font-weight:800;font-size:23px"><i style="width:14px;height:14px;border-radius:3px;background:${c};display:block"></i>${a}</span><span style="font-weight:900;font-size:23px;font-variant-numeric:tabular-nums">${b}</span></div>`).join('')}
+   <div class="abs" id="mst" style="left:262px;top:584px;opacity:0"><span class="stamp" style="font-size:26px;border-width:4px;padding:1px 10px 2px;background:rgba(10,10,13,.85)">PRODÁNO</span></div>`,
+  anim:(t,s)=>{const Q=ck('s6',0)+.45,M=st('s7');const q=$('mq');q.style.opacity=t>=Q&&t<M?1:0;if(t>=Q)q.style.transform=slamT(t-Q,1.4,5);
+    const n=$('mn');n.style.opacity=t>=M?1:0;n.textContent=fmt(80000*eo((t-M)/.9))+' Kč';if(t>=M+.9)n.style.transform=slamT(t-M-.9,1.12,3);
+    const R=[ck('s8',0),ck('s8',1),ck('s8',2)+.1];fade($('mbar'),t,R[0]-.1,.2);const W=[245,73.5,73.5];
+    s.el.querySelectorAll('.mr').forEach(e=>{const i=+e.dataset.i;slideX(e,t,R[i],-40,.3)});s.el.querySelectorAll('.mb').forEach(e=>{const i=+e.dataset.i;e.style.width=(W[i]*eo((t-R[i])/.4)).toFixed(1)+'px'});
+    stampIn($('mst'),t,ck('s8',3)+.35,-8,1.8)},
+  ev:s=>[[ck('s6',0)+.45,'slam',.3],[st('s7'),'count',.9],[st('s7')+.9,'coin'],[ck('s8',0),'swish'],[ck('s8',1),'swish'],[ck('s8',2)+.1,'swish'],[ck('s8',3)+.35,'stamp',.4]]},
+
+ /* 6 · největší problém: modem, který v noci budil tátu */
+ {id:'modem',from:'s9',cls:'night',cap:1,year:1996,tr:'glitch',
+  html:()=>`<div class="abs big" id="dq" style="left:0;right:0;top:250px;text-align:center;font-size:66px;color:#fff;opacity:0">PROBLÉM?</div>
+   <div class="abs" id="dmoon" style="left:390px;top:180px;width:64px;height:64px;border-radius:50%;background:#f3e9b8;box-shadow:0 0 40px rgba(243,233,184,.5);opacity:0"><div style="position:absolute;left:18px;top:-8px;width:58px;height:58px;border-radius:50%;background:#070A18"></div></div>
+   <div class="abs vt" id="dclk" style="left:74px;top:184px;font-size:64px;color:#FF4D5E;text-shadow:0 0 16px rgba(255,77,94,.7);opacity:0">02:14</div>
+   <div class="abs" id="dmd" style="left:120px;top:300px;opacity:0"><svg width="300" height="120" viewBox="0 0 300 120"><path d="M20 30 L280 30 L296 104 L4 104 Z" fill="#d8d3c4"/><rect x="4" y="104" width="292" height="12" rx="3" fill="#bfb9a7"/><rect x="40" y="46" width="160" height="12" rx="3" fill="#bfb9a7"/>
+    ${[0,1,2,3,4,5].map(i=>`<circle class="led" data-i="${i}" cx="${60+i*34}" cy="84" r="6" fill="#3a3a3a"/>`).join('')}<text x="232" y="58" font-family="JB" font-size="12" fill="#666">56K</text></svg></div>
+   ${[0,1,2].map(i=>`<div class="abs dw" data-i="${i}" style="left:170px;top:250px;width:200px;height:200px;border-radius:50%;border:3px solid rgba(255,255,255,.5);opacity:0"></div>`).join('')}
+   <div class="abs vt" id="dsnd" style="left:0;right:0;top:452px;text-align:center;font-size:44px;color:#9fd3ff;opacity:0">PÍÍÍ–KRRRR–ŠŠŠ</div>
+   <div class="card" id="ddad" style="left:74px;top:514px;width:392px;height:96px;display:flex;align-items:center;gap:16px;padding:0 18px;opacity:0">
+    <svg width="56" height="70" viewBox="0 0 56 70"><rect x="2" y="2" width="52" height="66" rx="3" fill="#8a5a33"/><circle cx="44" cy="38" r="4" fill="#e6c25c"/></svg>
+    <div><div style="font-weight:900;font-size:26px;letter-spacing:-.03em">Ložnice rodičů</div><div class="mono" style="font-size:12px;color:#777;margin-top:4px">TÁTA SPÍ · <span id="dz">Zzz</span></div></div>
+    <div id="dbang" style="margin-left:auto;font-weight:900;font-size:46px;color:#E5322D;opacity:0">!!!</div></div>`,
+  anim:(t,s)=>{const u=t-s.t0;const S10=st('s10')-.05;const q=$('dq');q.style.opacity=t<S10?(t>=s.t0+.25?1:0):(1-clamp((t-S10)/.15)).toFixed(3);if(t>=s.t0+.25)q.style.transform=slamT(t-s.t0-.25,1.4,6);
+    fade($('dmd'),t,S10,.15);s.el.querySelectorAll('.led').forEach(e=>{const i=+e.dataset.i;e.setAttribute('fill',t>=S10&&Math.floor(t*12+i*3.7)%3?['#3BFF7E','#FFD400','#FF4D5E'][i%3]:'#3a3a3a')});
+    s.el.querySelectorAll('.dw').forEach(e=>{const i=+e.dataset.i;const p=((t-S10)*1.4+i/3)%1;e.style.opacity=t>=S10?(.8*(1-p)).toFixed(3):0;e.style.transform=`scale(${(.4+p*1.3).toFixed(3)})`});
+    const sn=$('dsnd');sn.style.opacity=t>=S10+.1?1:0;sn.style.transform=`translate(${(4*Math.sin(t*61)).toFixed(1)}px,${(3*Math.sin(t*47)).toFixed(1)}px)`;
+    const N=ck('s10',1);fade($('dmoon'),t,N,.3);fade($('dclk'),t,N,.15);$('dclk').style.visibility=Math.floor(t*2)%2?'visible':'visible';
+    const D=ck('s10',2);slideIn($('ddad'),t,D-.1,30,.3);const B=D+.45;$('dz').textContent=t>=B?'VZBUZENÝ':'Zzz';const bg=$('dbang');bg.style.opacity=t>=B?1:0;if(t>=B)bg.style.transform=slamT(t-B,1.6,6)},
+  ev:s=>[[s.t0+.25,'slam',.35],[st('s10')-.05,'modem',en('s10')-st('s10')+.4],[ck('s10',2)-.1,'whoosh'],[ck('s10',2)+.45,'bonk'],[ck('s10',2)+.45,'shk',5]]},
+
+ /* 7 · o dva roky později nejnavštěvovanější český web */
+ {id:'top',from:'s11',cls:'white',cap:1,year:1998,dk:1,tr:'flash',
+  html:()=>`<div class="abs" id="trays" style="left:270px;top:330px;width:0;height:0">${Array.from({length:14},(_,i)=>`<div style="position:absolute;left:0;top:-3px;width:300px;height:6px;transform-origin:0 50%;transform:rotate(${i*360/14}deg);background:linear-gradient(90deg,rgba(255,212,0,.55),transparent)"></div>`).join('')}</div>
+   <div class="abs" id="tcup" style="left:180px;top:200px;opacity:0"><svg width="180" height="230" viewBox="0 0 180 230"><path d="M30 10 L150 10 L144 80 C 140 120, 112 140, 90 142 C 68 140, 40 120, 36 80 Z" fill="#FFD400"/><path d="M30 24 C 0 24, 0 76, 40 84 M150 24 C 180 24, 180 76, 140 84" fill="none" stroke="#FFD400" stroke-width="10"/><rect x="80" y="140" width="20" height="40" fill="#E6B800"/><rect x="46" y="180" width="88" height="22" rx="4" fill="#111"/><rect x="34" y="202" width="112" height="22" rx="4" fill="#111"/>
+    <text x="90" y="98" text-anchor="middle" font-family="IT" font-weight="900" font-size="64" fill="#111" letter-spacing="-3">#1</text></svg></div>
+   <div class="abs" id="tch" style="left:74px;top:186px;opacity:0"><span class="chip" style="color:#111;border-color:#111">+2 ROKY · 1998</span></div>
+   <div class="abs" id="tnm" style="left:0;right:0;top:446px;display:flex;justify-content:center;align-items:center;gap:12px;opacity:0"><img src="photos/logo_s.png" style="width:52px;height:52px"><span style="font-weight:900;font-size:46px;letter-spacing:-.04em;color:#D0021B">Seznam.cz</span></div>
+   <div class="abs mono" id="tlb" style="left:0;right:0;top:520px;text-align:center;font-size:14px;color:#333;opacity:0">NEJNAVŠTĚVOVANĚJŠÍ ČESKÝ WEB</div>`,
+  anim:(t,s)=>{popIn($('tch'),t,s.t0+.1,.25,.7);const C=ck('s11',1)+.1;popIn($('tcup'),t,C,.3,.4);const r=$('trays');r.style.opacity=t>=C?clamp((t-C)/.3):0;r.style.transform=`rotate(${(t*14).toFixed(2)}deg)`;
+    slideIn($('tnm'),t,C+.3,16);fade($('tlb'),t,ck('s11',1)+.6)},
+  ev:s=>[[s.t0+.1,'pop'],[ck('s11',1)+.1,'slam',.4],[ck('s11',1)+.15,'chime']]},
+
+ /* 8 · 2001: ztráta, Ivo si nebere plat, dokud firma zase nevydělává */
+ {id:'loss',from:'s12',cls:'dred',cap:1,year:2001,tr:'glitch',
+  html:()=>`<div class="abs mono" style="left:74px;top:186px;font-size:13px;color:#fff">SEZNAM.CZ · HOSPODAŘENÍ</div>
+   <svg class="abs" id="lsv" width="392" height="170" style="left:74px;top:212px;overflow:visible"><line x1="0" y1="85" x2="392" y2="85" stroke="rgba(255,255,255,.3)" stroke-width="1.5" stroke-dasharray="4 5"/>
+    <path id="lln" d="M0 40 L60 30 L110 46 L160 60 L210 96 L250 128 L280 150" fill="none" stroke="#E5322D" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/>
+    <path id="lup" d="M280 150 L320 128 L352 92 L390 40" fill="none" stroke="#2BB673" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/>
+    <text x="388" y="80" text-anchor="end" font-family="JB" font-size="11" fill="rgba(255,255,255,.55)">0</text></svg>
+   <div class="abs big" id="lzt" style="left:0;right:0;top:250px;text-align:center;font-size:72px;color:#fff;opacity:0">ZTRÁTA</div>
+   <div class="card" id="lps" style="left:74px;top:404px;width:392px;padding:16px 20px 18px;opacity:0;border-radius:6px;background:#fbfaf5">
+    <div class="mono" style="font-size:11px;color:#777">VÝPLATNÍ PÁSKA · 2001</div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:700;font-size:20px"><span>Ivo Lukačovič</span><span style="color:#777;font-weight:500;font-size:16px">zakladatel</span></div>
+    <div style="height:1.5px;background:#ddd;margin:12px 0"></div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:700;font-size:22px">Plat</span><span style="font-weight:900;font-size:44px;letter-spacing:-.03em;color:#E5322D">0 Kč</span></div></div>
+   <div class="abs" id="lst" style="left:150px;top:574px;opacity:0"><span class="stamp" style="font-size:28px;border-width:4px;padding:1px 10px 2px;background:rgba(251,250,245,.85)">DOKUD NEVYDĚLÁ</span></div>
+   <div class="abs" id="lok" style="left:330px;top:196px;opacity:0"><span class="chip" style="background:#2BB673;border-color:#2BB673;color:#fff">ZASE ZISK ↗</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('lln').style.strokeDashoffset=(1-eo(u/1.8)).toFixed(4);const Z=ck('s12',2);const z=$('lzt');const P=ck('s12',3);
+    z.style.opacity=t>=Z?(1-.85*clamp((t-P)/.25)).toFixed(3):0;if(t>=Z){z.style.transform=slamT(t-Z,1.35,6);z.style.textShadow=rgbSplit(t-Z,.25,7)}
+    slideIn($('lps'),t,P,40,.35);stampIn($('lst'),t,ck('s12',4)-.1,-7,1.7);const U=ck('s12',5);$('lup').style.strokeDashoffset=(1-eo((t-U)/.6)).toFixed(4);popIn($('lok'),t,U+.45,.25,.6)},
+  ev:s=>[[s.t0,'drop',1.6],[ck('s12',2),'slam',.5],[ck('s12',2),'shk',6],[ck('s12',3),'paper'],[ck('s12',4)-.1,'stamp',.45],[ck('s12',5),'rise'],[ck('s12',5)+.45,'pop2']]},
+
+ /* 9 · pak přidá e-mail, Mapy, Sreality i zprávy */
+ {id:'apps',from:'s13',cls:'white',cap:1,dk:1,tr:'flash',
+  html:()=>`<svg class="abs" width="540" height="960" style="left:0;top:0">${[[170,318],[370,318],[170,466],[370,466]].map(([x,y],i)=>`<line class="al" data-i="${i}" x1="270" y1="250" x2="${x}" y2="${y}" stroke="#D0021B" stroke-width="3" stroke-dasharray="6 6" opacity="0"/>`).join('')}</svg>
+   <div class="abs" id="as" style="left:215px;top:176px">${SLOGO(110)}</div>
+   ${[
+     `<svg width="64" height="46" viewBox="0 0 64 46"><rect x="2" y="2" width="60" height="42" rx="5" fill="#fff" stroke="#D0021B" stroke-width="4"/><path d="M4 6 L32 28 L60 6" fill="none" stroke="#D0021B" stroke-width="4"/></svg><div style="font-weight:900;font-size:22px;letter-spacing:-.03em;margin-top:8px">Email.cz</div>`,
+     `<img src="photos/logo_mapy.png" style="width:176px;height:99px;border-radius:8px;display:block">`,
+     `<svg width="64" height="52" viewBox="0 0 64 52"><path d="M4 26 L32 4 L60 26" fill="none" stroke="#D0021B" stroke-width="5" stroke-linejoin="round"/><rect x="12" y="24" width="40" height="26" fill="#D0021B"/><rect x="27" y="34" width="10" height="16" fill="#fff"/></svg><div style="font-weight:900;font-size:22px;letter-spacing:-.03em;margin-top:6px">Sreality.cz</div>`,
+     `<img src="photos/logo_zpravy.png" style="width:180px;display:block">`
+   ].map((h,i)=>`<div class="card at" data-i="${i}" style="left:${i%2?274:74}px;top:${i<2?318:466}px;width:192px;height:128px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(0,0,0,.14);opacity:0">${h}</div>`).join('')}`,
+  anim:(t,s)=>{popIn($('as'),t,s.t0,.25,.7);const A=[ck('s13',0)+.55,ck('s13',1),ck('s13',1)+.6,ck('s13',2)+.1];
+    s.el.querySelectorAll('.at').forEach(e=>{const i=+e.dataset.i;popIn(e,t,A[i],.25,.5)});s.el.querySelectorAll('.al').forEach(e=>{const i=+e.dataset.i;e.setAttribute('opacity',t>=A[i]-.1?.5:0)})},
+  ev:s=>[[s.t0,'pop2'],[ck('s13',0)+.55,'pop',0],[ck('s13',1),'pop',2],[ck('s13',1)+.6,'pop',4],[ck('s13',2)+.1,'pop',6]]},
+
+ /* 10 · maskot Krasty se ztratí v lese – nikdo ho neviděl, aspoň ne offline */
+ {id:'krasty',from:'s14',cls:'forest',cap:1,year:2008,tr:'scan',
+  html:()=>`<div class="abs" style="inset:0;background:radial-gradient(70% 40% at 50% 30%,rgba(120,200,150,.16),transparent 70%)"></div>
+   <svg class="abs" id="kfb" width="540" height="960" style="left:0;top:0">${[[60,520,220],[150,500,170],[260,515,200],[350,505,160],[455,525,240],[520,500,180]].map(([x,y,h])=>PINE(x,y,h,'#123322')).join('')}<rect x="0" y="514" width="540" height="140" fill="#0b2216"/></svg>
+   <img class="abs" id="kdog" src="photos/pes_cut.png" style="left:60px;top:300px;width:230px;transform-origin:50% 100%">
+   <svg class="abs" width="540" height="960" style="left:0;top:0">${[[420,600,250],[510,610,200],[340,615,150]].map(([x,y,h])=>PINE(x,y,h,'#0a2a19')).join('')}</svg>
+   <div class="abs" id="kch" style="left:74px;top:186px;opacity:0"><span class="chip" style="background:#fff;color:#111;border-color:#fff">MASKOT SEZNAMU · KRASTY</span></div>
+   <div class="abs mono" id="kil" style="left:76px;top:226px;font-size:10px;color:rgba(255,255,255,.6);opacity:0">ILUSTRAČNÍ FOTO</div>
+   <div class="abs" id="kps" style="left:110px;top:196px;width:320px;height:420px;background:#f6f1df;box-shadow:0 24px 60px rgba(0,0,0,.6);padding:18px 20px;color:#111;opacity:0;transform-origin:50% 0">
+    <div class="abs" style="left:150px;top:-8px;width:20px;height:20px;border-radius:50%;background:#D0021B;box-shadow:0 3px 6px rgba(0,0,0,.4)"></div>
+    <div style="font-weight:900;font-size:50px;letter-spacing:-.04em;text-align:center;line-height:1">HLEDÁ SE</div>
+    <div style="margin:12px auto 0;width:200px;height:200px;background:#e9e1c5;border:2px solid #111;position:relative;overflow:hidden"><img id="kpimg" src="photos/pes_cut.png" style="width:196px;display:block;margin:2px"></div>
+    <div style="font-weight:900;font-size:30px;letter-spacing:-.03em;text-align:center;margin-top:12px">KRASTY</div>
+    <div class="mono" style="font-size:11px;text-align:center;color:#555;margin-top:6px;line-height:1.5">NAPOSLEDY VIDĚN: LES · 2008<br>ODMĚNA: 1 KLIKNUTÍ</div></div>
+   <div class="abs" id="kst" style="left:124px;top:380px;opacity:0"><span class="stamp" style="font-size:34px;border-width:5px;background:rgba(246,241,223,.8)">NEVIDĚN</span></div>
+   <div class="abs" id="kon" style="left:150px;top:300px;opacity:0"><span class="chip" style="background:#2BB673;border-color:#2BB673;color:#fff;font-size:16px;padding:8px 16px 7px">● ONLINE</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;popIn($('kch'),t,s.t0+.1,.25,.7);fade($('kil'),t,s.t0+.3);
+    const d=$('kdog');const W=e5(u/.5);const R=ck('s14',1)+.2;const r=eio((t-R)/1.4);const hop=Math.abs(Math.sin(u*9))*14*(1-r*.6);
+    d.style.transform=`translate(${(-200*(1-W)+290*r).toFixed(1)}px,${(-hop-40*r).toFixed(1)}px) scale(${lerp(1,.32,r).toFixed(3)})`;d.style.opacity=(1-clamp((t-R-1.1)/.35)).toFixed(3);
+    const P=ck('s14',3)-.05;const p=$('kps');const q=e5((t-P)/.45);p.style.opacity=t>=P?1:0;p.style.transform=`translateY(${(-60*(1-q)).toFixed(1)}px) rotate(${(lerp(-9,-2,q)+1.5*Math.sin((t-P)*3)*Math.exp(-(t-P))).toFixed(2)}deg)`;
+    if(t>=P){$('kch').style.opacity=(1-clamp((t-P)/.2)).toFixed(3);$('kil').style.opacity=(1-clamp((t-P)/.2)).toFixed(3)}
+    stampIn($('kst'),t,ck('s14',4)+.35,-12,1.8);const O=st('s15')+.55;popIn($('kon'),t,O,.25,.5);const im=$('kpimg');const g=t-O;im.style.filter=g>=0&&g<.45?`hue-rotate(${(g*900).toFixed(0)}deg) saturate(2)`:'none';im.style.transform=g>=0&&g<.45?`translateX(${(8*Math.sin(g*90)).toFixed(1)}px)`:'none'},
+  ev:s=>[[s.t0+.1,'pop'],[ck('s14',1)+.2,'steps',1.3],[ck('s14',3)-.05,'paper'],[ck('s14',4)+.35,'stamp',.45],[st('s15')+.55,'glitch',.2],[st('s15')+.6,'notif']]},
+
+ /* 11 · dnes: skoro 90 % českých uživatelů internetu */
+ {id:'today',from:'s16',cls:'dark',cap:1,year:2026,tr:'flash',
+  html:()=>`<div class="abs" id="tdc" style="left:74px;top:186px;display:flex;align-items:baseline;gap:14px"><span class="chip" style="background:var(--sz);border-color:var(--sz);color:#fff">DNES</span></div>
+   <div class="abs big" id="tdn" style="left:74px;top:218px;font-size:72px;color:#fff;font-variant-numeric:tabular-nums;opacity:0">0 %</div>
+   <div class="abs mono" id="tdl" style="left:268px;top:236px;font-size:12px;line-height:1.5;color:var(--g);opacity:0">ČESKÝCH UŽIVATELŮ<br>INTERNETU POUŽÍVÁ<br>SEZNAM</div>
+   <div class="abs" style="left:74px;top:306px;width:392px;display:grid;grid-template-columns:repeat(10,1fr);row-gap:2px;justify-items:center">${Array.from({length:100},(_,i)=>`<span class="tp" data-i="${i}" style="display:block">${PERSON('#2c2f38')}</span>`).join('')}</div>`,
+  anim:(t,s)=>{popIn($('tdc'),t,s.t0+.05,.25,.7);const A=ck('s16',1);const n=$('tdn');n.style.opacity=t>=A?1:0;const v=90*eo((t-A)/1.1);n.textContent=Math.round(v)+' %';if(t>=A+1.1)n.style.transform=slamT(t-A-1.1,1.12,3);fade($('tdl'),t,A+.3);
+    s.el.querySelectorAll('.tp').forEach(e=>{const i=+e.dataset.i;const on=t>=A&&i<v-.001;const p=e.firstChild;const c=on?'#D0021B':'#2c2f38';p.querySelectorAll('circle,path').forEach(x=>x.setAttribute('fill',c))})},
+  ev:s=>[[s.t0+.05,'pop'],[ck('s16',1),'blips',1.1],[ck('s16',1)+1.1,'slam',.35]]},
+
+ /* 12 · a Ivo si koupil vlastní letiště */
+ {id:'air',from:'s17',cls:'sky',cap:1,tr:'scan',
+  html:()=>`<div class="abs" style="inset:0;background:linear-gradient(#0c1830 0%,#1d3b6b 55%,#e48a5a 100%)"></div>
+   <svg class="abs" width="540" height="960" style="left:0;top:0"><path d="M150 640 L250 470 L290 470 L540 640 Z" fill="#2a2f3a"/>${[0,1,2,3,4].map(i=>`<rect x="${266-i*1}" y="${480+i*30}" width="${6+i*2}" height="${14+i*3}" fill="#fff" opacity=".8"/>`).join('')}</svg>
+   <div class="abs" id="apl" style="left:0;top:250px">${PLANE}</div>
+   <img class="abs" id="aiv" src="photos/ivo_hory_cut.png" style="left:30px;top:330px;width:300px;-webkit-mask-image:linear-gradient(#000 80%,transparent 100%)">
+   <div class="abs" id="ach" style="left:74px;top:186px;opacity:0"><span class="chip" style="background:#fff;color:#111;border-color:#fff">LETIŠTĚ PRAHA-TOČNÁ · 2008</span></div>
+   <div class="abs" id="ast" style="left:270px;top:330px;opacity:0"><span class="stamp" style="font-size:36px;color:var(--y);border-color:var(--y);background:rgba(12,24,48,.6)">VLASTNÍ</span></div>
+   <div class="abs mono" style="left:44px;top:614px;font-size:11px;color:#fff">IVO LUKAČOVIČ</div>`,
+  anim:(t,s)=>{const u=t-s.t0;slideIn($('aiv'),t,s.t0,30,.4);popIn($('ach'),t,s.t0+.15,.25,.7);const p=clamp((u-.1)/2.2);$('apl').style.transform=`translate(${lerp(-130,560,p).toFixed(1)}px,${(-60*p+8*Math.sin(u*3)).toFixed(1)}px) rotate(-6deg)`;
+    stampIn($('ast'),t,ck('s17',1)+.35,-8,1.8)},
+  ev:s=>[[s.t0,'jet',2.4],[s.t0+.15,'pop'],[ck('s17',1)+.35,'stamp',.45]]},
+
+ /* 13 · mimochodem: stejná průmyslovka jako zakladatel Better Digital */
+ {id:'school',from:'s18',cls:'paper',cap:1,dk:1,tr:'flash',
+  html:()=>`<div class="abs" id="sch" style="left:74px;top:136px;opacity:0"><span class="chip" style="color:#111;border-color:#111">MIMOCHODEM…</span></div>
+   <div class="abs" id="ssb" style="left:74px;top:184px;width:392px;opacity:0"><svg width="392" height="150" viewBox="0 0 392 150"><rect x="20" y="40" width="352" height="106" fill="#c9b79a"/><path d="M10 44 L196 6 L382 44 Z" fill="#8a3b2e"/>${[0,1,2,3,4,5,6].map(i=>`<rect x="${42+i*48}" y="62" width="26" height="30" fill="#5d7fa8"/><rect x="${42+i*48}" y="104" width="26" height="30" fill="#5d7fa8"/>`).join('')}<rect x="176" y="100" width="40" height="46" fill="#5a3a22"/></svg>
+    <div class="abs" style="left:56px;top:28px;width:280px;height:30px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-family:JB;font-size:12px;letter-spacing:.08em">SMÍCHOVSKÁ PRŮMYSLOVKA</div></div>
+   <div class="card" id="sc1" style="left:74px;top:360px;width:176px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0;border-radius:16px">${SLOGO(76)}<div style="font-weight:900;font-size:20px;letter-spacing:-.03em;text-align:center;line-height:1.1">Ivo<br>Lukačovič</div><div class="mono" style="font-size:10px;color:#777">SEZNAM.CZ</div></div>
+   <div class="abs big" id="seq" style="left:250px;top:430px;width:40px;text-align:center;font-size:52px;color:#111;opacity:0">=</div>
+   <div class="card" id="sc2" style="left:290px;top:360px;width:176px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;border-radius:16px;background:#111;color:#fff"><div style="padding:16px 0">${uzel(30,'#fff')}</div><div style="font-weight:900;font-size:20px;letter-spacing:-.03em;text-align:center;line-height:1.1">Better<br>Digital</div><div class="mono" style="font-size:10px;color:#aaa">ZAKLADATEL</div></div>`,
+  anim:(t,s)=>{popIn($('sch'),t,s.t0+.05,.25,.7);slideIn($('ssb'),t,s.t0+.1,20,.35);slideX($('sc1'),t,ck('s18',1),-40,.35);popIn($('seq'),t,ck('s18',2)+.1,.22,.4);slideX($('sc2'),t,ck('s18',3)+.1,40,.35);
+    const H=ck('s18',4);if(t>=H){$('sc2').style.boxShadow=`0 0 0 ${(6*eo((t-H)/.25)).toFixed(1)}px #FFD400,0 24px 60px rgba(0,0,0,.3)`}},
+  ev:s=>[[s.t0+.05,'pop'],[ck('s18',1),'whoosh'],[ck('s18',2)+.1,'pop2'],[ck('s18',3)+.1,'whoosh'],[ck('s18',4),'chime']]},
+
+ /* 14 · takže jsme na dobré cestě… zatím nám chybí jen pár miliard */
+ {id:'bill',from:'s19',cls:'board',cap:1,tr:'flash',
+  html:()=>`<div class="abs mono" style="left:74px;top:186px;font-size:13px;color:var(--g)">BETTER DIGITAL · PLÁN</div>
+   <div class="abs" style="left:74px;top:214px;width:392px">${[['Stejná průmyslovka',1],['Vlastní firma',1],['Pár miliard',0]].map(([a,ok],i)=>`<div class="br" data-i="${i}" style="display:flex;align-items:center;gap:16px;height:62px;border-bottom:1.5px solid #222;opacity:0"><span class="bx" style="width:34px;height:34px;border-radius:8px;border:2.5px solid #555;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:24px;color:${ok?'#2BB673':'#E5322D'}"></span><span style="font-weight:800;font-size:26px;letter-spacing:-.02em">${a}</span></div>`).join('')}</div>
+   <div class="abs mono" style="left:74px;top:428px;font-size:12px;color:var(--g)">CESTA K MILIARDÁM</div>
+   <div class="abs" style="left:74px;top:452px;width:392px;height:22px;border-radius:999px;background:#1d1d22;overflow:hidden"><div id="bpb" style="height:22px;width:0;background:var(--y);border-radius:999px"></div></div>
+   <div class="abs big" id="bpn" style="left:74px;top:490px;font-size:64px;color:#fff;font-variant-numeric:tabular-nums">0 %</div>
+   <div class="abs mono" id="bpr" style="right:74px;top:428px;font-size:12px;color:#E5322D;opacity:0">PŘEPOČÍTÁNO</div>`,
+  anim:(t,s)=>{const A=[s.t0+.1,s.t0+.45,ck('s20',1)];s.el.querySelectorAll('.br').forEach(e=>{const i=+e.dataset.i;slideX(e,t,i<2?A[i]-.05:ck('s20',0),-30,.3);const b=e.querySelector('.bx');b.textContent=t>=A[i]+.15?(i<2?'✓':'✕'):''});
+    const G=ck('s19',1);const R=ck('s20',1)+.3;let v=t<R?66*eo((t-G)/.6):lerp(66,.001,eo((t-R)/.35));if(t<G)v=0;
+    $('bpb').style.width=(392*v/100).toFixed(1)+'px';const n=$('bpn');n.textContent=t<R?Math.round(v)+' %':(v>1?Math.round(v)+' %':'0,001 %');if(t>=R){n.style.color='#E5322D';n.style.transform=slamT(t-R-.35,1.15,4)}else n.style.color='#fff';fade($('bpr'),t,R+.35)},
+  ev:s=>[[s.t0+.25,'tick2'],[s.t0+.6,'tick2'],[ck('s19',1),'rise'],[ck('s20',1)+.15,'buzz'],[ck('s20',1)+.3,'scratch'],[ck('s20',1)+.65,'slam',.3]]},
+
+ /* 15 · výzva: kterou českou firmu chceš příště? */
+ {id:'cta',from:'s21',cls:'white',cap:0,tr:'flash',
+  html:()=>`<div class="abs" style="left:74px;top:136px"><span class="badge">POSTAVILI TO <b>ČESKÁ EDICE</b>${FLAG(20)}</span></div>
+   <div class="abs" id="cq" style="left:74px;top:186px;width:400px;font-weight:900;font-size:44px;letter-spacing:-.04em;line-height:1.04;color:#111">Kterou českou firmu chceš příště?</div>
+   ${['Rohlík','Kiwi.com','Mews','Alza'].map((n,i)=>`<div class="abs co" data-i="${i}" style="left:74px;top:${350+i*58}px;width:392px;height:50px;border:2.5px solid #111;border-radius:14px;display:flex;align-items:center;padding:0 18px;font-weight:800;font-size:22px;color:#111;opacity:0">${n}</div>`).join('')}
+   <div class="abs" id="cc" style="left:74px;top:592px;width:392px;height:54px;border-radius:999px;background:#D0021B;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:21px;opacity:0">Napiš to do komentářů 👇</div>
+   <div class="abs" id="csg" style="left:74px;top:672px;display:flex;align-items:center;gap:12px;opacity:0"><div style="background:#111;border-radius:8px;padding:8px 11px;display:flex">${uzel(18,'#fff')}</div><div style="font-weight:800;font-size:19px;color:#111;letter-spacing:-.03em">Better Digital</div></div>`,
+  anim:(t,s)=>{slideIn($('cq'),t,s.t0+.05,16,.3);s.el.querySelectorAll('.co').forEach(e=>slideX(e,t,ck('s21',1)+(+e.dataset.i)*.12,-40,.3));popIn($('cc'),t,st('s22')+.05,.25,.7);slideIn($('csg'),t,st('s22')+.5,10)},
+  ev:s=>[[s.t0+.05,'whoosh'],...[0,1,2,3].map(i=>[ck('s21',1)+i*.12,'pop',i]),[st('s22')+.05,'notif']]},
+];
+/* ------------------------------------------------------------ sestavení */
+const stage=$('stage');
+SCN.forEach((s,i)=>{s.t0=i?st(s.from)-.06:0;});
+SCN.forEach((s,i)=>{s.t1=i+1<SCN.length?SCN[i+1].t0:T.END;const el=document.createElement('div');el.className='sc '+s.cls;el.id='sc_'+s.id;
+  el.innerHTML=`<div class="cam">${s.html()}</div>`;stage.appendChild(el);s.el=el;s.cam=el.querySelector('.cam')});
+const TR=SCN.filter((s,i)=>i&&s.tr).map(s=>[s.t0,s.tr]);
+const EV=[];SCN.forEach(s=>{if(s.ev)EV.push(...s.ev(s))});
+TR.forEach(([t0,ty])=>{if(ty==='glitch')EV.push([t0-.05,'glitch',.25]);if(ty==='flash')EV.push([t0,'hit']);if(ty==='scan')EV.push([t0,'swish'])});
+EV.sort((a,b)=>a[0]-b[0]);window.EV=EV;
+const SHK=EV.filter(e=>e[1]==='shk');
+const YEARS=[1996,1998,2001,2008,2026],Y0=1996,Y1=2026,yx=y=>(y-Y0)/(Y1-Y0)*392;
+$('tl').innerHTML='<div class="ln"></div><div class="pg"></div>'+YEARS.map(y=>`<i class="ev" data-y="${y}" style="left:${yx(y).toFixed(1)}px"></i>`).join('')+'<div class="cur"></div><div class="yr"></div>';
+const GC=$('grain').getContext('2d'),GI=GC.createImageData(180,320);
+function grain(f){const r=rng(7000+f),d=GI.data;for(let i=0;i<d.length;i+=4){const v=r()*255|0;d[i]=d[i+1]=d[i+2]=v;d[i+3]=12}GC.putImageData(GI,0,0)}
+window.render=function(t){
+  let k=SCN.length-1;for(let i=0;i<SCN.length;i++)if(t<SCN[i].t1){k=i;break}
+  const s=SCN[k],u=t-s.t0;const prev=k>0?SCN[k-1]:null;
+  const scan=s.tr==='scan'&&prev&&u<.28;
+  SCN.forEach(q=>{const on=q===s||(scan&&q===prev);q.el.style.display=on?'block':'none';q.el.style.zIndex=q===s?2:1;q.el.style.clipPath='none'});
+  if(scan){const p=eio(u/.28);s.el.style.clipPath=`inset(0 0 ${(100*(1-p)).toFixed(2)}% 0)`;prev.anim&&prev.anim(t,prev);$('scanl').style.display='block';$('scanl').style.top=(960*p-1).toFixed(1)+'px'}else $('scanl').style.display='none';
+  s.cam.style.transform=`scale(${(1+.012*Math.min(u,6)/6).toFixed(4)})`;
+  s.anim&&s.anim(t,s);
+  let sx=0,sy=0;for(const [a,,amp] of SHK)if(t>=a&&t<a+.6){const e=amp*Math.exp(-(t-a)/.12);sx+=e*Math.sin((t-a)*95+a);sy+=e*.7*Math.sin((t-a)*83+a*2)}
+  stage.style.transform=sx||sy?`translate(${sx.toFixed(2)}px,${sy.toFixed(2)}px)`:'none';
+  const g=$('gl');let gh='';for(const [a,ty] of TR)if(ty==='glitch'&&t>=a-.08&&t<a+.14){const r=rng(400+Math.floor(t*FPS));for(let i=0;i<9;i++){const y=r()*960,h=3+r()*30;gh+=`<i style="position:absolute;left:${(-60+r()*120).toFixed(0)}px;top:${y.toFixed(0)}px;width:${(300+r()*400).toFixed(0)}px;height:${h.toFixed(1)}px;background:${['#fff','#D0021B','#FFD400'][Math.floor(r()*3)]};opacity:${(.35+r()*.5).toFixed(2)}"></i>`}
+    stage.style.filter=`drop-shadow(${(6*(r()-.5)).toFixed(1)}px 0 0 rgba(255,30,60,.8)) drop-shadow(${(6*(r()-.5)).toFixed(1)}px 0 0 rgba(0,200,255,.8))`}
+  g.innerHTML=gh;if(!gh)stage.style.filter='none';
+  /* titulky */
+  const cap=$('cap');let html='';const capOn=s.cap||s.capS;if(capOn){for(const [cs,i,txt,a,b] of T.chunks){if((!s.capS||s.capS.includes(cs))&&t>=a-(cs==='s1'&&i===0?1:0)&&t<b+.02&&t>=s.t0-.01){html=txt.replace(/\*(.+?)\*/g,'<b>$1</b>');break}}}
+  cap.innerHTML=html?`<span>${html}</span>`:'';cap.style.top=(s.capY||664)+'px';
+  /* časová osa */
+  const tl=$('tl');tl.className=s.dk?'dk':'';const py=k>0&&SCN[k-1].year?SCN[k-1].year:s.year;const yy=s.year?lerp(py||s.year,s.year,eio(u/.35)):0;tl.style.opacity=s.year?1:0;
+  if(s.year){const x=yx(yy);tl.querySelector('.pg').style.width=x.toFixed(1)+'px';tl.querySelector('.cur').style.left=x.toFixed(1)+'px';const yr=tl.querySelector('.yr');yr.style.left=clamp(x,18,374).toFixed(1)+'px';yr.textContent=Math.round(yy);
+    tl.querySelectorAll('.ev').forEach(e=>e.classList.toggle('p',+e.dataset.y<=yy+.01))}
+  let fl=0;for(const [a,ty] of TR)if(ty==='flash'&&t>=a&&t<a+.14)fl=Math.max(fl,.55*(1-(t-a)/.14));
+  if(!s.tr&&k>0&&u<.08)fl=Math.max(fl,.15*(1-u/.08));$('flash').style.opacity=fl.toFixed(3);
+  grain(Math.floor(t*FPS+1e-6));
+};
+const FL=['900 20px IT','850 20px IT','800 20px IT','700 20px IT','20px JB','20px VT','20px IS'];
+Promise.all(FL.map(f=>document.fonts.load(f,'ěščřžýáíéúůťďňĚŠČŘŽ„“…—·−✕✓⚠↗→▲□×–')))
+ .then(()=>Promise.all([...document.images].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r}))))
+ .then(()=>document.fonts.ready).then(()=>{window.READY=true;render(0)});
+</script></body></html>
