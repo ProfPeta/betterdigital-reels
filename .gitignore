@@ -34,3 +34,5 @@ promo/postavili-to-cz-03-alza/raw.mp4
 promo/postavili-to-cz-03-alza/full.mp4
 promo/postavili-to-cz-03-alza/audio.wav
 promo/postavili-to-cz-03-alza/qa_sheet.jpg
+# Whisper model pro kontrolu hlasu (engine/tools/get_whisper.sh)
+engine/tools/sherpa-onnx-whisper-turbo/
