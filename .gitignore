@@ -36,3 +36,12 @@ promo/postavili-to-cz-03-alza/audio.wav
 promo/postavili-to-cz-03-alza/qa_sheet.jpg
 # Whisper model pro kontrolu hlasu (engine/tools/get_whisper.sh)
 engine/tools/sherpa-onnx-whisper-turbo/
+# POSTAVILI TO #03 (Nvidia): fotky od Petra bez ověřené licence – jen lokálně
+promo/postavili-to-03-nvidia/photos/src/
+promo/postavili-to-03-nvidia/photos/*.png
+promo/postavili-to-03-nvidia/photos/*.jpg
+promo/postavili-to-03-nvidia/qa*/
+promo/postavili-to-03-nvidia/raw.mp4
+promo/postavili-to-03-nvidia/full.mp4
+promo/postavili-to-03-nvidia/audio.wav
+promo/postavili-to-03-nvidia/qa_sheet.jpg

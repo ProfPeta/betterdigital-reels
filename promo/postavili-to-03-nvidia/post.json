@@ -1,0 +1,15 @@
+{
+  "platform": "tiktok+instagram",
+  "series": "POSTAVILI TO",
+  "episode": 3,
+  "text": "V devíti letech drhnul záchody v polepšovně. Dnes řídí Nvidii, první firmu za 5 bilionů dolarů. 🟩\n\nPOSTAVILI TO #03 · Jensen Huang\nDenny's, první čip jako katastrofa, 30 dní od krachu a jedno upřímné „selhali jsme“, které firmu zachránilo.\n\nŠel bys do toho i ty, kdybys věděl, kolik to bude bolet? ANO, nebo NE? 👇\n\n#nvidia #jensenhuang #podnikani #pribeh #ai",
+  "firstComment": "Pro šťouraly: hranici 5 bilionů $ Nvidia jako první překonala v říjnu 2025. Peníze od Segy přišly v roce 1996 a Nvidia pak propustila 60 ze 100 lidí. Zdroje: Wikipedia, Britannica, Fortune, Tom's Hardware, Business Insider.\n\nKoho chceš v dalším díle? 👇",
+  "coverMs": 2000,
+  "settings": {
+    "instagramData": {"type": "REEL", "showReelOnFeed": true, "isAiGenerated": true},
+    "tiktokData": {"privacyOption": "PUBLIC_TO_EVERYONE", "commercialContentOwnBrand": false, "commercialContentThirdParty": false, "isAigc": true,
+                   "note": "Štítek AI kvůli hlasu z ElevenLabs. Bez označení propagace."}
+  },
+  "rightsNote": "Fotky nahrál Petr, licence neověřené. Denny's a Sega označené jako ilustrační.",
+  "status": "ready – zatím neplánováno"
+}

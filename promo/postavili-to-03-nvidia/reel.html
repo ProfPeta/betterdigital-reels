@@ -1,0 +1,351 @@
+<!doctype html>
+<!-- POSTAVILI TO #03 – Jensen Huang / Nvidia. TikTok/Reels 540×960 CSS px (render 2×), 30 fps, délka podle hlasu (timeline.js).
+     Styl: kostra Better Digital (žlutý odznak, Uzel, titulky) + vlastní „Nvidia“ vrstva: černá, zelená #76B900, technická mřížka, HUD rohy, mono popisky. -->
+<html lang="cs"><head><meta charset="utf-8"><title>POSTAVILI TO #03 – Jensen Huang</title>
+<style>
+@font-face{font-family:IT;src:url(../../engine/fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../../engine/fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+:root{--nv:#76B900;--nvd:#3d6100;--red:#E5322D;--y:#FFD400;--g:#8C939E}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden;background:#000}
+body{font-family:IT,'Noto Color Emoji',sans-serif;-webkit-font-smoothing:antialiased;position:relative;color:#fff}
+.abs{position:absolute}
+#stage{position:absolute;left:0;top:0;width:540px;height:960px;z-index:0}
+.sc{position:absolute;inset:0;overflow:hidden;display:none}
+.cam{position:absolute;inset:0;transform-origin:50% 45%}
+.blk{background:#000}.white{background:#fff;color:#111}.ink{background:#07090a}.redd{background:#120303}.nvg{background:radial-gradient(70% 50% at 50% 42%,#14220a,#000 75%)}
+/* technická mřížka (Nvidia vrstva) */
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(118,185,0,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(118,185,0,.07) 1px,transparent 1px);background-size:27px 27px;background-position:0 0}
+.grid.r{background-image:linear-gradient(rgba(229,50,45,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(229,50,45,.08) 1px,transparent 1px)}
+.mono{font-family:JB,monospace;letter-spacing:.08em;white-space:nowrap}
+.big{font-weight:900;letter-spacing:-.045em;line-height:.95;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:10px;background:var(--y);color:#0E0E0E;font-weight:900;font-size:19px;letter-spacing:-.01em;padding:6px 12px 6px;border-radius:6px}
+.badge b{font-family:JB;font-size:11px;font-weight:500;letter-spacing:.12em}
+/* šikmý štítek */
+.tag{display:inline-block;background:var(--nv);color:#000;font-family:JB;font-size:13px;letter-spacing:.1em;padding:5px 16px 4px 12px;clip-path:polygon(0 0,100% 0,calc(100% - 9px) 100%,0 100%);white-space:nowrap}
+.tag.w{background:#fff}.tag.r{background:var(--red);color:#fff}.tag.k{background:#111;color:var(--nv)}
+.stamp{display:inline-block;font-weight:900;font-size:46px;color:var(--red);border:6px solid var(--red);padding:2px 16px 4px;letter-spacing:.02em;line-height:1.05;white-space:nowrap;border-radius:4px}
+.stamp.gr{color:var(--nv);border-color:var(--nv)}
+/* HUD rám */
+.hud{position:absolute;pointer-events:none}
+.hud i{position:absolute;width:18px;height:18px;border-color:var(--nv);border-style:solid}
+.hud i:nth-child(1){left:0;top:0;border-width:2.5px 0 0 2.5px}.hud i:nth-child(2){right:0;top:0;border-width:2.5px 2.5px 0 0}
+.hud i:nth-child(3){left:0;bottom:0;border-width:0 0 2.5px 2.5px}.hud i:nth-child(4){right:0;bottom:0;border-width:0 2.5px 2.5px 0}
+.ph{position:absolute;overflow:hidden;background:#111}
+.ph img{display:block;width:100%;height:100%;object-fit:cover}
+.lbl{position:absolute;left:8px;bottom:7px;font-family:JB;font-size:10px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.6);padding:2px 6px}
+.card{position:absolute;background:#fff;color:#111;border-radius:6px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+/* titulky */
+#cap{position:absolute;left:40px;right:40px;text-align:center;pointer-events:none;z-index:3}
+#cap span{display:inline;background:rgba(8,8,8,.86);color:#fff;font-weight:850;font-size:30px;letter-spacing:-.02em;line-height:1.5;padding:4px 12px;box-decoration-break:clone;-webkit-box-decoration-break:clone;border-radius:5px}
+#cap b{font-weight:850;background:var(--nv);color:#000;padding:0 6px;border-radius:3px}
+/* časová osa */
+#tl{position:absolute;left:74px;width:392px;top:122px;height:36px;pointer-events:none;z-index:2}
+#tl .ln{position:absolute;left:0;right:0;top:24px;height:1.5px;background:rgba(255,255,255,.3)}
+#tl .pg{position:absolute;left:0;top:24px;height:1.5px;background:var(--nv)}
+#tl .ev{position:absolute;top:20px;width:9px;height:9px;margin-left:-4.5px;border:1.5px solid rgba(255,255,255,.55);background:#000;transform:rotate(45deg)}
+#tl .ev.p{background:var(--nv);border-color:var(--nv)}
+#tl .cur{position:absolute;top:17px;width:15px;height:15px;margin-left:-7.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(118,185,0,.75),0 0 16px rgba(118,185,0,.9)}
+#tl .yr{position:absolute;top:0;transform:translateX(-50%);font-family:JB;font-size:13px;letter-spacing:.1em;color:#fff;white-space:nowrap}
+#gl{position:absolute;inset:0;pointer-events:none;z-index:4}
+#scanl{position:absolute;left:0;width:540px;height:3px;background:var(--nv);box-shadow:0 0 18px 5px rgba(118,185,0,.85);display:none;pointer-events:none;z-index:4}
+#grain{position:absolute;left:0;top:0;width:540px;height:960px;pointer-events:none;z-index:5}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:6}
+</style></head><body>
+<div id="stage"></div>
+<div id="tl"></div>
+<div id="cap"></div>
+<div id="gl"></div><div id="scanl"></div>
+<canvas id="grain" width="180" height="320"></canvas>
+<div id="flash"></div>
+<script src="timeline.js"></script>
+<script>
+const FPS=30;const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-clamp(x),3),e5=x=>1-Math.pow(1-clamp(x),5);
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,p)=>a+(b-a)*p;const $=id=>document.getElementById(id);
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const fmt=n=>Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+function uzel(h,col){const w=h*3.8,sw=h*.12,r=h/2-sw/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${col}" stroke-width="${sw}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
+const T=window.TL;const st=s=>T.S[s][0],en=s=>T.S[s][1];
+const CK={};T.chunks.forEach(([s,i,txt,a,b])=>{(CK[s]=CK[s]||[])[i]=[a,b,txt]});
+const ck=(s,i)=>CK[s][i][0];
+window.DURATION=T.END;
+function slamT(u,s0=1.35,amp=7){const p=e5(u/.1),k=Math.exp(-Math.max(0,u)/.13);
+  return `translate(${(amp*k*Math.sin(u*97+1.1)).toFixed(2)}px,${(amp*.7*k*Math.sin(u*83+.3)).toFixed(2)}px) scale(${lerp(s0,1,p).toFixed(4)})`}
+const popIn=(e,t,a,d=.22,s0=.6)=>{e.style.opacity=t>=a?1:0;e.style.transform=`scale(${lerp(s0,1,back((t-a)/d)).toFixed(4)})`};
+const slideIn=(e,t,a,dy=24,d=.3)=>{const p=e5((t-a)/d);e.style.opacity=t>=a?p:0;e.style.transform=`translateY(${(dy*(1-p)).toFixed(1)}px)`};
+const slideX=(e,t,a,dx=60,d=.35)=>{const p=e5((t-a)/d);e.style.opacity=t>=a?p:0;e.style.transform=`translateX(${(dx*(1-p)).toFixed(1)}px)`};
+const stampIn=(e,t,a,rot=-8,s0=1.8)=>{e.style.opacity=t>=a?1:0;if(t>=a)e.style.transform=`rotate(${rot}deg) `+slamT(t-a,s0,6)};
+const fade=(e,t,a,d=.25)=>{e.style.opacity=clamp((t-a)/d).toFixed(3)};
+const typeTo=(e,txt,t,a,cps=22)=>{const n=Math.max(0,Math.floor((t-a)*cps));e.textContent=t>=a?txt.slice(0,n):''};
+const HUD=`<div class="hud" style="inset:-8px"><i></i><i></i><i></i><i></i></div>`;
+const PERSON=(c,w=24)=>`<svg width="${w}" height="${w*1.25}" viewBox="0 0 30 38"><circle cx="15" cy="9" r="8" fill="${c}"/><path d="M1 38 C 2 23, 8 19, 15 19 C 22 19, 28 23, 29 38 Z" fill="${c}"/></svg>`;
+
+/* ------------------------------------------------------------ prvky */
+const BRUSH=`<svg width="120" height="170" viewBox="0 0 120 170"><rect x="54" y="4" width="12" height="104" rx="6" fill="#d9d9d9"/><rect x="50" y="2" width="20" height="14" rx="6" fill="#76B900"/>
+  <ellipse cx="60" cy="132" rx="34" ry="30" fill="#f2f2f2"/>${Array.from({length:22},(_,i)=>{const a=i/22*Math.PI*2;return `<line x1="${60+22*Math.cos(a)}" y1="${132+20*Math.sin(a)}" x2="${60+38*Math.cos(a)}" y2="${132+34*Math.sin(a)}" stroke="#cfcfcf" stroke-width="4" stroke-linecap="round"/>`}).join('')}</svg>`;
+const PLATE=(w=150)=>`<svg width="${w}" height="${w*.22}" viewBox="0 0 150 33"><ellipse cx="75" cy="16" rx="73" ry="15" fill="#f4f4f1" stroke="#c9c9c2" stroke-width="2"/><ellipse cx="75" cy="15" rx="46" ry="8" fill="none" stroke="#dcdcd6" stroke-width="2"/></svg>`;
+const CHIP=(lab,c='#76B900',w=210)=>`<svg width="${w}" height="${w}" viewBox="0 0 210 210">${Array.from({length:8},(_,i)=>{const p=34+i*20;return `<rect x="${p}" y="0" width="7" height="22" fill="#9aa0a6"/><rect x="${p}" y="188" width="7" height="22" fill="#9aa0a6"/><rect x="0" y="${p}" width="22" height="7" fill="#9aa0a6"/><rect x="188" y="${p}" width="22" height="7" fill="#9aa0a6"/>`}).join('')}
+  <rect x="20" y="20" width="170" height="170" rx="10" fill="#15181b" stroke="${c}" stroke-width="3"/><rect x="48" y="48" width="114" height="114" rx="4" fill="#1d2226" stroke="#2c3338" stroke-width="2"/>
+  <text x="105" y="114" text-anchor="middle" font-family="JB" font-size="30" fill="#fff" letter-spacing="2">${lab}</text></svg>`;
+const QUADS=`<svg width="150" height="110" viewBox="0 0 150 110">${Array.from({length:4},(_,r)=>Array.from({length:5},(_,c)=>`<path d="M${10+c*26+r*4} ${10+r*24} q 13 ${-6+r*2} 26 0 l 0 24 q -13 ${4} -26 0 z" fill="none" stroke="#E5322D" stroke-width="2"/>`).join('')).join('')}</svg>`;
+const TRIS=`<svg width="150" height="110" viewBox="0 0 150 110">${Array.from({length:4},(_,r)=>Array.from({length:5},(_,c)=>{const x=10+c*26,y=10+r*24;return `<path d="M${x} ${y} L${x+26} ${y} L${x} ${y+24} Z M${x+26} ${y} L${x+26} ${y+24} L${x} ${y+24} Z" fill="none" stroke="#76B900" stroke-width="2"/>`}).join('')).join('')}</svg>`;
+const PLANE=`<svg width="34" height="34" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" fill="#fff"/></svg>`;
+const BOOTH=`<svg width="392" height="230" viewBox="0 0 392 230"><path d="M30 40 Q30 20 50 20 L342 20 Q362 20 362 40 L362 120 L30 120 Z" fill="#7a1f1f"/><path d="M30 40 L362 40" stroke="#5c1414" stroke-width="3"/>
+  ${[80,150,220,290].map(x=>`<line x1="${x}" y1="24" x2="${x}" y2="118" stroke="#5c1414" stroke-width="2"/>`).join('')}<rect x="60" y="112" width="272" height="20" rx="4" fill="#d9c9a3"/><rect x="186" y="132" width="20" height="90" fill="#555"/><rect x="146" y="214" width="100" height="10" rx="3" fill="#444"/></svg>`;
+
+/* ------------------------------------------------------------ scény */
+const SCN=[
+ /* 1 · háček: dnes CEO Nvidie, v 9 letech drhnul záchody */
+ {id:'hook',from:'s1',cls:'blk',cap:1,
+  html:()=>`<div class="grid"></div><div class="abs" style="inset:0;background:radial-gradient(60% 40% at 50% 40%,rgba(118,185,0,.16),transparent 70%)"></div>
+   <div class="abs" style="left:74px;top:132px"><span class="badge">POSTAVILI TO <b>#03 · JENSEN HUANG</b></span></div>
+   <div class="ph" id="hph" style="left:74px;top:186px;width:392px;height:290px"><img src="photos/huang_bw.jpg" style="object-position:50% 30%"><div class="lbl">JENSEN HUANG · DNES CEO NVIDIE</div></div>
+   <div class="hud" id="hhud" style="left:66px;top:178px;width:408px;height:306px;opacity:0"><i></i><i></i><i></i><i></i></div>
+   <div class="abs" id="hage" style="left:74px;top:494px;opacity:0;transform-origin:0 50%"><div style="display:flex;align-items:baseline;gap:10px"><span class="big" style="font-size:104px;color:var(--nv)">9</span><span class="big" style="font-size:44px">LET</span></div></div>
+   <div class="abs" id="hbr" style="left:330px;top:484px;opacity:0;transform-origin:60px 100px">${BRUSH}</div>
+   <div class="abs" id="hst" style="left:74px;top:610px;opacity:0"><span class="tag r" style="font-size:14px">ÚKOL: ZÁCHODY · KAŽDÝ DEN</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;const ph=$('hph');ph.style.transform=`scale(${(1.06-.06*e5(u/.6)).toFixed(4)})`;ph.style.opacity=clamp(u/.15);
+    const hd=$('hhud');hd.style.opacity=clamp((u-.15)/.2);hd.style.transform=`scale(${(1.06-.06*e5((u-.15)/.4)).toFixed(4)})`;
+    const A=ck('s1',1)+.05;const a=$('hage');a.style.opacity=t>=A?1:0;if(t>=A)a.style.transform=slamT(t-A,1.5,6);
+    const B=ck('s1',3);const b=$('hbr');b.style.opacity=t>=B?1:0;if(t>=B)b.style.transform=`rotate(${(14*Math.sin((t-B)*16)*Math.exp(-(t-B)*2.2)).toFixed(2)}deg) `+slamT(t-B,1.4,5);
+    slideX($('hst'),t,B+.2,30,.3)},
+  ev:s=>[[0,'slam',.3],[.15,'hud'],[ck('s1',1)+.05,'slam',.4],[ck('s1',3),'scrub'],[ck('s1',3)+.2,'pop']]},
+
+ /* 2 · rodiče ho poslali z Tchaj-wanu do Ameriky */
+ {id:'fly',from:'s2',cls:'ink',cap:1,tr:'scan',
+  html:()=>`<div class="grid"></div>
+   <div class="abs mono" style="left:74px;top:186px;font-size:13px;color:var(--g)">BEZ RODIČŮ · SE STARŠÍM BRATREM</div>
+   <svg class="abs" width="540" height="420" style="left:0;top:210px"><path id="farc" d="M 420 300 Q 270 40 110 230" fill="none" stroke="rgba(118,185,0,.25)" stroke-width="2" stroke-dasharray="6 7"/><path id="farc2" d="M 420 300 Q 270 40 110 230" fill="none" stroke="#76B900" stroke-width="3"/>
+    <circle cx="420" cy="300" r="7" fill="#fff"/><circle cx="420" cy="300" r="16" fill="none" stroke="#fff" stroke-opacity=".4"/><circle id="fdst" cx="110" cy="230" r="7" fill="#76B900"/></svg>
+   <div class="abs" id="fpl" style="left:0;top:0;opacity:0">${PLANE}</div>
+   <div class="abs" id="ft1" style="left:330px;top:540px;opacity:0"><span class="tag w">TCHAJ-WAN</span></div>
+   <div class="abs" id="ft2" style="left:74px;top:470px;opacity:0"><span class="tag">USA</span></div>
+   <div class="abs big" id="fage" style="left:300px;top:270px;font-size:58px;color:#fff;opacity:0">9 let</div>`,
+  anim:(t,s)=>{const P=$('farc2');const L=P.getTotalLength();const A=ck('s2',1)-.1,B=ck('s2',2)+.35;const p=eio((t-A)/(B-A));
+    P.style.strokeDasharray=L;P.style.strokeDashoffset=(L*(1-p)).toFixed(1);slideIn($('ft1'),t,A-.25,16,.25);
+    const pt=P.getPointAtLength(L*p),pt2=P.getPointAtLength(Math.min(L,L*p+2));const ang=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)*180/Math.PI+90;
+    const pl=$('fpl');pl.style.opacity=t>=A&&p<1?1:0;pl.style.transform=`translate(${(pt.x-17).toFixed(1)}px,${(pt.y+210-17).toFixed(1)}px) rotate(${ang.toFixed(1)}deg)`;
+    popIn($('ft2'),t,B-.05,.25,.6);fade($('fage'),t,s.t0+.2,.3)},
+  ev:s=>[[ck('s2',1)-.1,'jet',ck('s2',2)+.45-ck('s2',1)],[ck('s2',2)+.3,'pop2']]},
+
+ /* 3 · strýc ho omylem zapsal do polepšovny v Kentucky; byl nejmladší, dostal záchody */
+ {id:'oneida',from:'s3',cls:'ink',cap:1,tr:'flash',
+  html:()=>`<div class="grid"></div>
+   <div class="ph" id="oph" style="left:74px;top:200px;width:392px;height:262px"><img src="photos/oneida.jpg"><div class="lbl">ONEIDA BAPTIST INSTITUTE · KENTUCKY</div></div>
+   <div class="abs" id="ost" style="left:150px;top:300px;opacity:0"><span class="stamp" style="background:rgba(0,0,0,.72)">POLEPŠOVNA</span></div>
+   <div class="abs" id="oerr" style="left:74px;top:160px;opacity:0"><span class="tag r">OMYL: MYSLELI, ŽE JE TO ELITNÍ ŠKOLA</span></div>
+   <div class="abs" id="orow" style="left:74px;top:486px;width:392px;display:flex;align-items:flex-end;gap:10px">${[54,50,46,42,38,34,26].map((h,i)=>`<div class="orp" data-i="${i}" style="opacity:0">${PERSON(i===6?'#76B900':'#3a3f45',h*.62)}</div>`).join('')}</div>
+   <div class="abs" id="oyou" style="left:368px;top:466px;opacity:0"><span class="tag" style="font-size:11px">NEJMLADŠÍ</span></div>
+   <div class="card" id="oduty" style="left:74px;top:560px;width:392px;padding:10px 16px;opacity:0;display:flex;justify-content:space-between;align-items:center;border-radius:4px">
+    <div><div class="mono" style="font-size:11px;color:#666">ROZPIS SLUŽEB</div><div style="font-weight:900;font-size:24px;letter-spacing:-.03em">Záchody · <span style="color:var(--red)">každý den</span></div></div><div style="font-weight:900;font-size:32px;color:var(--nv)">✓</div></div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('oph').style.transform=`scale(${(1.08-.08*e5(u/.8)).toFixed(4)})`;slideX($('oerr'),t,ck('s3',0)+.25,-30,.3);
+    stampIn($('ost'),t,ck('s3',1)+.45,-7,1.9);if(t>=st('s4')-.1)$('ost').style.opacity=(1-clamp((t-st('s4')+.1)/.2)).toFixed(3);
+    const R=st('s4')-.05;s.el.querySelectorAll('.orp').forEach(e=>{const i=+e.dataset.i;popIn(e,t,R+i*.07,.2,.4)});popIn($('oyou'),t,R+.6,.22,.6);slideIn($('oduty'),t,ck('s4',1)+.1,30,.3)},
+  ev:s=>[[ck('s3',0)+.25,'swish'],[ck('s3',1)+.45,'stamp',.4],...[0,1,2,3,4,5,6].map(i=>[st('s4')-.05+i*.07,'tick2']),[st('s4')+.55,'pop2'],[ck('s4',1)+.1,'paper'],[ck('s4',1)+.4,'scrub']]},
+
+ /* 4 · jako teenager myl nádobí v Denny's */
+ {id:'dennys',from:'s5',cls:'blk',cap:1,year:1978,tr:'glitch',
+  html:()=>`<div class="grid"></div>
+   <div class="ph" id="dph" style="left:74px;top:186px;width:220px;height:300px"><img src="photos/dennys.jpg"><div class="lbl">DENNY'S · ILUSTRAČNÍ FOTO</div></div>
+   <div class="abs" style="left:310px;top:186px"><span class="tag w">PRVNÍ PRÁCE</span></div>
+   <div class="abs" id="dpl" style="left:310px;top:250px;width:160px;height:240px">${Array.from({length:10},(_,i)=>`<div class="abs dp" data-i="${i}" style="left:5px;top:${200-i*15}px;opacity:0">${PLATE(150)}</div>`).join('')}</div>
+   <div class="abs mono" id="dcnt" style="left:310px;top:500px;font-size:13px;color:var(--nv);opacity:0">TALÍŘE: <span id="dcn">0</span></div>
+   <div class="abs" id="dcar" style="left:74px;top:540px;width:392px;display:flex;gap:6px;align-items:center;opacity:0"><span class="tag k">MYČKA</span><span class="mono" style="color:var(--g)">→</span><span class="tag k">POMOCNÍK</span><span class="mono" style="color:var(--g)">→</span><span class="tag">ČÍŠNÍK</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;slideX($('dph'),t,s.t0,-40,.35);const A=ck('s5',1);s.el.querySelectorAll('.dp').forEach(e=>{const i=+e.dataset.i;const a=A+i*.09;const p=e5((t-a)/.2);e.style.opacity=t>=a?1:0;e.style.transform=`translateY(${(-60*(1-p)).toFixed(1)}px)`});
+    fade($('dcnt'),t,A);$('dcn').textContent=fmt(clamp((t-A)/.9)*1000*eo((t-A)/1.6));slideIn($('dcar'),t,ck('s5',2)-.1,20,.3)},
+  ev:s=>[[s.t0,'whoosh'],...Array.from({length:10},(_,i)=>[ck('s5',1)+i*.09+.18,'plate',i]),[ck('s5',2)-.1,'pop']]},
+
+ /* 5 · u stolu v Denny's v roce 1993 vymyslel se dvěma kamarády firmu */
+ {id:'booth',from:'s6',cls:'ink',cap:1,year:1993,tr:'flash',
+  html:()=>`<div class="grid"></div><div class="abs" style="inset:0;background:radial-gradient(50% 30% at 50% 45%,rgba(255,200,120,.12),transparent 70%)"></div>
+   <div class="abs mono" style="left:74px;top:186px;font-size:13px;color:#ffcf9a">DENNY'S · SAN JOSE · 1993</div>
+   <div class="abs" id="bbo" style="left:74px;top:300px">${BOOTH}</div>
+   ${[['JENSEN HUANG',120],['CHRIS MALACHOWSKY',218],['CURTIS PRIEM',316]].map(([n,x],i)=>`<div class="abs bpp" data-i="${i}" style="left:${x-36}px;top:330px;width:72px;text-align:center;opacity:0">${PERSON(i?'#e8e8e8':'#76B900',52)}<div class="mono" style="font-size:8.5px;margin-top:4px;color:${i?'#ddd':'#76B900'};white-space:normal;letter-spacing:.06em;line-height:1.25">${n}</div></div>`).join('')}
+   <div class="card" id="bnap" style="left:150px;top:214px;width:240px;padding:10px 14px;opacity:0;border-radius:2px;background:#fbfaf3;transform-origin:50% 100%">
+    <div class="mono" style="font-size:10px;color:#888">UBROUSEK · NÁPAD</div><div id="bnt" style="font-family:JB;font-size:16px;color:#111;margin-top:4px;min-height:44px;white-space:normal;letter-spacing:.02em;line-height:1.35"></div></div>
+   <div class="abs" id="b3" style="left:74px;top:560px;opacity:0"><span class="tag">3 ZAKLADATELÉ</span></div>`,
+  anim:(t,s)=>{slideIn($('bbo'),t,s.t0,24,.35);s.el.querySelectorAll('.bpp').forEach(e=>{const i=+e.dataset.i;popIn(e,t,(i?ck('s6',4)+.05+(i-1)*.2:ck('s6',1)),.25,.5)});
+    const N=ck('s6',3)-.1;slideIn($('bnap'),t,N,-20,.3);if(t>=N)$('bnap').style.transform+=` rotate(-3deg)`;typeTo($('bnt'),'3D grafika pro počítače a hry',t,N+.2,24);popIn($('b3'),t,ck('s6',5)-.05,.25,.6)},
+  ev:s=>[[s.t0,'whoosh'],[ck('s6',1),'pop'],[ck('s6',3)-.1,'paper'],[ck('s6',3)+.2,'type',1.2],[ck('s6',4)+.05,'pop',1],[ck('s6',4)+.25,'pop',2],[ck('s6',5)-.05,'pop2']]},
+
+ /* 6 · Nvidia */
+ {id:'name',from:'s7',cls:'nvg',cap:0,year:1993,tr:'glitch',
+  html:()=>`<div class="grid"></div><div class="abs big" id="nn" style="left:0;right:0;top:318px;text-align:center;font-size:104px;color:#fff;letter-spacing:-.02em">NVIDIA</div>
+   <div class="abs" style="left:0;right:0;top:450px;text-align:center"><span class="mono" id="nl" style="font-size:13px;color:var(--nv);opacity:0">ZALOŽENO 5. 4. 1993</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;const n=$('nn');n.style.transform=slamT(u,1.6,8);n.style.textShadow=u<.25?`${(10*(1-u/.25)).toFixed(1)}px 0 0 rgba(118,185,0,.9),${(-10*(1-u/.25)).toFixed(1)}px 0 0 rgba(255,255,255,.4)`:'0 0 30px rgba(118,185,0,.55)';fade($('nl'),t,s.t0+.2,.2)},
+  ev:s=>[[s.t0+.02,'boom']]},
+
+ /* 7 · první čip katastrofa, špatná technologie, zakázka pro Segu nezvládli */
+ {id:'nv1',from:'s8',cls:'redd',cap:1,year:1995,tr:'scan',
+  html:()=>`<div class="grid r"></div>
+   <div class="abs" id="cch" style="left:165px;top:200px;transform-origin:50% 50%">${CHIP('NV1','#E5322D',210)}</div>
+   <div class="abs" id="cst" style="left:120px;top:300px;opacity:0"><span class="stamp" style="background:rgba(18,3,3,.85)">KATASTROFA</span></div>
+   <div class="abs" id="cq" style="left:74px;top:400px;width:190px;opacity:0"><div class="mono" style="font-size:11px;color:#ff9b97;margin-bottom:6px">NV1 · ČTVERCE ✕</div>${QUADS}</div>
+   <div class="abs" id="ct" style="left:290px;top:400px;width:176px;opacity:0"><div class="mono" style="font-size:11px;color:var(--nv);margin-bottom:6px">PRŮMYSL · TROJÚHELNÍKY</div>${TRIS}</div>
+   <div class="abs" id="csg" style="left:74px;top:380px;width:392px;height:230px;opacity:0;background:#fff;border-radius:4px"><img src="photos/sega.png" style="position:absolute;left:46px;top:24px;width:300px"><div class="lbl" style="background:#111">SEGA · ILUSTRAČNÍ FOTO</div></div>
+   <div class="abs" id="cno" style="left:220px;top:560px;opacity:0"><span class="stamp" style="font-size:34px;border-width:5px;background:rgba(255,255,255,.9)">NEZVLÁDLI</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;const c=$('cch');const S=ck('s8',1)+.25;
+    const sh=t>=S&&t<S+.5?6*Math.exp(-(t-S)*7)*Math.sin((t-S)*90):0;const m=eio((t-ck('s9',0))/.4);
+    c.style.transform=`translate(${(sh+lerp(0,-91,m)).toFixed(1)}px,${lerp(0,-40,m).toFixed(1)}px) scale(${lerp(1,.62,m).toFixed(3)})`;
+    stampIn($('cst'),t,S,-8,1.9);if(t>=ck('s9',0))$('cst').style.opacity=(1-clamp((t-ck('s9',0))/.2)).toFixed(3);
+    const Q=ck('s9',1);slideIn($('cq'),t,Q,24,.3);slideIn($('ct'),t,Q+.35,24,.3);const G=ck('s9',2);
+    if(t>=G){const f=1-clamp((t-G)/.2);$('cq').style.opacity=f;$('ct').style.opacity=f}
+    const sg=$('csg');const gp=e5((t-G-.05)/.35);sg.style.opacity=t>=G+.05?gp:0;sg.style.transform=`translateX(${(80*(1-gp)).toFixed(1)}px)`;stampIn($('cno'),t,ck('s9',3)+.1,-6,1.8)},
+  ev:s=>[[ck('s8',1)+.25,'stamp',.45],[ck('s8',1)+.25,'shk',6],[ck('s9',1),'pop'],[ck('s9',1)+.1,'err'],[ck('s9',1)+.35,'pop'],[ck('s9',2)+.05,'whoosh'],[ck('s9',3)+.1,'stamp',.4]]},
+
+ /* 8 · peníze měli na 30 dní */
+ {id:'days',from:'s10',cls:'redd',cap:1,year:1996,tr:'flash',
+  html:()=>`<div class="grid r"></div><div class="abs mono" style="left:74px;top:186px;font-size:13px;color:#ff9b97">HOTOVOST · ZBÝVÁ</div>
+   <div class="abs big" id="dn" style="left:0;right:0;top:248px;text-align:center;font-size:210px;color:var(--red);font-variant-numeric:tabular-nums">30</div>
+   <div class="abs big" style="left:0;right:0;top:446px;text-align:center;font-size:54px;color:#fff">DNÍ</div>
+   <div class="abs" style="left:74px;top:540px;width:392px;height:16px;border:2px solid var(--red)"><div id="dbar" style="height:100%;background:var(--red);width:100%"></div></div>
+   <div class="abs mono" id="dmot" style="left:74px;top:572px;font-size:11px;color:#ff9b97;opacity:0;white-space:normal;width:392px;line-height:1.4">MOTTO FIRMY: „JSME 30 DNÍ OD KRACHU.“</div>`,
+  anim:(t,s)=>{const u=t-s.t0;const D=ck('s10',1);const d=$('dn');const n=t<D?30:Math.max(1,30-Math.floor((t-D)*16));d.textContent=n;if(t>=D)d.style.transform=slamT(t-D,1.25,5);else d.style.transform=`scale(${(1+.02*Math.sin(u*9)).toFixed(4)})`;
+    $('dbar').style.width=(100*n/30).toFixed(1)+'%';fade($('dmot'),t,D+.6,.25)},
+  ev:s=>[[s.t0+.05,'heart'],[ck('s10',1),'slam',.4],[ck('s10',1),'tickdown',1.6]]},
+
+ /* 9 · letěl do Japonska a šéfovi Segy řekl: selhali jsme; požádal, ať je zaplatí */
+ {id:'japan',from:'s11',cls:'ink',cap:1,year:1996,tr:'scan',
+  html:()=>`<div class="grid"></div>
+   <svg class="abs" id="jsv" width="540" height="300" style="left:0;top:170px"><path id="jarc" d="M 90 220 Q 270 0 450 160" fill="none" stroke="rgba(118,185,0,.25)" stroke-width="2" stroke-dasharray="6 7"/><path id="jarc2" d="M 90 220 Q 270 0 450 160" fill="none" stroke="#76B900" stroke-width="3"/><circle cx="90" cy="220" r="7" fill="#76B900"/><circle id="jdst" cx="450" cy="160" r="7" fill="#fff"/></svg>
+   <div class="abs" id="jpl" style="left:0;top:0;opacity:0">${PLANE}</div>
+   <div class="abs" style="left:74px;top:404px"><span class="tag">USA</span></div>
+   <div class="abs" id="jjp" style="left:370px;top:350px;opacity:0"><span class="tag w">JAPONSKO</span></div>
+   <div class="card" id="jcard" style="left:74px;top:470px;width:392px;padding:12px 16px;opacity:0;border-radius:4px"><div class="mono" style="font-size:11px;color:#666">SEGA · ŠÉF</div><div style="font-weight:900;font-size:26px;letter-spacing:-.03em">Shoichiro Irimajiri</div></div>
+   <div class="abs" id="jq" style="left:0;top:0;width:540px;height:960px;background:#000;opacity:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px">
+     <div class="mono" style="font-size:13px;color:var(--nv)">HUANG → SEGA · 1996</div><div class="big" id="jqt" style="font-size:66px">„Selhali jsme.“</div></div>
+   <div class="abs" id="jinv" style="left:74px;top:0;width:540px;height:960px;opacity:0">
+     <div class="card" style="left:0;top:206px;width:392px;padding:18px 20px;border-radius:4px;background:#fbfaf5">
+      <div class="mono" style="font-size:11px;color:#777">SMLOUVA SEGA × NVIDIA</div><div style="font-weight:900;font-size:28px;letter-spacing:-.03em;margin-top:6px">Čip pro konzoli</div>
+      <div style="margin-top:14px;font-size:20px;line-height:1.8"><div>Dodáno: <b style="color:var(--red)">✕ NE</b></div><div>Zaplatit: <b id="jpay">…</b></div></div></div>
+     <div class="abs" id="jbig" style="left:200px;top:400px;opacity:0"><span class="stamp gr" style="font-size:40px;background:rgba(0,0,0,.85)">ZAPLAŤTE</span></div></div>`,
+  anim:(t,s)=>{const P=$('jarc2');const L=P.getTotalLength();const A=s.t0+.1,B=ck('s11',2)-.05;const p=eio((t-A)/(B-A));P.style.strokeDasharray=L;P.style.strokeDashoffset=(L*(1-p)).toFixed(1);
+    const pt=P.getPointAtLength(L*p),pt2=P.getPointAtLength(Math.min(L,L*p+2));const ang=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)*180/Math.PI+90;
+    const pl=$('jpl');pl.style.opacity=t>=A&&p<1?1:0;pl.style.transform=`translate(${(pt.x-17).toFixed(1)}px,${(pt.y+170-17).toFixed(1)}px) rotate(${ang.toFixed(1)}deg)`;
+    popIn($('jjp'),t,ck('s11',1)+.15,.25,.6);slideIn($('jcard'),t,ck('s11',2),24,.3);
+    const Q=st('s12')-.05,I=st('s13')-.05;const q=$('jq');q.style.opacity=t>=Q&&t<I?1:(t>=I?(1-clamp((t-I)/.15)):0);if(t>=Q)$('jqt').style.transform=slamT(t-Q,1.3,5);
+    const iv=$('jinv');slideIn(iv,t,I,30,.3);if(t>=I){const h=(1-clamp((t-I)/.15)).toFixed(3);['jsv','jjp','jcard'].forEach(x=>$(x).style.opacity=h);s.el.querySelectorAll('.tag').forEach(e=>{if(e.textContent==='USA')e.parentNode.style.opacity=h})}typeTo($('jpay'),'ANO, CELOU ČÁSTKU',t,ck('s13',1)-.15,20);stampIn($('jbig'),t,ck('s13',1)+.35,-7,1.8)},
+  ev:s=>[[s.t0+.1,'jet',ck('s11',2)-s.t0-.15],[ck('s11',1)+.15,'pop2'],[ck('s11',2),'paper'],[st('s12')-.05,'boom'],[st('s13')-.05,'paper'],[ck('s13',1)-.15,'type',.8],[ck('s13',1)+.35,'stamp',.4]]},
+
+ /* 10 · Sega jim dala 5 milionů dolarů */
+ {id:'money',from:'s14',cls:'nvg',cap:1,year:1996,tr:'flash',
+  html:()=>`<div class="grid"></div>
+   <div class="abs" style="left:74px;top:186px"><span class="tag">SEGA INVESTUJE</span></div>
+   <div class="abs" id="msg" style="left:110px;top:236px;width:320px;opacity:.9"><img src="photos/sega.png" style="width:320px;display:block;filter:drop-shadow(0 20px 40px rgba(0,0,0,.6))"></div>
+   <div class="abs big" id="mm" style="left:0;right:0;top:452px;text-align:center;font-size:76px;color:var(--nv);font-variant-numeric:tabular-nums">$ 0</div>
+   <div class="abs mono" id="ml" style="left:0;right:0;top:546px;text-align:center;font-size:12px;color:#cfe8a6;opacity:0">ZÁCHRANA NA DALŠÍCH PÁR MĚSÍCŮ</div>`,
+  anim:(t,s)=>{const u=t-s.t0;slideIn($('msg'),t,s.t0,-20,.35);const M=ck('s14',1)-.1;const m=$('mm');m.textContent='$ '+fmt(5e6*eo((t-M)/1.1));if(t>=M+1.1)m.style.transform=slamT(t-M-1.1,1.12,3);fade($('ml'),t,M+1.2)},
+  ev:s=>[[s.t0,'whoosh'],[ck('s14',1)-.1,'count',1.1],[ck('s14',1)+1,'coin']]},
+
+ /* 11 · propustil víc než polovinu lidí, ze 100 zůstalo 40 */
+ {id:'layoff',from:'s15',cls:'blk',cap:1,year:1996,tr:'glitch',
+  html:()=>`<div class="grid"></div><div class="abs mono" style="left:74px;top:186px;font-size:13px;color:var(--g)">ZAMĚSTNANCI NVIDIE</div>
+   <div class="abs big" id="lnum" style="left:300px;top:172px;width:166px;text-align:right;font-size:52px;font-variant-numeric:tabular-nums">100</div>
+   <div class="abs" id="lg" style="left:84px;top:244px;width:380px;display:grid;grid-template-columns:repeat(10,1fr);gap:6px 0">${Array.from({length:100},(_,i)=>`<div class="lp" data-i="${i}" style="display:flex;justify-content:center">${PERSON('#e8e8e8',26)}</div>`).join('')}</div>`,
+  anim:(t,s)=>{const X=ck('s15',1)+.1;const order=[...Array(100).keys()].sort((a,b)=>((a*37)%101)-((b*37)%101));const gone=new Set(order.slice(0,60));
+    const n=Math.floor(60*clamp((t-X)/1.4));const off=new Set(order.slice(0,n));
+    s.el.querySelectorAll('.lp').forEach(e=>{const i=+e.dataset.i;const svg=e.firstChild;const o=off.has(i);svg.querySelectorAll('circle,path').forEach(q=>q.setAttribute('fill',o?'#262626':(gone.has(i)?'#e8e8e8':(t>=ck('s16',1)?'#76B900':'#e8e8e8'))));e.style.opacity=o?.55:1});
+    const ln=$('lnum');ln.textContent=100-n;ln.style.color=t>=ck('s16',1)?'#76B900':'#fff';if(t>=ck('s16',1))ln.style.transform=slamT(t-ck('s16',1),1.4,5)},
+  ev:s=>[[ck('s15',1)+.1,'drain',1.4],[ck('s16',1),'slam',.4]]},
+
+ /* 12 · všechno vsadil na jeden čip – a ten zabral */
+ {id:'riva',from:'s17',cls:'nvg',cap:1,year:1997,tr:'flash',
+  html:()=>`<div class="grid"></div>
+   <div class="ph" id="rph" style="left:120px;top:190px;width:300px;height:300px"><img src="photos/riva.jpg"><div class="lbl">RIVA 128 · 1997</div></div>
+   <div class="hud" id="rhud" style="left:110px;top:180px;width:320px;height:320px;opacity:0"><i></i><i></i><i></i><i></i></div>
+   <div class="abs" id="rall" style="left:74px;top:510px;opacity:0"><span class="tag r">ALL-IN</span></div>
+   <div class="abs" id="rok" style="left:178px;top:520px;opacity:0"><span class="stamp gr" style="font-size:52px;background:rgba(0,0,0,.85)">ZABRAL ✓</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;const r=$('rph');const p=e5(u/.5);r.style.opacity=clamp(u/.15);r.style.transform=`scale(${lerp(.7,1,p).toFixed(3)}) rotate(${lerp(-12,0,p).toFixed(2)}deg)`;
+    fade($('rhud'),t,ck('s17',1),.15);if(t>=ck('s17',1))$('rhud').style.transform=`scale(${(1+.03*Math.sin((t-ck('s17',1))*12)).toFixed(4)})`;slideX($('rall'),t,ck('s17',1)+.1,-30,.3);
+    const K=st('s18')+.45;stampIn($('rok'),t,K,-6,1.8);if(t>=K){$('rall').style.opacity=(1-clamp((t-K)/.15)).toFixed(3);r.style.boxShadow=`0 0 ${(40+10*Math.sin(t*8)).toFixed(0)}px rgba(118,185,0,.75)`}},
+  ev:s=>[[s.t0,'whoosh'],[ck('s17',1),'hud'],[ck('s17',1)+.1,'pop'],[st('s18')+.45,'win']]},
+
+ /* 13 · dnes Nvidia pohání skoro celou AI; první firma nad 5 bilionů dolarů */
+ {id:'today',from:'s19',cls:'blk',cap:1,year:2025,tr:'scan',
+  html:()=>`<div class="grid"></div>
+   <div class="ph" id="tph" style="left:74px;top:186px;width:392px;height:240px"><img src="photos/hq.jpg"><div class="lbl">SÍDLO NVIDIE · SANTA CLARA</div></div>
+   <div class="abs" id="tai" style="left:74px;top:446px;width:392px;display:grid;grid-template-columns:repeat(14,1fr);gap:4px">${Array.from({length:42},(_,i)=>`<i class="tc" data-i="${i}" style="display:block;height:20px;background:#1a1f14;border:1px solid #2a3320"></i>`).join('')}</div>
+   <div class="abs mono" id="tail" style="left:74px;top:530px;font-size:12px;color:var(--nv);opacity:0">ČIPY PRO UMĚLOU INTELIGENCI</div>
+   <div class="abs" id="tv" style="left:0;top:0;width:540px;height:960px;opacity:0;background:radial-gradient(70% 45% at 50% 45%,#162708,#000 75%)">
+     <div class="grid"></div>
+     <div class="abs" id="tfst" style="left:74px;top:200px;opacity:0"><span class="badge">PRVNÍ V HISTORII</span></div>
+     <div class="abs mono" style="left:74px;top:260px;font-size:13px;color:#cfe8a6">TRŽNÍ HODNOTA · ŘÍJEN 2025</div>
+     <div class="abs big" id="tval" style="left:74px;top:290px;font-size:47px;color:var(--nv);font-variant-numeric:tabular-nums">$ 0</div>
+     <div class="abs big" id="tbn" style="left:74px;top:366px;font-size:86px;color:#fff;opacity:0;transform-origin:0 50%">5 BILIONŮ $</div>
+     <div class="abs mono" id="tbl" style="left:74px;top:490px;font-size:12px;color:var(--g);opacity:0;white-space:normal;width:392px;line-height:1.5">5 000 000 000 000 $</div></div>`,
+  anim:(t,s)=>{const u=t-s.t0;$('tph').style.transform=`scale(${(1.08-.08*e5(u/1)).toFixed(4)})`;const A=ck('s19',2)-.2;
+    s.el.querySelectorAll('.tc').forEach(e=>{const i=+e.dataset.i;const on=t>=A+((i*13)%42)*.02;e.style.background=on?'#76B900':'#1a1f14';e.style.borderColor=on?'#a6e22e':'#2a3320';e.style.boxShadow=on?'0 0 8px rgba(118,185,0,.6)':'none'});fade($('tail'),t,A+.3);
+    const V=st('s20')-.05;fade($('tv'),t,V,.2);popIn($('tfst'),t,ck('s20',1),.25,.6);const C=ck('s20',2);const vv=$('tval');vv.textContent='$ '+fmt(5e12*Math.pow(eo((t-C)/1.2),.6));
+    const B=ck('s20',3)+.05;const b=$('tbn');b.style.opacity=t>=B?1:0;if(t>=B)b.style.transform=slamT(t-B,1.3,6);fade($('tbl'),t,B+.5)},
+  ev:s=>[[ck('s19',2)-.2,'blips',.9],[st('s20')-.05,'whoosh'],[ck('s20',1),'pop2'],[ck('s20',2),'count',1.2],[ck('s20',3)+.05,'boom']]},
+
+ /* 14 · přesto říká: kdyby věděl, kolik to bude bolet, znovu by ji nezaložil */
+ {id:'pain',from:'s21',cls:'blk',cap:1,tr:'flash',
+  html:()=>`<div class="grid"></div><div class="abs" style="inset:0;background:radial-gradient(50% 40% at 62% 55%,rgba(118,185,0,.2),transparent 70%)"></div>
+   <img class="abs" id="pimg" src="photos/huang.png" style="left:236px;top:268px;width:310px;filter:drop-shadow(0 0 24px rgba(118,185,0,.35))">
+   <div class="abs mono" style="left:74px;top:186px;font-size:13px;color:var(--g)">JENSEN HUANG · CEO NVIDIE</div>
+   <div class="abs" id="pm" style="left:74px;top:250px;width:150px;opacity:0"><div class="mono" style="font-size:11px;color:#ff9b97">BOLEST</div>
+    <div style="margin-top:6px;width:150px;height:14px;border:2px solid var(--red)"><div id="pmb" style="height:100%;width:0;background:var(--red)"></div></div><div class="mono" id="pmn" style="font-size:12px;margin-top:6px">0 %</div></div>
+   <div class="abs" id="pno" style="left:74px;top:350px;width:176px;opacity:0;font-weight:900;font-size:34px;letter-spacing:-.03em;line-height:1.05">Znovu by Nvidii <span style="color:var(--red)">nezaložil.</span></div>`,
+  anim:(t,s)=>{const u=t-s.t0;const im=$('pimg');im.style.opacity=clamp(u/.25);im.style.transform=`translateX(${(30*(1-e5(u/.6))).toFixed(1)}px)`;
+    const B=ck('s21',2);fade($('pm'),t,B-.1,.2);const p=clamp((t-B)/1.1);$('pmb').style.width=(100*eo(p)).toFixed(1)+'%';$('pmn').textContent=Math.round(100*eo(p))+' %';
+    const N=ck('s21',4)-.1;const no=$('pno');no.style.opacity=t>=N?1:0;if(t>=N)no.style.transform=slamT(t-N,1.25,4)},
+  ev:s=>[[s.t0,'whoosh'],[ck('s21',2)-.1,'rise',1.1],[ck('s21',4)-.1,'slam',.4]]},
+
+ /* 15 · výzva */
+ {id:'cta',from:'s22',cls:'white',cap:0,tr:'flash',
+  html:()=>`<div class="abs" style="left:74px;top:150px"><span class="badge">POSTAVILI TO <b>#03 · JENSEN HUANG</b></span></div>
+   <div class="abs" id="cq" style="left:74px;top:204px;width:400px;font-weight:900;font-size:50px;letter-spacing:-.04em;line-height:1.02;color:#111">Šel bys do toho i ty?</div>
+   ${[['ANO','i kdyby to bolelo'],['NE','to by nestálo za to']].map(([a,b],i)=>`<div class="abs co" data-i="${i}" style="left:74px;top:${352+i*74}px;width:392px;height:62px;border:2.5px solid #111;border-radius:6px;display:flex;align-items:center;gap:14px;padding:0 18px;color:#111;opacity:0"><span style="font-weight:900;font-size:28px;letter-spacing:-.03em;color:${i?'#E5322D':'#4f7d00'}">${a}</span><span style="font-size:19px;font-weight:600;color:#444">${b}</span></div>`).join('')}
+   <div class="abs" id="cc" style="left:74px;top:518px;width:392px;height:56px;border-radius:999px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:21px;opacity:0">Napiš to do komentářů 👇</div>
+   <div class="abs" id="csg" style="left:74px;top:604px;display:flex;align-items:center;gap:12px;opacity:0"><div style="background:#111;border-radius:8px;padding:8px 11px;display:flex">${uzel(18,'#fff')}</div><div style="font-weight:800;font-size:19px;color:#111;letter-spacing:-.03em">Better Digital</div></div>`,
+  anim:(t,s)=>{slideIn($('cq'),t,s.t0+.05,16,.3);s.el.querySelectorAll('.co').forEach(e=>slideX(e,t,ck('s22',1)+(+e.dataset.i)*.15,-40,.3));popIn($('cc'),t,ck('s22',1)+.6,.25,.7);slideIn($('csg'),t,ck('s22',1)+1.1,10)},
+  ev:s=>[[s.t0+.05,'whoosh'],[ck('s22',1),'pop',0],[ck('s22',1)+.15,'pop',1],[ck('s22',1)+.6,'notif']]},
+];
+/* ------------------------------------------------------------ sestavení */
+const stage=$('stage');
+SCN.forEach((s,i)=>{s.t0=i?st(s.from)-.06:0;});
+SCN.forEach((s,i)=>{s.t1=i+1<SCN.length?SCN[i+1].t0:T.END;const el=document.createElement('div');el.className='sc '+s.cls;el.id='sc_'+s.id;
+  el.innerHTML=`<div class="cam">${s.html()}</div>`;stage.appendChild(el);s.el=el;s.cam=el.querySelector('.cam')});
+const TR=SCN.filter((s,i)=>i&&s.tr).map(s=>[s.t0,s.tr]);
+const EV=[];SCN.forEach(s=>{if(s.ev)EV.push(...s.ev(s))});
+TR.forEach(([t0,ty])=>{if(ty==='glitch')EV.push([t0-.05,'glitch',.25]);if(ty==='flash')EV.push([t0,'hit']);if(ty==='scan')EV.push([t0,'swish'])});
+EV.sort((a,b)=>a[0]-b[0]);window.EV=EV;
+const SHK=EV.filter(e=>e[1]==='shk');
+const YEARS=[1978,1993,1995,1997,2025],Y0=1978,Y1=2026,yx=y=>(y-Y0)/(Y1-Y0)*392;
+$('tl').innerHTML='<div class="ln"></div><div class="pg"></div>'+YEARS.map(y=>`<i class="ev" data-y="${y}" style="left:${yx(y).toFixed(1)}px"></i>`).join('')+'<div class="cur"></div><div class="yr"></div>';
+const GC=$('grain').getContext('2d'),GI=GC.createImageData(180,320);
+function grain(f){const r=rng(7000+f),d=GI.data;for(let i=0;i<d.length;i+=4){const v=r()*255|0;d[i]=d[i+1]=d[i+2]=v;d[i+3]=11}GC.putImageData(GI,0,0)}
+window.render=function(t){
+  let k=SCN.length-1;for(let i=0;i<SCN.length;i++)if(t<SCN[i].t1){k=i;break}
+  const s=SCN[k],u=t-s.t0;const prev=k>0?SCN[k-1]:null;
+  const scan=s.tr==='scan'&&prev&&u<.28;
+  SCN.forEach(q=>{const on=q===s||(scan&&q===prev);q.el.style.display=on?'block':'none';q.el.style.zIndex=q===s?2:1;q.el.style.clipPath='none'});
+  if(scan){const p=eio(u/.28);s.el.style.clipPath=`inset(0 0 ${(100*(1-p)).toFixed(2)}% 0)`;prev.anim&&prev.anim(t,prev);$('scanl').style.display='block';$('scanl').style.top=(960*p-1).toFixed(1)+'px'}else $('scanl').style.display='none';
+  s.cam.style.transform=`scale(${(1+.012*Math.min(u,6)/6).toFixed(4)})`;
+  s.anim&&s.anim(t,s);
+  let sx=0,sy=0;for(const [a,,amp] of SHK)if(t>=a&&t<a+.6){const e=amp*Math.exp(-(t-a)/.12);sx+=e*Math.sin((t-a)*95+a);sy+=e*.7*Math.sin((t-a)*83+a*2)}
+  stage.style.transform=sx||sy?`translate(${sx.toFixed(2)}px,${sy.toFixed(2)}px)`:'none';
+  const g=$('gl');let gh='';for(const [a,ty] of TR)if(ty==='glitch'&&t>=a-.08&&t<a+.14){const r=rng(400+Math.floor(t*FPS));for(let i=0;i<9;i++){const y=r()*960,h=3+r()*30;gh+=`<i style="position:absolute;left:${(-60+r()*120).toFixed(0)}px;top:${y.toFixed(0)}px;width:${(300+r()*400).toFixed(0)}px;height:${h.toFixed(1)}px;background:${['#fff','#76B900','#000'][Math.floor(r()*3)]};opacity:${(.35+r()*.5).toFixed(2)}"></i>`}
+    stage.style.filter=`drop-shadow(${(6*(r()-.5)).toFixed(1)}px 0 0 rgba(118,185,0,.8)) drop-shadow(${(6*(r()-.5)).toFixed(1)}px 0 0 rgba(255,255,255,.5))`}
+  g.innerHTML=gh;if(!gh)stage.style.filter='none';
+  /* titulky */
+  const cap=$('cap');let html='';const capOn=s.cap||s.capS;if(capOn){for(const [cs,i,txt,a,b] of T.chunks){if((!s.capS||s.capS.includes(cs))&&t>=a-(cs==='s1'&&i===0?1:0)&&t<b+.02&&t>=s.t0-.01){html=txt.replace(/\*(.+?)\*/g,'<b>$1</b>');break}}}
+  cap.innerHTML=html?`<span>${html}</span>`:'';cap.style.top=(s.capY||664)+'px';
+  /* časová osa */
+  const tl=$('tl');const py=k>0&&SCN[k-1].year?SCN[k-1].year:s.year;const yy=s.year?lerp(py||s.year,s.year,eio(u/.35)):0;tl.style.opacity=s.year?1:0;
+  if(s.year){const x=yx(yy);tl.querySelector('.pg').style.width=x.toFixed(1)+'px';tl.querySelector('.cur').style.left=x.toFixed(1)+'px';const yr=tl.querySelector('.yr');yr.style.left=clamp(x,18,374).toFixed(1)+'px';yr.textContent=Math.round(yy);
+    tl.querySelectorAll('.ev').forEach(e=>e.classList.toggle('p',+e.dataset.y<=yy+.01))}
+  let fl=0;for(const [a,ty] of TR)if(ty==='flash'&&t>=a&&t<a+.14)fl=Math.max(fl,.55*(1-(t-a)/.14));
+  if(!s.tr&&k>0&&u<.08)fl=Math.max(fl,.15*(1-u/.08));$('flash').style.opacity=fl.toFixed(3);
+  grain(Math.floor(t*FPS+1e-6));
+};
+const FL=['900 20px IT','850 20px IT','800 20px IT','700 20px IT','600 20px IT','20px JB'];
+Promise.all(FL.map(f=>document.fonts.load(f,'ěščřžýáíéúůťďňĚŠČŘŽ„“…—·−✕✓⚠↗→▲□×–')))
+ .then(()=>Promise.all([...document.images].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r}))))
+ .then(()=>document.fonts.ready).then(()=>{window.READY=true;render(0)});
+</script></body></html>
