@@ -1,9 +1,9 @@
 {
-  "platform": "tiktok+instagram",
+  "platform": "tiktok+instagram+facebook",
   "series": "POSTAVILI TO · Česká edice",
   "episode": 4,
-  "text": "Ve 12 prodával spolužákům rohlíky s čokoládou. Dnes má firmu Rohlík za skoro 2 miliardy dolarů. 🥐🇨🇿\n\nTomáš Čupr: první peníze z Counter-Striku, pomocník v anglické tiskárně, Slevomat, DámeJídlo a pak „projekt na celý život“. První český jednorožec, dnes v pěti zemích.\n\nNakupuješ na Rohlíku? Napiš ANO, nebo NE 👇\n\n#rohlik #tomascupr #podnikani #startup #ceskefirmy",
-  "firstComment": "Pro šťouraly 🤓 Hranici miliardy dolarů Rohlík překročil v červenci 2021. Odhad skoro 2 mld. $ je z kola v listopadu 2024. V Německu jezdí jako Knuspr, v Rakousku Gurkerl, v Maďarsku Kifli a v Rumunsku Sezamo.\n\nKterou českou firmu chceš příště? Kiwi.com, Prusa Research, nebo Mews? 👇\n\nZdroje: Forbes CZ, CzechCrunch, Reuters.",
+  "text": "Ve 12 letech prodával spolužákům rohlíky s čokoládou. Dnes má Rohlík za skoro 2 miliardy dolarů. 🥐\n\nPříběh Tomáše Čupra, zakladatele Rohlíku, Slevomatu a DámeJídla: první peníze z Counter-Striku, práce v anglické tiskárně a první český jednorožec.\n\nNakupuješ na Rohlíku? Napiš ANO, nebo NE 👇\nA pošli to někomu, kdo si na Rohlíku objednává každý týden.\n\n#rohlik #tomascupr #ceskefirmy #podnikani #pribehfirmy",
+  "firstComment": "Bonus, který se do videa nevešel 👀 Slevomat spustil v roce 2010 a investor za ním přišel už 3 dny po startu. V Německu dnes Rohlík jezdí jako Knuspr, v Rakousku Gurkerl, v Maďarsku Kifli a v Rumunsku Sezamo.\n\nKterou českou firmu rozebereme příště? 👇\n1️⃣ Kiwi.com\n2️⃣ Prusa Research\n3️⃣ Mews\nStačí napsat číslo.\n\nZdroje: Forbes CZ, CzechCrunch, Reuters.",
   "coverMs": 2600,
   "settings": {
     "instagramData": {
@@ -16,13 +16,17 @@
       "commercialContentOwnBrand": false,
       "commercialContentThirdParty": false,
       "isAigc": true
+    },
+    "facebookData": {
+      "type": "REEL",
+      "title": "Ve 12 prodával rohlíky. Dnes má Rohlík za 2 miliardy dolarů"
     }
   },
   "rightsNote": "Fotky a loga nahrál Petr, licence neověřené.",
   "status": "scheduled",
-  "publishAt": "2026-10-25T18:00:00+01:00",
+  "publishAt": "2026-10-25T17:30:00+01:00",
   "metricool": {
-    "id": "405710132",
+    "id": "405780988",
     "uuid": "-255819584361446516",
     "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-255819584361446516"
   }
