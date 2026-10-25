@@ -45,3 +45,12 @@ promo/postavili-to-03-nvidia/raw.mp4
 promo/postavili-to-03-nvidia/full.mp4
 promo/postavili-to-03-nvidia/audio.wav
 promo/postavili-to-03-nvidia/qa_sheet.jpg
+# POSTAVILI TO · Česká edice #4 (Rohlík): fotky a loga od Petra bez ověřené licence – jen lokálně
+promo/postavili-to-cz-04-rohlik/photos/src/
+promo/postavili-to-cz-04-rohlik/photos/*.png
+promo/postavili-to-cz-04-rohlik/photos/*.jpg
+promo/postavili-to-cz-04-rohlik/qa*/
+promo/postavili-to-cz-04-rohlik/raw.mp4
+promo/postavili-to-cz-04-rohlik/full.mp4
+promo/postavili-to-cz-04-rohlik/audio.wav
+promo/postavili-to-cz-04-rohlik/qa_sheet.jpg
