@@ -6,9 +6,24 @@
   "firstComment": "Pro šťouraly 🤓 Hranici miliardy dolarů Rohlík překročil v červenci 2021. Odhad skoro 2 mld. $ je z kola v listopadu 2024. V Německu jezdí jako Knuspr, v Rakousku Gurkerl, v Maďarsku Kifli a v Rumunsku Sezamo.\n\nKterou českou firmu chceš příště? Kiwi.com, Prusa Research, nebo Mews? 👇\n\nZdroje: Forbes CZ, CzechCrunch, Reuters.",
   "coverMs": 2600,
   "settings": {
-    "instagramData": {"type": "REEL", "showReelOnFeed": true, "isAiGenerated": true},
-    "tiktokData": {"privacyOption": "PUBLIC_TO_EVERYONE", "commercialContentOwnBrand": false, "commercialContentThirdParty": false, "isAigc": true}
+    "instagramData": {
+      "type": "REEL",
+      "showReelOnFeed": true,
+      "isAiGenerated": true
+    },
+    "tiktokData": {
+      "privacyOption": "PUBLIC_TO_EVERYONE",
+      "commercialContentOwnBrand": false,
+      "commercialContentThirdParty": false,
+      "isAigc": true
+    }
   },
   "rightsNote": "Fotky a loga nahrál Petr, licence neověřené.",
-  "status": "ready"
+  "status": "scheduled",
+  "publishAt": "2026-10-25T18:00:00+01:00",
+  "metricool": {
+    "id": "405710132",
+    "uuid": "-255819584361446516",
+    "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-255819584361446516"
+  }
 }
