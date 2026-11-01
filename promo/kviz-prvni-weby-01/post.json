@@ -3,7 +3,21 @@
   "series": "Kvíz: první weby",
   "episode": 1,
   "coverMs": 3500,
-  "status": "ready",
+  "status": "scheduled",
   "publishAt": "2026-11-01T15:00:00+01:00",
-  "metricool": null
+  "metricool": {
+    "instagram": {
+      "id": "412922975",
+      "uuid": "-3756315567236954856"
+    },
+    "tiktok": {
+      "id": "412922992",
+      "uuid": "-4053723985548457153"
+    },
+    "facebook": {
+      "id": "412923002",
+      "uuid": "-7614106217955899614"
+    },
+    "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-3756315567236954856"
+  }
 }
