@@ -1,0 +1,24 @@
+{
+  "platform": "instagram+facebook+tiktok",
+  "series": "Carousel: AI test na občanství",
+  "episode": 1,
+  "status": "scheduled",
+  "publishAt": "2026-11-05T10:00:00+01:00",
+  "text": {
+    "instagram+facebook": "Dali jsme AI test na české občanství. Stačí 60 %.\n\nNež ukážeme výsledek, zkuste tři otázky sami. Kolik jste uhodli? Napište číslo do komentářů.\n\nTest: oficiální modelový test NPI ČR, Claude Haiku a Claude Sonnet, 28 textových otázek.\n\n#umelainteligence #cesko #obcanstvi #kviz",
+    "tiktok": "AI u testu na české občanství. Dáte víc než ona? Napište, kolik máte ze tří. #ai #cesko #kviz"
+  },
+  "firstComment": "Zdroj otázek: oficiální modelový test z českých reálií, NPI ČR. Testovali jsme Claude Haiku a Claude Sonnet bez přístupu na web, 4. 11. 2026.",
+  "metricool": {
+    "instagram+facebook": {
+      "id": "416502350",
+      "uuid": "-7457272104169684066",
+      "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-7457272104169684066"
+    },
+    "tiktok": {
+      "id": "416502384",
+      "uuid": "-4691423664665835463",
+      "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-4691423664665835463"
+    }
+  }
+}
