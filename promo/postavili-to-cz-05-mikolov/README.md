@@ -1,6 +1,6 @@
 # POSTAVILI TO · Česká edice #5 – Tomáš Mikolov (TikTok/Reels, ~65 s)
 
-Stav: video hotové, čeká na schválení. Bez prodeje, cíl je dosah a komentáře.
+Stav: naplánováno na 5. 11. 2026: TikTok 18:00, Instagram 18:05, Facebook 18:10 (`post.json`). Bez prodeje, cíl je dosah a komentáře.
 
 **Styl:** černá, bílá, žlutá. Jemná hudba bez bicích v `sfx.py`, efekty potichu, hlas ~15 dB nad hudbou, −14 LUFS.
 
