@@ -1,0 +1,21 @@
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Carousel</title><style>
+@font-face{font-family:IT;src:url(../fonts/InterTight-Variable.ttf);font-weight:100 900}
+@font-face{font-family:JB;src:url(../fonts/jetbrains-mono-latin-ext-500-normal.woff2);unicode-range:U+0100-024F}
+@font-face{font-family:JB;src:url(../fonts/jetbrains-mono-latin-500-normal.woff2);unicode-range:U+0000-00FF,U+2013-201E,U+2026,U+2212}
+*{margin:0;padding:0;box-sizing:border-box}html,body{background:#000}
+.s{position:relative;overflow:hidden;font-family:IT,'Noto Color Emoji',sans-serif;width:1080px;height:var(--h);padding:var(--t) 84px var(--b);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.white{background:#fff;color:#0B0B0B}.black{background:#0B0B0B;color:#fff}.yellow{background:#FFD400;color:#0B0B0B}
+.center{justify-content:center}.kick{font-family:JB,monospace;font-size:30px;letter-spacing:.08em;margin-bottom:34px;opacity:.72}
+h1{font-weight:900;letter-spacing:-.04em;line-height:1.02;font-size:104px}.long h1{font-size:82px}
+p{font-weight:600;font-size:44px;line-height:1.28;letter-spacing:-.015em;margin-top:40px}
+.black h1 b,.white h1 b{background:#FFD400;color:#0B0B0B;padding:0 14px;border-radius:12px}.yellow h1 b{background:#0B0B0B;color:#FFD400;padding:0 14px;border-radius:12px}
+.img{flex:1;min-height:0;margin-top:44px;border-radius:30px;overflow:hidden;position:relative}.img img{width:100%;height:100%;object-fit:cover;display:block}
+.lbl{position:absolute;left:18px;bottom:16px;font-family:JB;font-size:22px;letter-spacing:.06em;background:rgba(0,0,0,.65);color:#fff;padding:6px 12px;border-radius:8px}
+.foot{position:absolute;left:84px;right:84px;bottom:calc(var(--b) - 74px);display:flex;justify-content:space-between;align-items:center;font-family:JB;font-size:26px;opacity:.75}
+</style></head><body><div id="root"></div><script>
+function uzel(h,c){const w=h*3.8,s=h*.12,r=h/2-s/2;return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block"><circle cx="${h/2}" cy="${h/2}" r="${r}" fill="none" stroke="${c}" stroke-width="${s}"/><line x1="${h}" y1="${h/2}" x2="${w-h}" y2="${h/2}" stroke="${c}" stroke-width="${s}"/><circle cx="${w-h/2}" cy="${h/2}" r="${h/2}" fill="#FFD400"/></svg>`}
+window.show=(sl,i,n,fmt,dir)=>{const v=fmt==='vertical';const r=document.documentElement.style;r.setProperty('--h',v?'1920px':'1350px');r.setProperty('--t',v?'250px':'96px');r.setProperty('--b',v?'320px':'130px');
+ const t=(sl.title||'').replace(/\*(.+?)\*/g,'<b>$1</b>');
+ document.getElementById('root').innerHTML=`<div class="s ${sl.bg||'white'} ${t.length>42?'long':''} ${sl.image?'':'center'}">${sl.kicker?`<div class="kick">${sl.kicker}</div>`:''}<h1>${t}</h1>${sl.body?`<p>${sl.body}</p>`:''}${sl.image?`<div class="img"><img src="file://${dir}/${sl.image}">${sl.label?`<span class="lbl">${sl.label}</span>`:''}</div>`:''}<div class="foot"><div style="${sl.bg==='black'?'':'background:#0B0B0B;padding:12px 16px;border-radius:10px'}">${uzel(30,'#fff')}</div><div>${i+1} / ${n}</div></div></div>`;
+ return Promise.all([document.fonts.load('900 20px IT'),document.fonts.load('20px JB'),...[...document.images].map(m=>m.complete?1:new Promise(q=>{m.onload=m.onerror=q}))]).then(()=>document.fonts.ready)};
+</script></body></html>

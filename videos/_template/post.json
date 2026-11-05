@@ -1,0 +1,14 @@
+{
+  "series": "POSTAVILI TO",
+  "status": "draft",
+  "coverMs": 2000,
+  "aiVoice": true,
+  "ownBrand": false,
+  "firstComment": "Bonus nebo druhá strana příběhu. Zdroje: ...",
+  "rights": "",
+  "networks": {
+    "tiktok": {"publishAt": "2026-01-01T18:00:00+01:00", "text": "Háček do prvního řádku. Klíčová slova a jména pro vyhledávání.\n\nOtázka na jedno slovo 👇\n\n#tag #tag #tag #tag #tag"},
+    "instagram": {"publishAt": "2026-01-01T18:05:00+01:00", "text": "Háček. Dva tři řádky příběhu.\n\nOtázka 👇\nA pošli to někomu, kdo...\n\n#tag #tag #tag #tag #tag"},
+    "facebook": {"publishAt": "2026-01-01T18:10:00+01:00", "title": "Krátký titulek", "text": "Souvislý text, vykání. Otázka.\n\n#tag #tag"}
+  }
+}

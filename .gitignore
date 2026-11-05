@@ -1,67 +1,22 @@
 __pycache__/
-# zdroje bez volné licence: jen lokálně, do veřejného repa ne (odvozené 1bit verze v photos/ ano)
-promo/postavili-to-01-jobs/photos/src/jobs_1984.*
-promo/postavili-to-01-jobs/photos/src/apple_logo_1977.*
-# POSTAVILI TO #02: fotky od Petra bez ověřené licence – jen lokálně (zdroje i zpracované verze)
-promo/postavili-to-02-musk/photos/src/
-promo/postavili-to-02-musk/photos/*.png
-promo/postavili-to-02-musk/photos/*.jpg
-# JEDNA VĚTA #01: snímky záznamu aplikace a QA – dají se kdykoli znovu vyrobit (app_capture.py, engine/render.py stills)
-promo/jedna-veta-01-porada/app_frames/
-promo/jedna-veta-01-porada/qa*/
-promo/jedna-veta-01-porada/cap.log
-promo/jedna-veta-01-porada/cap_done
-# POSTAVILI TO · Česká edice #1 (Avast): fotky a loga od Petra bez ověřené licence – jen lokálně (zdroje i zpracované verze)
-promo/postavili-to-cz-01-avast/photos/src/
-promo/postavili-to-cz-01-avast/photos/*.png
-promo/postavili-to-cz-01-avast/photos/*.jpg
-promo/postavili-to-cz-01-avast/qa*/
-# POSTAVILI TO · Česká edice #2 (Seznam): fotky a loga od Petra bez ověřené licence – jen lokálně
-promo/postavili-to-cz-02-seznam/photos/src/
-promo/postavili-to-cz-02-seznam/photos/*.png
-promo/postavili-to-cz-02-seznam/photos/*.jpg
-promo/postavili-to-cz-02-seznam/qa*/
-promo/postavili-to-cz-02-seznam/raw.mp4
-promo/postavili-to-cz-02-seznam/full.mp4
-promo/postavili-to-cz-02-seznam/audio.wav
-promo/postavili-to-cz-02-seznam/qa_sheet.jpg
-promo/postavili-to-cz-02-seznam/voice/prep.log
-promo/postavili-to-cz-03-alza/photos/src/
-promo/postavili-to-cz-03-alza/photos/*.png
-promo/postavili-to-cz-03-alza/photos/*.jpg
-promo/postavili-to-cz-03-alza/qa*/
-promo/postavili-to-cz-03-alza/raw.mp4
-promo/postavili-to-cz-03-alza/full.mp4
-promo/postavili-to-cz-03-alza/audio.wav
-promo/postavili-to-cz-03-alza/qa_sheet.jpg
-# Whisper model pro kontrolu hlasu (engine/tools/get_whisper.sh)
-engine/tools/sherpa-onnx-whisper-turbo/
-# POSTAVILI TO #03 (Nvidia): fotky od Petra bez ověřené licence – jen lokálně
-promo/postavili-to-03-nvidia/photos/src/
-promo/postavili-to-03-nvidia/photos/*.png
-promo/postavili-to-03-nvidia/photos/*.jpg
-promo/postavili-to-03-nvidia/qa*/
-promo/postavili-to-03-nvidia/raw.mp4
-promo/postavili-to-03-nvidia/full.mp4
-promo/postavili-to-03-nvidia/audio.wav
-promo/postavili-to-03-nvidia/qa_sheet.jpg
-# POSTAVILI TO · Česká edice #4 (Rohlík): fotky a loga od Petra bez ověřené licence – jen lokálně
-promo/postavili-to-cz-04-rohlik/photos/src/
-promo/postavili-to-cz-04-rohlik/photos/*.png
-promo/postavili-to-cz-04-rohlik/photos/*.jpg
-promo/postavili-to-cz-04-rohlik/qa*/
-promo/postavili-to-cz-04-rohlik/raw.mp4
-promo/postavili-to-cz-04-rohlik/full.mp4
-promo/postavili-to-cz-04-rohlik/audio.wav
-promo/postavili-to-cz-04-rohlik/qa_sheet.jpg
-# Kvíz první weby #01: screenshoty bez licence – jen lokálně
-promo/kviz-prvni-weby-01/shots/
-# POSTAVILI TO · Česká edice #5 (Mikolov): fotky od Petra bez ověřené licence – jen lokálně
-promo/postavili-to-cz-05-mikolov/photos/src/
-promo/postavili-to-cz-05-mikolov/photos/*.png
-promo/postavili-to-cz-05-mikolov/photos/*.jpg
-promo/postavili-to-cz-05-mikolov/qa*/
-promo/postavili-to-cz-05-mikolov/raw.mp4
-promo/postavili-to-cz-05-mikolov/full.mp4
-promo/postavili-to-cz-05-mikolov/audio.wav
-promo/postavili-to-cz-05-mikolov/qa_sheet.jpg
+.DS_Store
+
+# Vše generované a hotová videa: dělá se lokálně, do hlavní větve nepatří. Video jde přes `make.py push` do větve media.
+build/
+*.mp4
+*.wav
+reel.html.tmp
+videos/*/reel.html
+
+# Fotky a loga bez ověřené licence: jen lokálně, zdroje i zpracované verze
+videos/*/photos/src/
+videos/*/photos/*.jpg
+videos/*/photos/*.png
+archive/*/photos/src/
+archive/*/photos/*.jpg
+archive/*/photos/*.png
+archive/*/photos/*.webp
+archive/*/qa*/
+
+# Whisper model se stahuje při potřebě (engine/tools/get_whisper.sh)
+engine/tools/sherpa-onnx-whisper-turbo

@@ -1,18 +1,18 @@
-# Better Digital: videa pro Reels a TikTok
+# Better Digital: výroba videí
 
-Krátká videa generovaná kódem pro Instagram [@betterdigital.cz](https://www.instagram.com/betterdigital.cz/) a TikTok [@betterdigital.cz](https://www.tiktok.com/@betterdigital.cz). **Pro Clauda: začni v `RUNBOOK.md`** (stav, pravidla, postup výroby). Leadgen série „Stejný úkol. Dva světy.“ (`episodes/`) je ukončená po dílu 3.
+Krátká videa a carousely generované kódem pro [Instagram](https://www.instagram.com/betterdigital.cz/), [TikTok](https://www.tiktok.com/@betterdigital.cz) a Facebook. Bez natáčení: HTML animace vykreslená po snímcích, syntetizovaný zvuk, hlas z ElevenLabs.
 
-- `plan.json` obsahuje harmonogram a stav dílů.
-- `episodes/` obsahuje jednotlivé díly (animace, zvuk, finální video, popisek).
-- `engine/` obsahuje renderer, CTA šablonu a fonty (OFL).
-- `RUNBOOK.md` popisuje, jak se díly vyrábějí, plánují a kontrolují.
-- `topics.md` obsahuje zásobník dalších témat.
-- `promo/predstaveni/` obsahuje zdroj 45s představení firmy (9:16 a 16:9).
-- `promo/zastav-video/` obsahuje TikTok „ZASTAV VIDEO“ (pause challenge, 15 s).
-- `promo/mobil-vs-prace/` obsahuje TikTok „Na mobilu strávíš víc času než v práci.“ (22,5 s).
-- `promo/rodinne-heslo/` obsahuje TikTok/Reels „Tvoje máma nepozná tvůj hlas od AI.“ (26 s).
-- `promo/postavili-to-*` obsahují příběhová videa POSTAVILI TO (Jobs, Musk; Česká edice: Avast, Seznam, Alza).
-- `promo/jedna-veta-01-porada/` obsahuje JEDNA VĚTA #01 (AI postaví aplikaci z jedné věty).
-- `engine/tools/` obsahuje kontrolu hlasu Whisperem, render úseku snímků a vkládání úseku do videa.
+**Claude: začni v `RUNBOOK.md`.**
 
-Videa se generují kódem (HTML animace vykreslovaná po snímcích a syntetizovaný zvuk), bez natáčení.
+| Složka | Obsah |
+|---|---|
+| `engine/make.py` | jeden příkaz na celou výrobu |
+| `engine/story/` | sdílený vzhled a engine scén |
+| `engine/sfxlib.py` | sdílené nástroje, efekty, styly hudby, mix |
+| `engine/spec.json` | jednotný technický formát |
+| `engine/carousel/` | carousel do 1080×1350 a 1080×1920 z jednoho souboru |
+| `videos/_template/` | šablona nového dílu |
+| `videos/<díl>/` | zdroje dílu, výstupy vznikají v `build/` a do gitu nejdou |
+| `archive/` | starší díly a ukončená série |
+
+Hlavní větev neobsahuje videa. Hotové video jde před plánováním do větve `media` (`make.py push`), odkud si ho Metricool stáhne a uloží k sobě. Fotky bez ověřené licence v repu nejsou.

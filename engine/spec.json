@@ -1,0 +1,8 @@
+{
+  "video": {"width": 1080, "height": 1920, "fps": 30, "codec": "h264", "pix_fmt": "yuv420p", "crf": 20, "preset": "fast", "max_mb": 95},
+  "audio": {"codec": "aac", "bitrate": "192k", "rate": 48000, "lufs": -14, "lufs_tol": 0.6, "peak_max": -1.0},
+  "story": {"max_seconds": 75},
+  "safe": {"x0": 60, "x1": 480, "y0": 118, "y1": 760},
+  "carousel": {"feed": [1080, 1350], "vertical": [1080, 1920]},
+  "photo": {"min_width": 1080, "output_width": 1100, "output_jpeg_q": 92}
+}

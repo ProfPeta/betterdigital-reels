@@ -1,0 +1,60 @@
+[
+ {
+  "src": "zuckerberg.jpg",
+  "out": "zuck.jpg",
+  "box": [
+   90,
+   20,
+   870,
+   1000
+  ],
+  "min_width": 700,
+  "source": "Petr, Wikimedia Commons",
+  "license": "Dodal Petr, licence neověřená",
+  "label": ""
+ },
+ {
+  "src": "mikolov_portret.jpg",
+  "out": "mikolov.jpg",
+  "min_width": 700,
+  "source": "Petr, Wikimedia Commons",
+  "license": "Dodal Petr, licence neověřená",
+  "label": ""
+ },
+ {
+  "src": "arxiv_1301_3781.jpg",
+  "out": "arxiv.jpg",
+  "box": [
+   30,
+   30,
+   1170,
+   860
+  ],
+  "min_width": 700,
+  "source": "arXiv 1301.3781, snímek od Petra",
+  "license": "Dodal Petr, licence neověřená",
+  "label": "ARXIV 1301.3781"
+ },
+ {
+  "src": "mikolov_medaile.jpg",
+  "out": "medaile.jpg",
+  "box": [
+   0,
+   120,
+   1250,
+   1000
+  ],
+  "min_width": 700,
+  "source": "Petr",
+  "license": "Dodal Petr, licence neověřená",
+  "label": "PRAŽSKÝ HRAD · 28. 10. 2026"
+ },
+ {
+  "src": "bottlecap_tym.jpg",
+  "out": "tym.jpg",
+  "min_width": 700,
+  "source": "Petr",
+  "license": "Dodal Petr, licence neověřená",
+  "label": "TÝM BOTTLECAP AI · ARCHIVNÍ FOTO"
+ }
+]
