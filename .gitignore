@@ -56,3 +56,12 @@ promo/postavili-to-cz-04-rohlik/audio.wav
 promo/postavili-to-cz-04-rohlik/qa_sheet.jpg
 # Kvíz první weby #01: screenshoty bez licence – jen lokálně
 promo/kviz-prvni-weby-01/shots/
+# POSTAVILI TO · Česká edice #5 (Mikolov): fotky od Petra bez ověřené licence – jen lokálně
+promo/postavili-to-cz-05-mikolov/photos/src/
+promo/postavili-to-cz-05-mikolov/photos/*.png
+promo/postavili-to-cz-05-mikolov/photos/*.jpg
+promo/postavili-to-cz-05-mikolov/qa*/
+promo/postavili-to-cz-05-mikolov/raw.mp4
+promo/postavili-to-cz-05-mikolov/full.mp4
+promo/postavili-to-cz-05-mikolov/audio.wav
+promo/postavili-to-cz-05-mikolov/qa_sheet.jpg
