@@ -109,10 +109,28 @@ def timeline(ep, cfg):
     print(('časy z hlasu' if have else 'POZOR: bez hlasu, časy jen odhad') + f', konec {END} s, mapa {mp}')
 
 
+def insert_gaps(ep, cfg):
+    """"gaps": {"s4": 2.2} v episode.json = ticho za větou (čas na tipování, dramatická pauza). Mapa vět zůstává stejná."""
+    b = os.path.join(ep, 'build'); tl = json.load(open(os.path.join(b, 'timeline.json')))
+    x, _ = sf.read(os.path.join(b, 'voice.wav')); sj = json.load(open(os.path.join(b, 'segments.json'))); seg = sj['segments']
+    cuts = sorted((tl['S'][sid][1] + .08, float(g)) for sid, g in cfg['gaps'].items())
+    parts, last, shift = [], 0, 0.0
+    for at, g in cuts:
+        i = int(at * SR); parts += [x[last:i], np.zeros(int(g * SR))]; last = i
+    parts.append(x[last:])
+    def mv(t): return t + sum(g for at, g in cuts if t >= at)
+    sj['segments'] = [[round(mv(a), 3), round(mv(e), 3)] for a, e in seg]; sj['duration'] = round(sum(len(p) for p in parts) / SR, 3)
+    sf.write(os.path.join(b, 'voice.wav'), np.concatenate(parts).astype(np.float32), SR, subtype='PCM_16')
+    json.dump(sj, open(os.path.join(b, 'segments.json'), 'w'), indent=1)
+    cfg['map'] = tl['map']; print('vložené pauzy:', ', '.join(f'{k} +{v} s' for k, v in cfg['gaps'].items()))
+
+
 def run(ep):
     cfg = json.load(open(os.path.join(ep, 'episode.json'))); os.makedirs(os.path.join(ep, 'build'), exist_ok=True)
-    if os.path.exists(os.path.join(ep, 'voice', 'take_elevenlabs.mp3')): prep(ep, cfg)
+    have = os.path.exists(os.path.join(ep, 'voice', 'take_elevenlabs.mp3'))
+    if have: prep(ep, cfg)
     timeline(ep, cfg)
+    if have and cfg.get('gaps'): insert_gaps(ep, cfg); timeline(ep, cfg)
 
 
 if __name__ == '__main__': run(os.path.abspath(sys.argv[1]))

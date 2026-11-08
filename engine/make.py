@@ -26,7 +26,7 @@ def page(ep):
     """Vygeneruje reel.html: sdílené styly a engine, data dílu, scény dílu."""
     c = cfg(ep); os.makedirs(B(ep), exist_ok=True)
     extra = '<link rel="stylesheet" href="style.css">' if os.path.exists(os.path.join(ep, 'style.css')) else ''
-    pub = {k: c[k] for k in ('years', 'y0', 'y1', 'badge', 'grain', 'accent') if k in c}
+    pub = {k: c[k] for k in ('years', 'y0', 'y1', 'badge', 'series', 'grain', 'accent') if k in c}
     open(os.path.join(ep, 'reel.html'), 'w').write(f'''<!doctype html><!-- generuje engine/make.py, needitovat -->
 <html lang="cs"><head><meta charset="utf-8"><title>{c.get('title', '')}</title>
 <link rel="stylesheet" href="../../engine/story/base.css">{extra}</head><body>

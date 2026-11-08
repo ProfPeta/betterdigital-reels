@@ -1,0 +1,12 @@
+{
+  "title": "POZNÁŠ AI? Jídlo #1",
+  "series": "POZNÁŠ AI?",
+  "badge": "ČESKÉ JÍDLO",
+  "tempo": 1.0,
+  "pause_cap": 0.32,
+  "gaps": {"s4": 2.3, "s5": 2.3, "s6": 2.3, "s8": 0.6, "s12": 0.9},
+  "hold": 2.2,
+  "bpm": 104,
+  "voice_db": 15,
+  "seed": 1108
+}

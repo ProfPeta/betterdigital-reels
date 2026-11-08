@@ -1,0 +1,19 @@
+/* POZNÁŠ AI? jídlo: dvojice fotek A/B, odpočet, razítka */
+.pr{position:absolute;left:70px;width:400px;height:262px;border-radius:16px;overflow:hidden;background:#111;box-shadow:0 18px 50px rgba(0,0,0,.45);outline:3px solid rgba(255,255,255,.9);outline-offset:-3px}
+.pr img{display:block;width:100%;height:100%;object-fit:cover}
+.abl{position:absolute;left:12px;top:12px;width:52px;height:52px;border-radius:12px;background:#0B0B0B;color:var(--y);font-weight:900;font-size:34px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.pr .lbl{left:auto;right:10px;bottom:auto;top:12px}
+.st2{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;opacity:0}
+.stamp.ok{color:#18a34a;border-color:#18a34a}
+.stamp.bg{background:rgba(255,255,255,.92);font-size:50px}
+.dim{position:absolute;inset:0;background:#000;opacity:0}
+.hd{position:absolute;left:70px;top:124px;display:flex;align-items:center;gap:12px}
+.hd .n{font-family:JB;font-size:14px;letter-spacing:.1em;background:var(--y);color:#0B0B0B;padding:6px 10px;border-radius:6px}
+.hd .t{font-weight:900;font-size:40px;letter-spacing:-.035em;white-space:nowrap}
+.cd{position:absolute;left:70px;top:716px;width:400px;height:40px;opacity:0}
+.cd .bar{position:absolute;left:0;top:30px;height:6px;border-radius:3px;background:var(--y)}
+.cd .bk{position:absolute;left:0;right:0;top:30px;height:6px;border-radius:3px;background:rgba(255,255,255,.18)}
+.cd .tx{position:absolute;left:0;top:0;font-family:JB;font-size:15px;letter-spacing:.1em;color:#fff}
+.cd .dg{position:absolute;right:0;top:-14px;font-weight:900;font-size:40px;color:var(--y)}
+.cm{position:absolute;left:70px;width:400px;background:#f2f2f2;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.av{width:42px;height:42px;border-radius:50%;background:#0B0B0B;flex:none;display:flex;align-items:center;justify-content:center}

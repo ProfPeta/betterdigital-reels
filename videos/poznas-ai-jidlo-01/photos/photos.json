@@ -1,0 +1,8 @@
+[
+ {"src":"svickova_real.png","out":"svickova_real.jpg","box":[0,210,1080,911],"min_width":1000,"source":"Petr, původ doplnit","license":"neověřená","label":""},
+ {"src":"svickova_ai.png","out":"svickova_ai.jpg","box":[0,150,1254,964],"min_width":1000,"source":"ChatGPT, vygeneroval Petr 8. 11. 2026","license":"vlastní AI výstup","label":"AI"},
+ {"src":"smazak_real.png","out":"smazak_real.jpg","box":[110,0,1123,658],"min_width":900,"source":"Petr, původ doplnit","license":"neověřená","label":""},
+ {"src":"smazak_ai.png","out":"smazak_ai.jpg","box":[0,175,1254,989],"min_width":1000,"source":"ChatGPT, vygeneroval Petr 8. 11. 2026","license":"vlastní AI výstup","label":"AI"},
+ {"src":"vepro_ai1.png","out":"vepro_ai1.jpg","box":[0,215,1254,1029],"min_width":1000,"source":"ChatGPT, vygeneroval Petr 8. 11. 2026","license":"vlastní AI výstup","label":"AI"},
+ {"src":"vepro_ai2.png","out":"vepro_ai2.jpg","box":[0,225,1254,1039],"min_width":1000,"source":"ChatGPT, vygeneroval Petr 8. 11. 2026","license":"vlastní AI výstup","label":"AI"}
+]

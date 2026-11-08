@@ -1,0 +1,24 @@
+{
+  "series": "POZNÁŠ AI?",
+  "status": "draft",
+  "coverMs": 10200,
+  "aiVoice": true,
+  "ownBrand": false,
+  "firstComment": "Správně: 1 A, 2 B, 3 obě AI 🤖 Kolik jsi dal? AI fotky vygeneroval ChatGPT, hlas ElevenLabs.",
+  "rights": "Pravé fotky dodal Petr, původ doplnit. AI fotky ChatGPT.",
+  "networks": {
+    "tiktok": {
+      "publishAt": "2026-11-09T18:00:00+01:00",
+      "text": "Jedna je pravá, druhou uvařila AI. Poznáš svíčkovou, smažák a vepřo knedlo zelo? 🍽️\n\nNapiš svoje 3 tipy, než uvidíš odpovědi 👇\n\n#poznasai #ceskejidlo #svickova #umelainteligence #aifotky"
+    },
+    "instagram": {
+      "publishAt": "2026-11-09T10:00:00+01:00",
+      "text": "Jedna je pravá, druhou uvařila AI. 🍽️\n\nSvíčková, smažák, vepřo knedlo zelo. Napiš svoje 3 tipy dřív, než uvidíš odpovědi 👇\nA pošli to mámě, ať se taky zapotí.\n\n#poznasai #ceskejidlo #svickova #ai #aifotky"
+    },
+    "facebook": {
+      "publishAt": "2026-11-09T10:10:00+01:00",
+      "title": "Poznáte pravou svíčkovou od AI?",
+      "text": "Jedna fotka je pravá, druhou vytvořila umělá inteligence. Poznáte svíčkovou, smažák a vepřo knedlo zelo?\n\nNapište svoje tři tipy do komentářů dřív, než uvidíte odpovědi.\n\n#ceskejidlo #umelainteligence"
+    }
+  }
+}
