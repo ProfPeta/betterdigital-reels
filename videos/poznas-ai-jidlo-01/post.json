@@ -1,24 +1,39 @@
 {
   "series": "POZNÁŠ AI?",
-  "status": "draft",
+  "status": "scheduled",
   "coverMs": 10200,
   "aiVoice": true,
   "ownBrand": false,
-  "firstComment": "Správně: 1 A, 2 B, 3 obě AI 🤖 Kolik jsi dal? AI fotky vygeneroval ChatGPT, hlas ElevenLabs.",
+  "firstComment": "Piš tipy ve tvaru 1A 2B 3A 👇 Odpovědi jsou na konci videa. AI fotky vygeneroval ChatGPT, hlas ElevenLabs.",
   "rights": "Pravé fotky dodal Petr, původ doplnit. AI fotky ChatGPT.",
   "networks": {
     "tiktok": {
       "publishAt": "2026-11-09T18:00:00+01:00",
-      "text": "Jedna je pravá, druhou uvařila AI. Poznáš svíčkovou, smažák a vepřo knedlo zelo? 🍽️\n\nNapiš svoje 3 tipy, než uvidíš odpovědi 👇\n\n#poznasai #ceskejidlo #svickova #umelainteligence #aifotky"
+      "text": "Jedna je pravá, druhou uvařila AI. Poznáš svíčkovou, smažák a vepřo knedlo zelo? 🍽️\n\nNapiš svoje 3 tipy, než uvidíš odpovědi 👇\n\n#poznasai #ceskejidlo #svickova #umelainteligence #aifotky",
+      "metricool": {
+        "id": "421059702",
+        "uuid": "3684031812347776638",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=3684031812347776638"
+      }
     },
     "instagram": {
       "publishAt": "2026-11-09T10:00:00+01:00",
-      "text": "Jedna je pravá, druhou uvařila AI. 🍽️\n\nSvíčková, smažák, vepřo knedlo zelo. Napiš svoje 3 tipy dřív, než uvidíš odpovědi 👇\nA pošli to mámě, ať se taky zapotí.\n\n#poznasai #ceskejidlo #svickova #ai #aifotky"
+      "text": "Jedna je pravá, druhou uvařila AI. 🍽️\n\nSvíčková, smažák, vepřo knedlo zelo. Napiš svoje 3 tipy dřív, než uvidíš odpovědi 👇\nA pošli to mámě, ať se taky zapotí.\n\n#poznasai #ceskejidlo #svickova #ai #aifotky",
+      "metricool": {
+        "id": "421059655",
+        "uuid": "3390386997905606248",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=3390386997905606248"
+      }
     },
     "facebook": {
       "publishAt": "2026-11-09T10:10:00+01:00",
       "title": "Poznáte pravou svíčkovou od AI?",
-      "text": "Jedna fotka je pravá, druhou vytvořila umělá inteligence. Poznáte svíčkovou, smažák a vepřo knedlo zelo?\n\nNapište svoje tři tipy do komentářů dřív, než uvidíte odpovědi.\n\n#ceskejidlo #umelainteligence"
+      "text": "Jedna fotka je pravá, druhou vytvořila umělá inteligence. Poznáte svíčkovou, smažák a vepřo knedlo zelo?\n\nNapište svoje tři tipy do komentářů dřív, než uvidíte odpovědi.\n\n#ceskejidlo #umelainteligence",
+      "metricool": {
+        "id": "421059679",
+        "uuid": "7448838874842220819",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=7448838874842220819"
+      }
     }
   }
 }

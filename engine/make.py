@@ -155,7 +155,9 @@ def new(slug):
 
 
 def timed(name, fn, ep):
-    t = time.time(); r = fn(ep); print(f'  [{name}: {time.time() - t:.0f} s]', flush=True); return r
+    t = time.time(); r = fn(ep)
+    if name != 'payload': print(f'  [{name}: {time.time() - t:.0f} s]', flush=True)
+    return r
 
 
 def main():
