@@ -1,0 +1,5 @@
+[
+ {"src":"dlouhy_portret.webp","out":"dlouhy.jpg","box":[40,0,560,624],"min_width":500,"source":"Petr, původ doplnit","license":"neověřená","label":""},
+ {"src":"dlouhy_stojici.jpg","out":"dlouhy2.jpg","box":[400,20,1264,680],"min_width":800,"source":"Petr, původ doplnit","license":"neověřená","label":""},
+ {"src":"logo_kiwi.webp","out":"logo_kiwi.jpg","min_width":1000,"source":"Petr, logo Kiwi.com","license":"ochranná známka, použito zpravodajsky","label":""}
+]

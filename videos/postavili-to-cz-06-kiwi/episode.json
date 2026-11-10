@@ -1,0 +1,12 @@
+{
+  "title": "POSTAVILI TO · Česká edice #6: Kiwi.com",
+  "badge": "ČESKÁ EDICE #6",
+  "years": [2012, 2014, 2016, 2019, 2020, 2024],
+  "y0": 2011,
+  "y1": 2026.6,
+  "tempo": "auto",
+  "pause_cap": 0.30,
+  "gaps": {"s3": 2.2},
+  "bpm": 100,
+  "seed": 2012
+}

@@ -20,6 +20,8 @@ def run(ep):
             if im.info.get('icc_profile'):
                 im = ImageCms.profileToProfile(im, ImageCms.ImageCmsProfile(__import__('io').BytesIO(im.info['icc_profile'])), ImageCms.createProfile('sRGB'))
         except Exception: pass
+        if im.mode in ('RGBA', 'LA', 'P'):
+            im = im.convert('RGBA'); bg = Image.new('RGBA', im.size, (255, 255, 255, 255)); bg.alpha_composite(im); im = bg
         im = im.convert('RGB')
         if it.get('box'): im = im.crop(it['box'])
         w = SPEC['output_width']; need = it.get('min_width', SPEC['min_width'])

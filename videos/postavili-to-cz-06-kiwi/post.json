@@ -1,0 +1,39 @@
+{
+  "series": "POSTAVILI TO · Česká edice",
+  "status": "scheduled",
+  "coverMs": 6200,
+  "aiVoice": true,
+  "ownBrand": false,
+  "firstComment": "Bonus 👀 Původně se firma jmenovala Skypicker, na Kiwi.com se přejmenovala v roce 2016. Prvním investorem byl Jiří Hlavenka.\n\nKterou českou IT firmu rozebereme příště? 👇\n\nZdroje: Forbes, E15, Wikipedie.",
+  "rights": "Portréty a logo dodal Petr, licence neověřené.",
+  "networks": {
+    "tiktok": {
+      "publishAt": "2026-11-10T17:30:00+01:00",
+      "text": "Která letenková firma vznikla v Brně? Tipni si dřív, než to prozradíme ✈️\n\nOliver Dlouhý, Kiwi.com, Skypicker: student, který naštval aerolinky, přežil covid a dnes spolupracuje s Ryanairem.\n\nKoupil bys letenku přes Kiwi? Napiš ANO, nebo NE 👇\n\n#kiwicom #oliverdlouhy #ceskefirmy #letenky #podnikani",
+      "metricool": {
+        "id": "423369426",
+        "uuid": "5208351228497904263",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=5208351228497904263"
+      }
+    },
+    "instagram": {
+      "publishAt": "2026-11-10T17:30:00+01:00",
+      "text": "Která letenková firma vznikla v Brně? ✈️\n\nStudent Oliver Dlouhý nemohl najít levnou letenku do Portugalska. Tak si vyhledávač napsal sám. Aerolinky ho žalovaly, covid ho málem položil a dnes s ním spolupracuje i Ryanair.\n\nKoupil bys letenku přes Kiwi? Napiš ANO, nebo NE 👇\nA pošli to někomu, kdo pořád loví levné letenky.\n\n#kiwicom #ceskefirmy #letenky #startup #podnikani",
+      "metricool": {
+        "id": "423369479",
+        "uuid": "-2776850995072447496",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=-2776850995072447496"
+      }
+    },
+    "facebook": {
+      "publishAt": "2026-11-10T17:30:00+01:00",
+      "title": "Která letenková firma vznikla v Brně?",
+      "text": "Která letenková firma vznikla v Brně?\n\nStudent Oliver Dlouhý nemohl najít levnou letenku do Portugalska, a tak si vyhledávač napsal sám. Aerolinky ho žalovaly, covid firmu poslal do miliardové ztráty a dnes s ní spolupracuje i Ryanair.\n\nKoupili byste letenku přes Kiwi? Napište ANO, nebo NE.\n\n#ceskefirmy #letenky",
+      "metricool": {
+        "id": "423369537",
+        "uuid": "3454988432041330616",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=3454988432041330616"
+      }
+    }
+  }
+}
