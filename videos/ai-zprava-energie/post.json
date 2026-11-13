@@ -1,0 +1,27 @@
+{
+ "series": "Jednorázové",
+ "status": "scheduled",
+ "coverMs": 1500,
+ "aiVoice": true,
+ "ownBrand": false,
+ "firstComment": "",
+ "rights": "vlastní grafika, hlas ElevenLabs (Anet – Youthful and Lively, v4)",
+ "networks": {
+  "tiktok": {
+   "publishAt": "2026-11-13T16:30:00+01:00",
+   "id": 427071753,
+   "uuid": "5083156524831361407"
+  },
+  "instagram": {
+   "publishAt": "2026-11-13T16:30:00+01:00",
+   "id": 427071926,
+   "uuid": "2506706924617090412"
+  },
+  "facebook": {
+   "publishAt": "2026-11-13T16:30:00+01:00",
+   "title": "Kolik energie stojí jedna zpráva do AI?",
+   "id": 427071967,
+   "uuid": "-1001987702861183287"
+  }
+ }
+}
