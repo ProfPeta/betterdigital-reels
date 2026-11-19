@@ -1,0 +1,40 @@
+{
+  "series": "POSTAVILI TO · Česká edice",
+  "status": "scheduled",
+  "coverMs": 4000,
+  "aiVoice": true,
+  "ownBrand": false,
+  "firstComment": "Bonus 👀 Kotlin je pojmenovaný po ostrově Kotlin u Petrohradu.\n\nKde firma vznikla, se zdroje rozcházejí: JetBrains uvádí Prahu, E15 píše o Rusku a přesunu sídla do Prahy kolem roku 2002. Tržby 16 mld. Kč jsou za českou JetBrains s.r.o. za rok 2025.\n\nKterou českou IT firmu rozebereme příště? 👇\n\nZdroje: JetBrains, Google Android Developers, E15, Lupa, Helgi Library.",
+  "rights": "Logo JetBrains, foto Prahy a foto z invaze dodal Petr, licence podle Petra má.",
+  "networks": {
+    "tiktok": {
+      "publishAt": "2026-11-19T15:30:00+01:00",
+      "text": "Oficiální nástroj Googlu na Android aplikace stojí na softwaru z Prahy 🇨🇿\n\nJetBrains: 3 programátoři z Petrohradu, IntelliJ IDEA, jazyk Kotlin a přes 16 miliard tržeb jen v Česku. Bez investorů.\n\nZnal jsi JetBrains? Napiš ANO, nebo NE 👇\n\n#jetbrains #kotlin #programovani #ceskefirmy #technologie",
+      "metricool": {
+        "id": "434290004",
+        "uuid": "143034223341684960",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=143034223341684960"
+      }
+    },
+    "instagram": {
+      "publishAt": "2026-11-19T15:30:00+01:00",
+      "text": "Na softwaru z Prahy stojí oficiální nástroj Googlu na Android aplikace 🇨🇿\n\nTři programátoři z Petrohradu přijeli v roce 1999 pracovat do Prahy a založili JetBrains. Bez investorů postavili IntelliJ IDEA, vymysleli jazyk Kotlin a česká firma loni utržila přes 16 miliard korun.\n\nZnal jsi JetBrains? Napiš ANO, nebo NE 👇\nA pošli to někomu, kdo programuje.\n\n#jetbrains #kotlin #programovani #ceskefirmy #startup",
+      "metricool": {
+        "id": "434290043",
+        "uuid": "6716646013146122867",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=6716646013146122867"
+      }
+    },
+    "facebook": {
+      "publishAt": "2026-11-19T15:30:00+01:00",
+      "title": "Software z Prahy, na kterém stojí Android",
+      "text": "Na softwaru z Prahy stojí oficiální nástroj Googlu pro vývoj aplikací na Android.\n\nJetBrains založili tři programátoři z Petrohradu, kteří v roce 1999 přijeli pracovat do Prahy. Bez investorů postavili IntelliJ IDEA a jazyk Kotlin. Česká JetBrains loni utržila přes 16 miliard korun.\n\nZnali jste JetBrains? Napište ANO, nebo NE.\n\n#ceskefirmy #programovani",
+      "metricool": {
+        "id": "434290071",
+        "uuid": "7318391131440760576",
+        "plannerUrl": "https://app.metricool.com/planner/calendar?blogId=7151077&openWithPostUuid=7318391131440760576"
+      }
+    }
+  },
+  "media": "větev media-jetbrains (force push do media zamítnut)"
+}
